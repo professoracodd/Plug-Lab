@@ -635,6 +635,15 @@ body[data-tab=lab]{--tc:214 186 110}
 .ln b{white-space:nowrap;font-size:clamp(14px,4.4vw,17px)}
 .ln .caps{white-space:nowrap}
 @media (max-width:380px){.top-title{display:none}.tab .caps{font-size:9px;letter-spacing:.02em}.lab-team{font-size:21px;line-height:26px}.ring{width:64px;height:64px}.lab-nums{gap:6px}.ln{padding:8px}}
+@keyframes needGlow{0%,100%{box-shadow:0 0 0 1.5px rgba(255,255,255,.55),0 0 6px 1px rgba(255,255,255,.16)}50%{box-shadow:0 0 0 2px rgba(255,255,255,.98),0 0 20px 5px rgba(255,255,255,.42)}}
+.need-glow{animation:needGlow 1.5s ease-in-out infinite!important;border-color:rgba(255,255,255,.9)!important;position:relative;z-index:2}
+.card.need-glow{border-color:rgba(255,255,255,.75)!important}
+.metric-btn.need-glow{border-radius:10px;padding:2px 8px}
+.fold-btn.need-glow{border-radius:50%}
+@media (prefers-reduced-motion:reduce){.need-glow{animation:none!important;box-shadow:0 0 0 2px #fff,0 0 14px 3px rgba(255,255,255,.4)!important}}
+.note-f textarea{resize:vertical;min-height:72px;line-height:20px;font-size:14px}
+.note-f{display:flex;flex-direction:column;gap:6px}
+.chip.did{background:var(--good);color:#06240f}
 
 </style>
 </head>
@@ -1179,15 +1188,16 @@ function guideSteps(){if(S.lab&&S.lab.go&&!S.guide)return labGoSteps();const g=S
   if(!(g.seen&&g.seen.sup))st.push({tab:'crop',sec:'Supplies used',key:null,label:'Pick the supplies it uses'});
   if(r.price==null)st.push({tab:'price',sec:'Price',key:'c.price',label:'Set a price'});
   st.forEach((x,i)=>x.o=TAB_ORDER.indexOf(x.tab)*100+SEC_ORDER[x.tab].indexOf(x.sec)+i/1000);st.sort((a,b)=>a.o-b.o);return {c,st};}
-function applyBeacons(){$$('.beacon').forEach(e=>e.classList.remove('beacon'));const bar=$('#guideBar');
+function applyBeacons(){applyBeacons0();applyGlow();}
+function applyBeacons0(){$$('.beacon').forEach(e=>e.classList.remove('beacon'));const bar=$('#guideBar');
   const gb=bar.querySelector('button');gb.textContent='Skip';gb.dataset.a='guideStop';
   const g=guideSteps();if(!g){if(S.guide){S.guide=null;save();}if(S.lab&&S.lab.go){S.lab.go=null;save();}document.body.classList.remove('guiding');bar.hidden=true;
     if(S.lab&&S.lab.back){if(S.tab==='lab'){S.lab.back=false;save();}else{const t=$('.tab[data-tab=lab]');if(t)t.classList.add('beacon');}}return;}
-  if(g.s){gb.textContent='Back to Lab';gb.dataset.a='labBack';}
-  if(g.s&&!g.st.length){S.lab.go=null;S.lab.back=true;save();setTimeout(()=>toast(`Step ${g.s.n} done. Head back to the Lab tab.`),300);return applyBeacons();}
+  if(g.s){gb.textContent=g.s.go?'Done':'Back to Lab';gb.dataset.a=g.s.go?'labStepDone':'labBack';}
+  if(g.s&&!g.st.length){bar.hidden=false;document.body.classList.add('guiding');$('#guideTxt').innerHTML=`<b>Step ${g.s.n} · ${esc(g.s.t)}</b> · All filled in<small>Taking you back to the Lab tab</small>`;labAdvance();return;}
   if(!g.st.length){S.guide=null;save();document.body.classList.remove('guiding');bar.hidden=true;const nm=g.c.name||'Your plant';setTimeout(()=>toast(`${nm} is set up`),2400);return;}
   const s0=g.st[0];bar.hidden=false;document.body.classList.add('guiding');
-  $('#guideTxt').innerHTML=g.s?`<b>Step ${g.s.n} · ${esc(g.s.t)}</b> · ${esc(s0.label)}<small>${s0.key?`${g.st.length} to fill in · follow the light`:'Tap Back to Lab when you finish'}</small>`:`<b>${esc(g.c.name||'New plant')}</b> · ${esc(s0.label)}<small>${g.st.length} step${g.st.length>1?'s':''} left · follow the light</small>`;
+  $('#guideTxt').innerHTML=g.s?`<b>Step ${g.s.n} · ${esc(g.s.t)}</b><small>${s0.key?`${g.st.length} glowing field${g.st.length>1?'s':''} left · then back to Lab`:'Tap Done when your supplies are in'}</small>`:`<b>${esc(g.c.name||'New plant')}</b> · ${esc(s0.label)}<small>${g.st.length} step${g.st.length>1?'s':''} left · follow the light</small>`;
   let el=null;
   if(S.cur!==g.c.id)el=$('#cropSel')||$('.tab[data-tab=crop]');
   else if(S.tab!==s0.tab)el=$(`.tab[data-tab=${s0.tab}]`);
@@ -1198,7 +1208,7 @@ function applyBeacons(){$$('.beacon').forEach(e=>e.classList.remove('beacon'));c
       if(i){const it=i.closest('.bench.folded');el=it?it.querySelector('.fold-btn'):i;}
       else el=(card&&card.querySelector('[data-a^="addBench"],[data-a=addCost],[data-a=addSup]'))||card;}
     else el=card;}
-  if(el)el.classList.add('beacon');}
+  if(el&&!g.s)el.classList.add('beacon');}
 
 /* ---------- blueprint ---------- */
 function bpPot(){return stockPot();}
@@ -1244,8 +1254,8 @@ function drawBlueprint(cv,cw){const L=bpLayout(cw);const f=flatIn();const pot=bp
   // title block + scale
   const bt=benchTotals(usesStock()),ty=ch-m*0.5-u*0.6-tbH,tx=cw*0.42,tw=cw-m*0.5-u*0.6-tx;
   g.strokeStyle='#e6f0ff';g.lineWidth=Math.max(1.5,u*0.2);g.strokeRect(tx,ty,tw,tbH);g.beginPath();g.moveTo(tx,ty+tbH*0.36);g.lineTo(tx+tw,ty+tbH*0.36);g.stroke();
-  g.fillStyle='#fff';g.font=font(u*2.4,800);g.fillText('PLUG',tx+u*1.5,ty+u*1.3);g.font=font(u*1.5,500);g.fillStyle='#cfe0ff';
-  g.fillText(new Date().toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'}),tx+u*1.5+g.measureText('PLUG').width*1.7+u*2.5,ty+u*2);
+  g.fillStyle='#fff';g.font=font(u*2.4,800);const bpT=((S.lab&&S.lab.group)||'Plug Lab').toUpperCase().slice(0,22);g.fillText(bpT,tx+u*1.5,ty+u*1.3);g.font=font(u*1.5,500);g.fillStyle='#cfe0ff';
+  g.fillText(new Date().toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'}),tx+u*1.5+g.measureText(bpT).width*1.7+u*2.5,ty+u*2);
   const lines=[`${bt.mist.toLocaleString('en-US')} mist · ${bt.open.toLocaleString('en-US')} open plug trays`+(bt.pots[pot]?` · ${bt.pots[pot].toLocaleString('en-US')} ${POTS[pot].n} stock pots`:''),
     `${n1(bt.area,0)} sq ft of benches · plug tray ${S.shop.flatL} × ${S.shop.flatW} in`];
   if(!usesStock())lines.push(`${crop().name||'This crop'}: ${crop().src==='seed'?'grown from seed':'cuttings '+(crop().src==='buy'?'bought in':'collected')}, no stock area`);
@@ -1268,8 +1278,8 @@ const LINK={ncf:['North Carolina Farms','https://www.ncfarmsinc.com/'],ncfOrder:
   tp:['Theodore Payne seed store','https://store.theodorepayne.org/collections/seeds-1'],cal:['Calscape (California natives)','https://calscape.org/'],
   aaa:['AAA gas prices, California','https://gasprices.aaa.com/?state=CA'],irs:['IRS standard mileage rates','https://www.irs.gov/tax-professionals/standard-mileage-rates'],
   wage:['California minimum wage','https://www.dir.ca.gov/dlse/faq_minimumwage.htm'],bfg:['BFG Supply','https://www.bfgsupply.com/'],ghm:['Greenhouse Megastore','https://www.greenhousemegastore.com/']};
-function labDefault(){return {group:'',members:'',picked:false,go:null,back:false,done:{},exported:false,trip:{miles:'',mpg:'',gas:'',irs:''},tt:{h:{n:'',s:''},s:{n:'',s:''},f:{n:'1',s:''}}};}
-function labNorm(l){const d=labDefault();l=Object.assign(d,l||{});l.trip=Object.assign(labDefault().trip,l.trip||{});l.done=Object.assign({},l.done||{});
+function labDefault(){return {group:'',members:'',picked:false,go:null,back:false,done:{},exported:false,fact:false,notes:{},trip:{miles:'',mpg:'',gas:'',irs:''},tt:{h:{n:'',s:''},s:{n:'',s:''},f:{n:'1',s:''}}};}
+function labNorm(l){const d=labDefault();l=Object.assign(d,l||{});l.trip=Object.assign(labDefault().trip,l.trip||{});l.done=Object.assign({},l.done||{});l.notes=Object.assign({},l.notes||{});
   const t=labDefault().tt;l.tt=Object.assign(t,l.tt||{});['h','s','f'].forEach(k=>{l.tt[k]=Object.assign(labDefault().tt[k],(l.tt||{})[k]||{});});return l;}
 const blank=k=>{const v=get(k);return v==null||String(v).trim()==='';};
 function benchIdx(type){return S.shop.benches.findIndex(b=>type==='open'?b.type==='open':b.type!=='open'&&b.type!=='stock');}
@@ -1303,7 +1313,7 @@ function tripTool(){return `<div class="tool"><span class="caps">Trip cost calcu
 function labSteps(c){const p=c.src,seed=p==='seed',r=calc(c);const mi=benchIdx('mist'),oi=benchIdx('open');const L=S.lab;
   const st=[
   {id:'team',t:'Name your nursery team',ws:1,inline:true,keys:[['lab.group','Team name'],['lab.members','Team members']],
-    body:`<p class="callout">You're starting a propagation nursery. Your team will pick a plant, research every cost, design your benches, and set a price. Then you'll compare profits with the other teams.</p>${ul(['Pick a team name and list everyone on the team.','On your worksheet, give each person a role: Researcher, Grower, Bookkeeper, Presenter.'])}`,
+    body:`<p class="callout">You're starting a propagation nursery. Your team will pick a plant, research every cost, design your benches, and set a price. Then you'll compare profits with the other teams.</p>${ul(['Pick a team name and list everyone on the team.','Everyone researches. Split the steps so each person owns a few.'])}`,
     tool:`<div class="fgrid">${fld('Team name','lab.group',{text:true,wide:true})}${fld('Team members','lab.members',{text:true,wide:true,hint:'Separate names with commas'})}</div>`},
   {id:'path',t:'Choose your adventure',ws:2,inline:true,keys:[],done:()=>L.picked,
     body:`<p class="callout">Where will your plants come from? Each path has different research. Pick one with your team.</p>`,
@@ -1325,13 +1335,13 @@ function labSteps(c){const p=c.src,seed=p==='seed',r=calc(c);const mi=benchIdx('
       buy:[['c.buy.each','Price per cutting'],['c.buy.freight','Freight per order (0 if none)'],...(opt(c.buy.freight)>0?[['c.buy.per','Cuttings per order']]:[])],
       collect:[['c.collect.trip','Trip cost'],['c.collect.perTrip','Cuttings per trip']],
       seed:[['c.seed.price','Price per packet'],['c.seed.per','Seeds per packet'],['c.seed.freight','Shipping per order (0 if none)'],...(opt(c.seed.freight)>0?[['c.seed.packs','Packets per order']]:[])]}[p],
-    body:{stock:ul(['Stock plant cost: the nursery price for the container size you picked.','Count the shoots on one plant you could cut today. How fast does it grow back? Turn that into cuttings per plant per month.','Upkeep: water, fertilizer and care for one plant for one month. Estimate it and show your math on the worksheet.','Patented plant? Turn on Patented on the Costs tab and enter the royalty and PP number.']),
+    body:{stock:ul(['Stock plant cost: the nursery price for the container size you picked.','Count the shoots on one plant you could cut today. How fast does it grow back? Turn that into cuttings per plant per month.','Upkeep: water, fertilizer and care for one plant for one month. Estimate it and explain how in your notes.','Patented plant? Turn on Patented on the Costs tab and enter the royalty and PP number.']),
       buy:ul(['Price per cutting: from the variety\'s listing.','Freight: cuttings ship fast in a cooled box. Estimate the shipping for one order, or 0 if it\'s included.','Cuttings per order: how many you\'d order at a time, at least the minimum.','Patented? Record the PP or PPAF number. The price usually includes the royalty.'])+links(['ncf','ncfOrder']),
       collect:ul(['Use the calculator below. Gas only counts fuel; the IRS rate also covers wear on the car.','Gas cost = round-trip miles ÷ miles per gallon × price per gallon.','Cuttings per trip: how many you can take and still stick them fresh.'])+links(['aaa','irs']),
       seed:ul(['Price and seed count from the product page. Buying by the ounce or pound? Enter that price and its seed count instead.','Shipping per order, or 0 if you\'d pick it up.','Check your seeds per cell on the Crop tab.'])+links(['tp'])}[p],
     tool:p==='collect'?tripTool():''},
   {id:'labor',t:'Time the work',ws:5,keys:[['shop.wage','Hourly wage'],...(p==='stock'?[['c.stock.harvest','Harvest rate']]:p==='collect'?[['c.collect.rate','Collecting rate']]:[]),seed?['c.seed.rate','Sowing rate']:['c.stickRate','Sticking rate'],['c.fillMin','Minutes to fill a plug tray'],['c.gradeMin','Minutes to grade and ship a plug tray']],
-    body:ul(['Wage: look up California\'s minimum wage and a local nursery job posting. Use what you would really pay.','Time trials: do each job in the lab for a few minutes and count. Do it three times, write every trial on the worksheet, and use the average.','Grade and ship: estimate the minutes to check, clean up and pack one plug tray.'])+links(['wage']),
+    body:ul(['Wage: look up California\'s minimum wage and a local nursery job posting. Use what you would really pay.','Time trials: do each job in the lab for a few minutes and count. Do it three times and use the average.','Grade and ship: estimate the minutes to check, clean up and pack one plug tray.'])+links(['wage']),
     tool:`<div class="tool"><span class="caps">Time trial calculator</span>${p==='stock'||p==='collect'?rateRow('h',p==='stock'?'Taking cuttings from stock plants':'Collecting cuttings on site','Cuttings per hour',p==='stock'?'c.stock.harvest':'c.collect.rate','harvest rate'):''}${rateRow('s',seed?'Sowing cells':'Sticking cuttings',seed?'Cells per hour':'Cuttings per hour',seed?'c.seed.rate':'c.stickRate',seed?'sowing rate':'sticking rate')}${rateRow('f','Filling plug trays with mix','Minutes per plug tray','c.fillMin','fill time')}</div>`},
   {id:'mix',t:'Price your potting mix and plug trays',ws:6,keys:[['shop.mixYd','Potting mix per yd³'],['shop.pack','Packing & waste %'],['shop.trayPrice','Plug tray price'],['shop.trayUses','Times reused'],['c.cellVol','Cell volume']],
     body:ul(['Potting mix: the price per cubic yard of propagation mix from a local supplier. Only have a bag price? A cubic yard is 27 cubic feet.','Packing & waste: the extra mix lost to packing cells and spills. Estimate it.','Plug tray: one 1020 tray with your cell insert, from a supplier like BFG Supply or Greenhouse Megastore. How many times can you reuse it?','Cell volume fills in for common inserts. Check the insert\'s spec sheet.'])+links(['bfg','ghm'])},
@@ -1340,7 +1350,7 @@ function labSteps(c){const p=c.src,seed=p==='seed',r=calc(c);const mi=benchIdx('
     tool:`<button class="chip${L.done.sup?' on':''}" data-a="labDone:sup"><span class="ms sm" aria-hidden="true">${L.done.sup?'check_box':'check_box_outline_blank'}</span>Our supplies are in</button>`},
   {id:'bench',t:'Design your benches',ws:8,keys:[...(mi>=0?[[`shop.benches.${mi}.len`,'Mist bench length'],[`shop.benches.${mi}.wid`,'Mist bench width'],[`shop.benches.${mi}.count`,'Number of mist benches']]:[]),...(oi>=0?[[`shop.benches.${oi}.len`,'Open bench length'],[`shop.benches.${oi}.wid`,'Open bench width'],[`shop.benches.${oi}.count`,'Number of open benches']]:[])],
     done:()=>benchBalance(c,r).ok===true,
-    body:`<ol class="ls-list">${['Start with the mist bench. Every plug tray starts there. Pick a size that would fit a real greenhouse.','Plug trays move to the open bench to harden off. Size the open bench so every round has a place to go. Watch the balance below.',p==='stock'?'Mother stock: the app adds a stock bench sized to keep your mist bench full. Pick the stock pot size on the Benches tab.':'','Sketch your layout on the worksheet grid. You\'ll export the blueprint in the last step.'].filter(Boolean).map(x=>`<li>${x}</li>`).join('')}</ol>`,
+    body:`<ol class="ls-list">${['Start with the mist bench. Every plug tray starts there. Pick a size that would fit a real greenhouse.','Plug trays move to the open bench to harden off. Size the open bench so every round has a place to go. Watch the balance below.',p==='stock'?'Mother stock: the app adds a stock bench sized to keep your mist bench full. Pick the stock pot size on the Benches tab.':'','Your blueprint draws itself as you go. It goes on your fact sheet.'].filter(Boolean).map(x=>`<li>${x}</li>`).join('')}</ol>`,
     tool:`<div class="tool"><span class="caps">Bench balance</span><div data-o="balance" data-html="1">${balanceHTML(c,r)}</div></div>`},
   {id:'fac',t:'Estimate your greenhouse costs',ws:9,keys:[[`shop.costs.0.v`,COSTS[0]+' per year'],[`shop.costs.1.v`,COSTS[1]+' per year'],[`shop.costs.2.v`,COSTS[2]+' per year'],[`shop.costs.3.v`,COSTS[3]+' per year'],['shop.occ','% of bench in use'],...(benchTotals().mist>0?[['shop.mistAdd','Mist add-on (0 if none)']]:[])],
     body:`<p class="callout">A greenhouse costs money whether it's full or empty. The app spreads these yearly costs over every square foot of bench, every week.</p>`+ul(['Structure: what the greenhouse costs per year, like a loan payment, or its price ÷ the years it will last.','Utilities and water: a typical monthly bill × 12. Look up your power and water company\'s rates, or ask your instructor about the college greenhouse.','Insurance: find a ballpark yearly cost for a small nursery business.','% of bench in use: benches are never 100% full. What\'s realistic?','Mist add-on: the extra cost per square foot per week for mist and bottom heat. Enter 0 to leave it out.'])},
@@ -1348,9 +1358,12 @@ function labSteps(c){const p=c.src,seed=p==='seed',r=calc(c);const mi=benchIdx('
     body:ul(['Your cost per plug is on the Price tab. That\'s break-even.','Research what liners like yours sell for wholesale, from a grower\'s price list or catalog.','Set a target margin on the Costs tab and compare the suggested price with the market.','Set your price. Can you compete and still make a profit?'])},
   {id:'order',t:'Take the contract challenge',ws:11,keys:[['plan.trays','Plug trays ordered'],['plan.ship','Ship date']],
     body:`<p class="callout">Your instructor will give you a buyer's order. Enter it on the Contract tab.</p>`+ul(['Does it fit on your benches? If not, what would you change?',seed?'When do you sow the first round?':'When do you stick the first round?','What\'s your profit on the order?'])},
-  {id:'share',t:'Share your results',ws:12,inline:true,keys:[],done:()=>!!L.exported,
-    body:ul(['Save your results file and turn it in. Your instructor loads every team onto the class board.','Export your blueprint and price list for your presentation slides.','Finish the results and presentation pages of your worksheet.']),
-    tool:`<div class="btn-row">${['labExport:download:Save results file','bpJpg:architecture:Blueprint JPG','pdf:picture_as_pdf:Price list PDF'].map(x=>{const [a,i,t]=x.split(':');return `<button class="chip${a==='labExport'?' primary':''}" data-a="${a}"><span class="ms sm" aria-hidden="true">${i}</span>${t}</button>`;}).join('')}</div>`}];
+  {id:'share',t:'Make your fact sheet',ws:12,inline:true,keys:[],done:()=>!!L.exported&&!!L.fact,
+    body:ul(['Write your team\'s biggest takeaway below. It goes on your fact sheet.','Export your fact sheet. Use it for your presentation: print the PDF, or put the image on a slide.','Save your results file and turn it in. Your instructor loads every team onto the class board.']),
+    tool:`<label class="fld wide note-f"><span class="caps">Our biggest takeaway</span><textarea data-k="lab.notes.takeaway" rows="3" placeholder="What would you tell another grower?">${esc(L.notes.takeaway||'')}</textarea></label>
+      <div class="btn-row">${[['factPdf','picture_as_pdf','Fact sheet PDF',1],['factJpg','image','Fact sheet image',1],['labExport','download','Save results file',1],['bpJpg','architecture','Blueprint JPG',0]].map(([a,i,t,p])=>`<button class="chip${p?' primary':''}${(a==='labExport'&&L.exported)||(a!=='labExport'&&a!=='bpJpg'&&L.fact)?' did':''}" data-a="${a}"><span class="ms sm" aria-hidden="true">${(a==='labExport'&&L.exported)||(a!=='labExport'&&a!=='bpJpg'&&L.fact)?'check':i}</span>${t}</button>`).join('')}</div>`}];
+  const NOTE={plant:'Where did you find this plant? Note any PP or PPAF number.',grow:'Where did your growing times and percentages come from?',source:'Where did each price or count come from?',labor:'Wage source, and your time trial counts.',mix:'Which supplier and product?',sup:'Where did your supply prices come from?',bench:'Why did you pick these bench sizes?',fac:'How did you estimate each greenhouse cost?',price:'What similar plugs sell for, and where you found it.'};
+  st.forEach(s=>{if(NOTE[s.id])s.note=NOTE[s.id];});
   st.forEach((s,i)=>{s.n=i+1;s.left=s.keys.filter(k=>blank(k[0])).length;s.done=s.done?(s.left===0&&s.done()):s.left===0;});
   return st;}
 function fmtKey(k){const v=get(k);if(v==null||String(v).trim()==='')return '<span class="muted">blank</span>';
@@ -1361,8 +1374,8 @@ function stepCard(s,next){const k='lab:'+s.id;const open=OPEN[k]!==undefined?OPE
   const nx=s.done&&next?`<button class="chip" data-a="labOpen:${next.id}"><span class="ms sm" aria-hidden="true">arrow_downward</span>Next: step ${next.n}</button>`:'';
   return `<section class="card lab-step${s.done?' done':''}${s===next?' next':''}" id="ls-${s.id}">
   <button class="ls-h" data-a="labFold:${s.id}" aria-expanded="${open}"><span class="ls-n">${s.done?'<span class="ms" aria-hidden="true">check</span>':s.n}</span>
-    <span class="ls-t"><b>${s.t}</b><small>Worksheet ${s.ws}${!s.done&&s.left?` · ${s.left} to go`:s.done?' · done':''}</small></span><span class="ms fold-ic" aria-hidden="true">expand_more</span></button>
-  ${open?`<div class="ls-b">${s.body||''}${s.tool||''}${list}${go||nx?`<div class="btn-row">${go}${nx}</div>`:''}</div>`:''}</section>`;}
+    <span class="ls-t"><b>${s.t}</b><small>${s.done?'Done':s.left?`${s.left} to fill in`:s.go?'Tap to start':'To do'}</small></span><span class="ms fold-ic" aria-hidden="true">expand_more</span></button>
+  ${open?`<div class="ls-b">${s.body||''}${s.tool||''}${list}${s.note?`<label class="fld wide note-f"><span class="caps">Sources and notes</span><textarea data-k="lab.notes.${s.id}" rows="3" placeholder="${esc(s.note)}">${esc(S.lab.notes[s.id]||'')}</textarea></label>`:''}${go||nx?`<div class="btn-row">${go}${nx}</div>`:''}</div>`:''}</section>`;}
 function vLab(){const c=crop(),r=calc(c),k=capacity(r),L=S.lab;const st=labSteps(c);const nd=st.filter(s=>s.done).length,next=st.find(s=>!s.done);
   const tile=(l,v,cl)=>`<div class="ln"><span class="caps">${l}</span><b class="num ${cl||''}">${v}</b></div>`;
   return pills()+`<section class="card hero lab-hero"><div class="lab-top"><div class="lab-id"><span class="caps muted">Plug Lab</span><h1 class="lab-team">${esc(L.group||'Your nursery team')}</h1>
@@ -1392,6 +1405,107 @@ function labRefresh(){const c=crop(),r=calc(c);
   o('tripGas',g!=null?money(g):'—');o('tripIrs',i!=null?money(i):'—');
   ['h','s','f'].forEach(id=>{const v=ttVal(id);o('tt_'+id,v==null?'—':id==='f'?n1(v,1)+' min':Math.round(v).toLocaleString('en-US')+' / hr');});
   const b=$('[data-o=balance]');if(b)b.innerHTML=balanceHTML(c,r);}
+/* ---------- moving students through a step ---------- */
+function labGlowKeys(){if(!S.lab)return [];const c=crop();const st=labSteps(c);
+  if(S.lab.go&&!S.guide){const s=st.find(x=>x.id===S.lab.go);return s?s.keys.filter(k=>blank(k[0])).map(k=>k[0]):[];}
+  return st.filter(s=>!['path','share'].includes(s.id)).flatMap(s=>s.keys.filter(k=>blank(k[0])).map(k=>k[0]));}
+function applyGlow(){$$('.need-glow').forEach(e=>e.classList.remove('need-glow'));if(!S.lab||S.guide)return;
+  const mark=e=>{if(e)e.classList.add('need-glow');};
+  labGlowKeys().forEach(k=>{
+    if(k==='c.price'){if(S.tab==='price'){const pi=$('#priceIn');mark(pi&&pi.classList.contains('on')?pi.querySelector('input'):$('.metric-btn'));}return;}
+    $$(`[data-k="${k}"]`).forEach(e=>{if(e.type==='range')return;
+      const card=e.closest('.card'),h=card&&card.querySelector(':scope>.card-h.folded');if(h){mark(card);return;}
+      const b=e.closest('.bench.folded');if(b){mark(b.querySelector('.fold-btn'));return;}
+      if(e.closest('[hidden]'))return;mark(e);});});
+  if(S.lab.go&&!S.guide){const g=labGoSteps();if(g&&g.s.go&&!g.s.done)g.s.go.forEach(x=>{if(x.tab===S.tab){const h=$(`[data-a="fold:${x.tab}:${x.sec}"]`);if(h)mark(h.closest('.card'));}});}}
+function scrollToGlow(){const e=$('.need-glow');if(e)e.scrollIntoView({block:'center',behavior:'smooth'});}
+function labOpenFor(list,tab){list.forEach(x=>{if(x.tab===tab){OPEN[x.tab+':'+x.sec]=true;if(x.key)openFor(x.tab,x.key);}});}
+function labGoto(list){const t0=list[0].tab;S.tab=t0;labOpenFor(list,t0);save();render();window.scrollTo(0,0);setTimeout(scrollToGlow,140);}
+function labFinish(s,quiet){S.lab.go=null;S.lab.back=false;S.tab='lab';const st=labSteps(crop()),nx=st.find(x=>!x.done);
+  Object.keys(OPEN).forEach(k=>{if(k.startsWith('lab:'))delete OPEN[k];});save();render();window.scrollTo(0,0);
+  if(!quiet)toast(nx?`Step ${s.n} done. Next: step ${nx.n}.`:`Step ${s.n} done. Every step is finished.`);
+  setTimeout(()=>{const e=$('#ls-'+(nx?nx.id:s.id));if(e)e.scrollIntoView({block:'start',behavior:'smooth'});},120);}
+let advT;function labAdvance(){clearTimeout(advT);advT=setTimeout(()=>{if(!S.lab||!S.lab.go||S.guide)return;
+  const a=document.activeElement;if(a&&a.dataset&&a.dataset.k&&labGlowKeys().includes(a.dataset.k))return;   // still typing in a needed field
+  const g=labGoSteps();if(!g||g.s.go)return;
+  if(!g.st.length){labFinish(g.s);return;}
+  if(g.st[0].tab!==S.tab){toast(`Next: the ${TITLES[g.st[0].tab]} tab`);labGoto(g.st);}},380);}
+
+/* ---------- fact sheet ---------- */
+const FS_COL={cut:'#2a78d6',media:'#eb6834',tray:'#1baf7a',sup:'#eda100',labor:'#e87ba4',space:'#008300',roy:'#6250d6'};
+function wrapText(x,s,maxW){const words=String(s||'').split(/\s+/).filter(Boolean),out=[];let ln='';
+  words.forEach(w=>{const t=ln?ln+' '+w:w;if(x.measureText(t).width>maxW&&ln){out.push(ln);ln=w;}else ln=t;});if(ln)out.push(ln);return out;}
+function drawFactSheet(){const W=1700,H=2200,M=90;const cv=document.createElement('canvas');cv.width=W;cv.height=H;const x=cv.getContext('2d');
+  const c=crop(),r=calc(c),k=capacity(r),L=S.lab,P=PATHS[c.src];const NAVY='#0b1b36',INK='#14171f',MUTE='#5b6474',LINE='#d9dee7',GOLD='#c9a24a';
+  const F=(w,sz)=>`${w} ${sz}px Inter, system-ui, sans-serif`;
+  const T=(t,px,py,font,col,align)=>{x.font=font;x.fillStyle=col||INK;x.textAlign=align||'left';x.fillText(t,px,py);x.textAlign='left';};
+  const rr=(px,py,w,h,rad,fill,stroke)=>{x.beginPath();x.roundRect(px,py,w,h,rad);if(fill){x.fillStyle=fill;x.fill();}if(stroke){x.strokeStyle=stroke;x.lineWidth=2;x.stroke();}};
+  x.fillStyle='#fff';x.fillRect(0,0,W,H);
+  // header
+  x.fillStyle=NAVY;x.fillRect(0,0,W,250);
+  T('PLUG LAB  ·  FACT SHEET',M,78,F(700,24),GOLD);
+  x.font=F(800,68);let tn=L.group||'Our nursery team';while(x.measureText(tn).width>W-2*M-260&&tn.length>3)tn=tn.slice(0,-2)+'…';T(tn,M,158,F(800,68),'#fff');
+  x.font=F(400,28);const mem=wrapText(x,L.members||'',W-2*M-260);T((mem[0]||'')+(mem.length>1?'…':''),M,206,F(400,28),'#cfd9ea');
+  T(new Date().toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'}),W-M,78,F(500,24),'#cfd9ea','right');
+  // plant + path
+  let y=330;x.font=F(800,50);const pn=wrapText(x,c.name||'Our plant',W-2*M);T(pn[0],M,y,F(800,50),NAVY);
+  y+=24;const pathTxt=`Path ${P.L}  ·  ${P.n}`;x.font=F(600,26);const pw=x.measureText(pathTxt).width+44;rr(M,y,pw,52,26,'#eef2f8');T(pathTxt,M+22,y+35,F(600,26),NAVY);
+  if(c.patent&&c.ppaf)T(c.ppaf,M+pw+24,y+35,F(500,24),MUTE);
+  // big numbers
+  y+=86;const big=[['Cost per plug',plug(r.perPlug)],['Price per plug',r.price!=null?money(r.price):'—'],['Margin',r.margin!=null?pct(r.margin):'—'],['Profit per year',k.profit!=null?money(k.profit,0):'—']];
+  const gw=(W-2*M-3*24)/4;big.forEach(([l,v],i)=>{const px=M+i*(gw+24);rr(px,y,gw,150,22,i===3?NAVY:'#f3f5f9');
+    T(l.toUpperCase(),px+26,y+46,F(700,20),i===3?'#cfd9ea':MUTE);let fs=58;x.font=F(800,fs);while(x.measureText(v).width>gw-52&&fs>30){fs-=2;x.font=F(800,fs);}
+    T(v,px+26,y+118,F(800,fs),i===3?(k.profit!=null&&k.profit<0?'#fca5a5':'#86efac'):INK);});
+  y+=176;const small=[['Plug trays per year',k.flats?k.flats.toLocaleString('en-US'):'—'],['Sellable plugs per tray',r.sell!=null?n1(r.sell,1):'—'],['Weeks to finish',r.mw+r.hw>0?n1(r.mw,1)+' + '+n1(r.hw,1):'—'],['Bench area',benchTotals(usesStock(c)).area>0?n1(benchTotals(usesStock(c)).area,0)+' sq ft':'—']];
+  small.forEach(([l,v],i)=>{const px=M+i*(gw+24);T(l.toUpperCase(),px,y+24,F(700,18),MUTE);T(v,px,y+66,F(700,36),INK);});
+  y+=100;x.fillStyle=LINE;x.fillRect(M,y,W-2*M,2);
+  // where the money goes
+  y+=58;const colW=(W-2*M-60)/2;T('Where the money goes',M,y,F(800,32),NAVY);T('per plug tray',M+colW,y,F(500,22),MUTE,'right');
+  const parts=r.parts.filter(p=>p.v!=null&&p.v>0),tot=parts.reduce((a,p)=>a+p.v,0);let by=y+28;
+  if(tot>0){let bx=M;parts.forEach((p,i)=>{const w=(colW)*(p.v/tot);x.fillStyle=FS_COL[p.k]||'#888';x.fillRect(bx,by,Math.max(w-(i<parts.length-1?3:0),2),34);bx+=w;});}
+  by+=70;parts.forEach(p=>{x.fillStyle=FS_COL[p.k]||'#888';x.beginPath();x.roundRect(M,by-18,20,20,5);x.fill();
+    T(p.n,M+34,by,F(500,25),INK);T(money(p.v),M+colW-130,by,F(600,25),INK,'right');T(pct(p.v/tot),M+colW,by,F(500,25),MUTE,'right');by+=44;});
+  T('Total',M+34,by+6,F(800,26),INK);T(money(r.total),M+colW-130,by+6,F(800,26),INK,'right');by+=6;
+  // how it grows + source
+  const rx=M+colW+60;let ry=y;T('How it grows',rx,ry,F(800,32),NAVY);ry+=50;const seed=c.src==='seed';
+  const kv=(l,v)=>{T(l,rx,ry,F(500,25),MUTE);T(v,rx+colW,ry,F(700,25),INK,'right');ry+=42;};
+  kv('Plug tray',r.cells!=null?n1(r.cells,0)+' cells':'—');kv(seed?'Seeds per cell':'Cuttings per cell',String(r.cpc));
+  kv(seed?'Weeks to germinate':'Weeks under mist',n1(r.mw,1));kv(seed?'Weeks growing on':'Weeks hardening off',n1(r.hw,1));
+  kv(seed?'Cells that fill':'Rooting',r.st!=null?n1(r.st,0)+'%':'—');kv('Grade-out loss',n1(r.cl||0,0)+'%');
+  ry+=14;T('Where plants come from',rx,ry,F(800,32),NAVY);ry+=50;
+  ({stock:()=>{kv('Stock plant cost',money(num(c.stock.plant)));kv('Cuttings per plant per month',c.stock.perMonth||'—');kv('Stock plants',r.stockFit?r.stockFit.toLocaleString('en-US')+' '+POTS[stockPot()].n+' pots':'—');},
+    buy:()=>{kv('Price per cutting',plug(num(c.buy.each)));kv('Freight per order',money(opt(c.buy.freight)));if(opt(c.buy.freight)>0)kv('Cuttings per order',num(c.buy.per).toLocaleString('en-US'));},
+    collect:()=>{kv('Trip cost',money(num(c.collect.trip)));kv('Cuttings per trip',num(c.collect.perTrip).toLocaleString('en-US'));kv('Collecting rate',(c.collect.rate||'—')+' / hr');},
+    seed:()=>{kv('Seed price',money(num(c.seed.price))+' for '+num(c.seed.per).toLocaleString('en-US'));kv('Cost per seed',r.unit!=null?(r.unit*100).toFixed(2)+'¢':'—');kv('Seed per plug tray',r.parts[0]&&r.parts[0].v!=null?money(r.parts[0].v):'—');}})[c.src]();
+  kv('Labor',S.shop.ownLabor?'Done by the team':money(num(S.shop.wage))+' / hr');
+  y=Math.max(by,ry)+40;x.fillStyle=LINE;x.fillRect(M,y,W-2*M,2);
+  // blueprint
+  y+=58;T('Our benches',M,y,F(800,32),NAVY);const bb=benchBalance(c,r);
+  T(bb.ok?'Balanced: every round has room to harden off':bb.why?'':'Not balanced yet',W-M,y,F(600,22),bb.ok?'#15803d':'#b91c1c','right');y+=24;
+  const bpc=document.createElement('canvas');let bpH=0;try{drawBlueprint(bpc,1520);}catch(e){}
+  const pc=planCalc(c,r);let below=0;x.font=F(500,24);
+  if(pc&&!pc.incomplete)below+=40+34*Math.min(2,wrapText(x,'x'.repeat(10)+' '+(pc.trays||'')+' plug trays shipping a long date line that may wrap once',W-2*M).length)+14;
+  if(L.notes.takeaway)below+=40+34*Math.min(3,wrapText(x,L.notes.takeaway,W-2*M).length)+14;
+  const nts=['plant','grow','source','labor','mix','sup','bench','fac','price'].map(id=>L.notes[id]).filter(Boolean);x.font=F(400,20);
+  if(nts.length)below+=38+28*nts.reduce((a,n)=>a+wrapText(x,'•  '+n,W-2*M).length,0);
+  const room=Math.max(260,H-110-y-50-below);if(bpc.width&&bpc.height){const sc=Math.min((W-2*M)/bpc.width,room/bpc.height);const dw=bpc.width*sc,dh=bpc.height*sc;x.drawImage(bpc,M+(W-2*M-dw)/2,y,dw,dh);bpH=dh;}
+  y+=bpH+50;
+  // contract + takeaway + sources
+  const p=planCalc(c,r);x.font=F(500,24);
+  if(p&&!p.incomplete){T('Contract challenge',M,y,F(800,28),NAVY);y+=40;const ln=`${p.trays} plug trays${S.plan.ship?' shipping '+fmtDate(parseDate(S.plan.ship)):''}  ·  ${p.over?'Won\'t fit on our benches':'Fits on our benches'}  ·  ${p.rounds||'—'} round${p.rounds===1?'':'s'}  ·  Profit ${money(p.profit,0)}`;
+    wrapText(x,ln,W-2*M).slice(0,2).forEach(t=>{T(t,M,y,F(500,24),INK);y+=34;});y+=14;}
+  if(L.notes.takeaway){T('Our biggest takeaway',M,y,F(800,28),NAVY);y+=40;x.font=F(500,24);wrapText(x,L.notes.takeaway,W-2*M).slice(0,3).forEach(t=>{T(t,M,y,F(500,24),INK);y+=34;});y+=14;}
+  const notes=['plant','grow','source','labor','mix','sup','bench','fac','price'].map(id=>L.notes[id]).filter(Boolean);
+  if(notes.length&&y<H-160){T('Our sources',M,y,F(800,28),NAVY);y+=38;x.font=F(400,20);
+    for(const n of notes){for(const t of wrapText(x,'•  '+n,W-2*M)){if(y>H-110){T('…',M,y,F(400,20),MUTE);y=H;break;}T(t,M,y,F(400,20),'#333');y+=28;}if(y>=H-110)break;}}
+  x.fillStyle=LINE;x.fillRect(M,H-80,W-2*M,2);T('Made with Plug Lab',M,H-40,F(500,20),MUTE);T((L.group||'')+'  ·  '+(c.name||''),W-M,H-40,F(500,20),MUTE,'right');
+  return cv;}
+async function factSheet(kind){try{await document.fonts.load("800 40px Inter");await document.fonts.load("500 20px Inter");}catch(e){}
+  const cv=drawFactSheet();const slug=(S.lab.group||'team').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'')||'team';
+  if(kind==='pdf'){const J=window.jspdf;if(!J||!J.jsPDF){toast('Connect to the internet once to load PDF export');return;}
+    const doc=new J.jsPDF({unit:'pt',format:'letter'});doc.addImage(cv.toDataURL('image/jpeg',0.9),'JPEG',0,0,612,792);await deliver(doc.output('blob'),'plug-lab-fact-sheet-'+slug+'.pdf');}
+  else await new Promise(res=>cv.toBlob(b=>{if(b)deliver(b,'plug-lab-fact-sheet-'+slug+'.jpg');res();},'image/jpeg',0.92));
+  S.lab.fact=true;save();if(S.tab==='lab')render();toast('Fact sheet saved');}
 function vBenchesLab(){return `<section class="card">${cardHead('balance','sky','Bench balance','Keeps plug trays moving from mist to hardening off.')}<div data-o="balance">${balanceHTML(crop(),calc(crop()))}</div></section>`+vBenches();}
 /* ---------- render ---------- */
 const VIEWS={lab:vLab,price:vPrice,crop:vCrop,costs:vCosts,benches:vBenchesLab,plan:vPlan};
@@ -1458,7 +1572,8 @@ document.addEventListener('change',e=>{const t=e.target;
   if(t.dataset&&t.dataset.sup){const c=crop();c.off=(c.off||[]).filter(x=>x!==t.dataset.sup);if(!t.checked)c.off.push(t.dataset.sup);save();refresh();return;}
   if(t.tagName==='SELECT'&&/^shop\.supplies\.\d+\.unit$/.test(t.dataset.k||'')){set(t.dataset.k,t.value);save();render();return;}
   if(t.tagName==='SELECT'&&t.dataset.k){set(t.dataset.k,t.value);save();refresh();}
-  if(S.tab==='lab'&&t.dataset&&t.dataset.k&&t.tagName==='INPUT'){const y=window.scrollY;render();window.scrollTo(0,y);return;}
+  if(t.dataset&&t.dataset.k)labAdvance();
+  if(S.tab==='lab'&&t.dataset&&t.dataset.k&&(t.tagName==='INPUT'||t.tagName==='TEXTAREA')){const y=window.scrollY;render();window.scrollTo(0,y);return;}
   if(t.dataset&&t.dataset.k==='c.price'&&t.type==='text'){const v=num(t.value);if(!isNaN(v)){crop().price=v.toFixed(2);save();}closePriceEdit();}
   if(t.id==='fileIn'&&t.files&&t.files[0])restore(t.files[0]);});
 document.addEventListener('keydown',e=>{if((e.key==='Enter'||e.key===' ')&&e.target.classList&&e.target.classList.contains('fold-h')){e.preventDefault();e.target.click();return;}if(e.key==='Enter'&&e.target.tagName==='INPUT'&&e.target.type!=='file')e.target.blur();});
@@ -1480,8 +1595,10 @@ function act(a,arg,b){const c=crop();
     setTimeout(()=>{const e=$('#ls-'+(nx?nx.id:id));if(e)e.scrollIntoView({block:'start',behavior:'smooth'});},60);break;}
   case 'labGo':{S.lab.go=arg;S.lab.back=false;const g=labGoSteps();if(!g){S.lab.go=null;break;}
     const s=g.s;let list=g.st;if(!list.length){S.lab.go=null;list=s.go||s.keys.map(([key,label])=>{const [tab,sec]=secOf(key);return {tab,sec,key,label};});toast('Already done. Here it is to review.');}
-    if(!list.length)break;const t0=list[0].tab;S.tab=t0;list.forEach(x=>{if(x.tab===t0){OPEN[x.tab+':'+x.sec]=true;if(x.key)openFor(x.tab,x.key);}});save();render();window.scrollTo(0,0);
-    setTimeout(()=>{const e=$('.beacon:not(.tab)')||(list[0].key&&$(`[data-k="${list[0].key}"]`));if(e)e.scrollIntoView({block:'center',behavior:'smooth'});},120);break;}
+    if(!list.length)break;labGoto(list);break;}
+  case 'labStepDone':{const g=labGoSteps();S.lab.done.sup=true;if(g)labFinish(g.s);else{S.lab.go=null;S.tab='lab';save();render();}break;}
+  case 'factPdf':closeSheet();factSheet('pdf');break;
+  case 'factJpg':closeSheet();factSheet('jpg');break;
   case 'ttUse':{const [id,key]=arg.split('|');const v=ttVal(id);if(v==null){toast('Enter how many and the seconds first');break;}set(key,id==='f'?String(+v.toFixed(1)):String(Math.round(v)));save();render();toast('Saved to the app');break;}
   case 'tripUse':{const m=num(S.lab.trip.miles),v=arg==='gas'?m/num(S.lab.trip.mpg)*num(S.lab.trip.gas):m*num(S.lab.trip.irs);if(!(v>0)){toast('Fill in the trip numbers first');break;}c.collect.trip=v.toFixed(2);save();render();toast('Trip cost set to '+money(v));break;}
   case 'crop':S.cur=arg;save();render();break;
@@ -1541,7 +1658,7 @@ function openMenu(){openSheet(`<h3>Menu</h3>
   <div class="caps s-cap">This tab</div><div class="s-group">${item('foldAll:0','unfold_more','sky','Expand all','Open every section')}${item('foldAll:1','unfold_less','sky','Collapse all','Show only section titles')}</div>
   <div class="caps s-cap">Share</div><div class="s-group">${item('pdf','picture_as_pdf','pink','Price list PDF','Every crop, with cost breakdowns')}${item('xlsx','table_view','mint','Excel workbook','Prices, costs and benches')}${item('bpJpg','architecture','sky','Blueprint JPG','All growing areas, to scale')}</div>
   <div class="caps s-cap">Your data</div><div class="s-group">${item('backup','download','sky','Save a backup','A file you can restore on any device')}${item('restore','upload','lav','Restore a backup','Replaces what\'s on this device')}</div>
-  <div class="s-group">${item('labExport','download','mint','Save results file','For the class board')}${item('howto','help','butter','How the math works','Square-foot-weeks, bench turns, fill rate, margin')}${item('reset','restart_alt','pink','Start fresh','Erase everything on this device','danger')}</div>
+  <div class="s-group">${item('factPdf','picture_as_pdf','pink','Fact sheet PDF','One page for your presentation')}${item('labExport','download','mint','Save results file','For the class board')}${item('howto','help','butter','How the math works','Square-foot-weeks, bench turns, fill rate, margin')}${item('reset','restart_alt','pink','Start fresh','Erase everything on this device','danger')}</div>
   <button class="cancel" data-a="closeSheet">Done</button>`,'Menu');}
 function openHowto(){openSheet(`<h3>How the math works</h3><div class="howto">
   <h4>Everything is figured per plug tray</h4><p>Cuttings, potting mix, the plug tray, supplies, labor and bench space add up to the cost of one plug tray.</p>
