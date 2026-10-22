@@ -645,6 +645,15 @@ body[data-tab=lab]{--tc:214 186 110}
 .note-f{display:flex;flex-direction:column;gap:6px}
 .chip.did{background:var(--good);color:#06240f}
 
+/* glow that works on every browser, including iPhone Safari */
+input,textarea{-webkit-appearance:none;appearance:none}
+@keyframes needPulse{0%,100%{opacity:.3}50%{opacity:1}}
+.need-wrap{position:relative;display:block}
+.need-wrap::after{content:"";position:absolute;inset:-4px;border-radius:14px;border:2px solid #fff;box-shadow:0 0 18px 5px rgba(255,255,255,.55),inset 0 0 8px rgba(255,255,255,.25);pointer-events:none;z-index:3;animation:needPulse 1.3s ease-in-out infinite}
+input.need-in,textarea.need-in{border-color:#fff!important}
+.need-glow{outline:2px solid rgba(255,255,255,.9);outline-offset:2px}
+@media (prefers-reduced-motion:reduce){.need-wrap::after{animation:none;opacity:1}}
+
 </style>
 </head>
 <body data-tab="lab">
@@ -1409,16 +1418,17 @@ function labRefresh(){const c=crop(),r=calc(c);
 function labGlowKeys(){if(!S.lab)return [];const c=crop();const st=labSteps(c);
   if(S.lab.go&&!S.guide){const s=st.find(x=>x.id===S.lab.go);return s?s.keys.filter(k=>blank(k[0])).map(k=>k[0]):[];}
   return st.filter(s=>!['path','share'].includes(s.id)).flatMap(s=>s.keys.filter(k=>blank(k[0])).map(k=>k[0]));}
-function applyGlow(){$$('.need-glow').forEach(e=>e.classList.remove('need-glow'));if(!S.lab||S.guide)return;
+function applyGlow(){$$('.need-glow,.need-wrap,.need-in').forEach(e=>e.classList.remove('need-glow','need-wrap','need-in'));if(!S.lab||S.guide)return;
   const mark=e=>{if(e)e.classList.add('need-glow');};
+  const markIn=e=>{e.classList.add('need-in');const p=e.parentElement;if(p&&p.tagName==='SPAN')p.classList.add('need-wrap');else mark(e);};
   labGlowKeys().forEach(k=>{
-    if(k==='c.price'){if(S.tab==='price'){const pi=$('#priceIn');mark(pi&&pi.classList.contains('on')?pi.querySelector('input'):$('.metric-btn'));}return;}
+    if(k==='c.price'){if(S.tab==='price'){const pi=$('#priceIn');if(pi&&pi.classList.contains('on'))markIn(pi.querySelector('input'));else mark($('.metric-btn'));}return;}
     $$(`[data-k="${k}"]`).forEach(e=>{if(e.type==='range')return;
       const card=e.closest('.card'),h=card&&card.querySelector(':scope>.card-h.folded');if(h){mark(card);return;}
       const b=e.closest('.bench.folded');if(b){mark(b.querySelector('.fold-btn'));return;}
-      if(e.closest('[hidden]'))return;mark(e);});});
+      if(e.closest('[hidden]'))return;if(e.tagName==='INPUT'||e.tagName==='TEXTAREA')markIn(e);else mark(e);});});
   if(S.lab.go&&!S.guide){const g=labGoSteps();if(g&&g.s.go&&!g.s.done)g.s.go.forEach(x=>{if(x.tab===S.tab){const h=$(`[data-a="fold:${x.tab}:${x.sec}"]`);if(h)mark(h.closest('.card'));}});}}
-function scrollToGlow(){const e=$('.need-glow');if(e)e.scrollIntoView({block:'center',behavior:'smooth'});}
+function scrollToGlow(){const e=$('.need-in,.need-glow');if(e)e.scrollIntoView({block:'center',behavior:'smooth'});}
 function labOpenFor(list,tab){list.forEach(x=>{if(x.tab===tab){OPEN[x.tab+':'+x.sec]=true;if(x.key)openFor(x.tab,x.key);}});}
 function labGoto(list){const t0=list[0].tab;S.tab=t0;labOpenFor(list,t0);save();render();window.scrollTo(0,0);setTimeout(scrollToGlow,140);}
 function labFinish(s,quiet){S.lab.go=null;S.lab.back=false;S.tab='lab';const st=labSteps(crop()),nx=st.find(x=>!x.done);
