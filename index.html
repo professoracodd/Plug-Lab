@@ -1373,18 +1373,21 @@ function labSteps(c){const p=c.src,seed=p==='seed',r=calc(c);const mi=benchIdx('
       <div class="btn-row">${[['factPdf','picture_as_pdf','Fact sheet PDF',1],['factJpg','image','Fact sheet image',1],['labExport','download','Save results file',1],['bpJpg','architecture','Blueprint JPG',0]].map(([a,i,t,p])=>`<button class="chip${p?' primary':''}${(a==='labExport'&&L.exported)||(a!=='labExport'&&a!=='bpJpg'&&L.fact)?' did':''}" data-a="${a}"><span class="ms sm" aria-hidden="true">${(a==='labExport'&&L.exported)||(a!=='labExport'&&a!=='bpJpg'&&L.fact)?'check':i}</span>${t}</button>`).join('')}</div>`}];
   const NOTE={plant:'Where did you find this plant? Note any PP or PPAF number.',grow:'Where did your growing times and percentages come from?',source:'Where did each price or count come from?',labor:'Wage source, and your time trial counts.',mix:'Which supplier and product?',sup:'Where did your supply prices come from?',bench:'Why did you pick these bench sizes?',fac:'How did you estimate each greenhouse cost?',price:'What similar plugs sell for, and where you found it.'};
   st.forEach(s=>{if(NOTE[s.id])s.note=NOTE[s.id];});
-  st.forEach((s,i)=>{s.n=i+1;s.left=s.keys.filter(k=>blank(k[0])).length;s.done=s.done?(s.left===0&&s.done()):s.left===0;});
+  st.forEach((s,i)=>{s.n=i+1;s.left=s.keys.filter(k=>blank(k[0])).length;s.filled=s.done?(s.left===0&&!!s.done()):s.left===0;
+    s.needNote=!!s.note&&s.filled&&!String(L.notes[s.id]||'').trim();s.done=s.filled&&!s.needNote;});
   return st;}
 function fmtKey(k){const v=get(k);if(v==null||String(v).trim()==='')return '<span class="muted">blank</span>';
   if(/price|wage|each|freight|trip|plant|upkeep|mixYd|trayPrice|costs\.\d\.v|seed\.price/.test(k)&&!/perTrip/.test(k)&&!isNaN(num(v)))return money(num(v),num(v)<10?2:0);return esc(v);}
 function stepCard(s,next){const k='lab:'+s.id;const open=OPEN[k]!==undefined?OPEN[k]:s===next;
   const list=s.keys.length&&!s.inline?`<div class="ls-keys"><span class="caps">Your numbers</span>${s.keys.map(([key,l])=>`<div class="kv"><span>${esc(l)}</span><b>${fmtKey(key)}</b></div>`).join('')}</div>`:'';
-  const go=!s.inline&&(s.keys.length||s.go)?`<button class="chip primary" data-a="labGo:${s.id}"><span class="ms sm" aria-hidden="true">near_me</span>${s.left||!s.done?'Go fill it in':'Review it in the app'}</button>`:'';
+  const go=!s.inline&&(s.keys.length||s.go)?`<button class="chip primary" data-a="labGo:${s.id}"><span class="ms sm" aria-hidden="true">near_me</span>${s.filled?'Review it in the app':'Go fill it in'}</button>`:'';
   const nx=s.done&&next?`<button class="chip" data-a="labOpen:${next.id}"><span class="ms sm" aria-hidden="true">arrow_downward</span>Next: step ${next.n}</button>`:'';
+  const notes=s.note?`<label class="fld wide note-f"><span class="caps">Sources and notes${s.filled?'':' · last'}</span><textarea data-k="lab.notes.${s.id}" rows="3" placeholder="${esc(s.note)}">${esc(S.lab.notes[s.id]||'')}</textarea>${s.filled?'':'<span class="tiny">Fill in your numbers first, then add where they came from.</span>'}</label>`:'';
+  const status=s.done?'Done':s.left?`${s.left} to fill in`:s.needNote?'Add your sources and notes':s.go?'Tap to start':'To do';
   return `<section class="card lab-step${s.done?' done':''}${s===next?' next':''}" id="ls-${s.id}">
   <button class="ls-h" data-a="labFold:${s.id}" aria-expanded="${open}"><span class="ls-n">${s.done?'<span class="ms" aria-hidden="true">check</span>':s.n}</span>
-    <span class="ls-t"><b>${s.t}</b><small>${s.done?'Done':s.left?`${s.left} to fill in`:s.go?'Tap to start':'To do'}</small></span><span class="ms fold-ic" aria-hidden="true">expand_more</span></button>
-  ${open?`<div class="ls-b">${s.body||''}${s.tool||''}${list}${s.note?`<label class="fld wide note-f"><span class="caps">Sources and notes</span><textarea data-k="lab.notes.${s.id}" rows="3" placeholder="${esc(s.note)}">${esc(S.lab.notes[s.id]||'')}</textarea></label>`:''}${go||nx?`<div class="btn-row">${go}${nx}</div>`:''}</div>`:''}</section>`;}
+    <span class="ls-t"><b>${s.t}</b><small>${status}</small></span><span class="ms fold-ic" aria-hidden="true">expand_more</span></button>
+  ${open?`<div class="ls-b">${s.body||''}${s.tool||''}${list}${go||nx?`<div class="btn-row">${go}${nx}</div>`:''}${notes}</div>`:''}</section>`;}
 function vLab(){const c=crop(),r=calc(c),k=capacity(r),L=S.lab;const st=labSteps(c);const nd=st.filter(s=>s.done).length,next=st.find(s=>!s.done);
   const tile=(l,v,cl)=>`<div class="ln"><span class="caps">${l}</span><b class="num ${cl||''}">${v}</b></div>`;
   return pills()+`<section class="card hero lab-hero"><div class="lab-top"><div class="lab-id"><span class="caps muted">Plug Lab</span><h1 class="lab-team">${esc(L.group||'Your nursery team')}</h1>
@@ -1406,7 +1409,7 @@ function labResults(){const c=crop(),r=calc(c),k=capacity(r),bt=benchTotals(uses
 function labExport(){const res=labResults();const slug=(S.lab.group||'team').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'')||'team';
   S.lab.exported=true;save();deliver(new Blob([JSON.stringify(res)],{type:'application/json'}),'plug-lab-'+slug+'.json');if(S.tab==='lab')render();toast('Results file saved. Turn it in to your instructor.');}
 function labGoSteps(){const L=S.lab;if(!L||!L.go)return null;const c=crop();const s=labSteps(c).find(x=>x.id===L.go);if(!s)return null;
-  let st;if(s.go)st=s.done?[]:s.go.slice();else st=s.keys.filter(k=>blank(k[0])).map(([key,label])=>{const [tab,sec]=secOf(key);return {tab,sec,key,label};});
+  let st;if(s.go)st=s.filled?[]:s.go.slice();else st=s.keys.filter(k=>blank(k[0])).map(([key,label])=>{const [tab,sec]=secOf(key);return {tab,sec,key,label};});
   return {c,st,s};}
 function labRefresh(){const c=crop(),r=calc(c);
   const g=(+S.lab.trip.miles>0&&+S.lab.trip.mpg>0&&+S.lab.trip.gas>0)?num(S.lab.trip.miles)/num(S.lab.trip.mpg)*num(S.lab.trip.gas):null;
@@ -1417,7 +1420,7 @@ function labRefresh(){const c=crop(),r=calc(c);
 /* ---------- moving students through a step ---------- */
 function labGlowKeys(){if(!S.lab)return [];const c=crop();const st=labSteps(c);
   if(S.lab.go&&!S.guide){const s=st.find(x=>x.id===S.lab.go);return s?s.keys.filter(k=>blank(k[0])).map(k=>k[0]):[];}
-  return st.filter(s=>!['path','share'].includes(s.id)).flatMap(s=>s.keys.filter(k=>blank(k[0])).map(k=>k[0]));}
+  return st.filter(s=>!['path','share'].includes(s.id)).flatMap(s=>[...s.keys.filter(k=>blank(k[0])).map(k=>k[0]),...(s.needNote?['lab.notes.'+s.id]:[])]);}
 function applyGlow(){$$('.need-glow,.need-wrap,.need-in').forEach(e=>e.classList.remove('need-glow','need-wrap','need-in'));if(!S.lab||S.guide)return;
   const mark=e=>{if(e)e.classList.add('need-glow');};
   const markIn=e=>{e.classList.add('need-in');const p=e.parentElement;if(p&&p.tagName==='SPAN')p.classList.add('need-wrap');else mark(e);};
@@ -1427,14 +1430,19 @@ function applyGlow(){$$('.need-glow,.need-wrap,.need-in').forEach(e=>e.classList
       const card=e.closest('.card'),h=card&&card.querySelector(':scope>.card-h.folded');if(h){mark(card);return;}
       const b=e.closest('.bench.folded');if(b){mark(b.querySelector('.fold-btn'));return;}
       if(e.closest('[hidden]'))return;if(e.tagName==='INPUT'||e.tagName==='TEXTAREA')markIn(e);else mark(e);});});
-  if(S.lab.go&&!S.guide){const g=labGoSteps();if(g&&g.s.go&&!g.s.done)g.s.go.forEach(x=>{if(x.tab===S.tab){const h=$(`[data-a="fold:${x.tab}:${x.sec}"]`);if(h)mark(h.closest('.card'));}});}}
+  if(S.tab==='lab'&&!S.lab.go)labSteps(crop()).forEach(s=>{if(!s.filled&&!s.inline)mark($(`[data-a="labGo:${s.id}"]`));});
+  if(S.lab.go&&!S.guide){const g=labGoSteps();if(g&&g.s.go&&!g.s.filled)g.s.go.forEach(x=>{if(x.tab===S.tab){const h=$(`[data-a="fold:${x.tab}:${x.sec}"]`);if(h)mark(h.closest('.card'));}});}}
 function scrollToGlow(){const e=$('.need-in,.need-glow');if(e)e.scrollIntoView({block:'center',behavior:'smooth'});}
 function labOpenFor(list,tab){list.forEach(x=>{if(x.tab===tab){OPEN[x.tab+':'+x.sec]=true;if(x.key)openFor(x.tab,x.key);}});}
 function labGoto(list){const t0=list[0].tab;S.tab=t0;labOpenFor(list,t0);save();render();window.scrollTo(0,0);setTimeout(scrollToGlow,140);}
-function labFinish(s,quiet){S.lab.go=null;S.lab.back=false;S.tab='lab';const st=labSteps(crop()),nx=st.find(x=>!x.done);
-  Object.keys(OPEN).forEach(k=>{if(k.startsWith('lab:'))delete OPEN[k];});save();render();window.scrollTo(0,0);
+function labFinish(s,quiet){S.lab.go=null;S.lab.back=false;S.tab='lab';const st=labSteps(crop()),me=st.find(x=>x.id===s.id),nx=st.find(x=>!x.done);
+  Object.keys(OPEN).forEach(k=>{if(k.startsWith('lab:'))delete OPEN[k];});
+  if(me&&me.needNote){OPEN['lab:'+me.id]=true;save();render();window.scrollTo(0,0);if(!quiet)toast('Numbers are in. Now add your sources and notes.');
+    setTimeout(()=>{const e=$(`[data-k="lab.notes.${me.id}"]`);if(e)e.scrollIntoView({block:'center',behavior:'smooth'});},140);return;}
+  if(nx)OPEN['lab:'+nx.id]=true;save();render();window.scrollTo(0,0);
   if(!quiet)toast(nx?`Step ${s.n} done. Next: step ${nx.n}.`:`Step ${s.n} done. Every step is finished.`);
-  setTimeout(()=>{const e=$('#ls-'+(nx?nx.id:s.id));if(e)e.scrollIntoView({block:'start',behavior:'smooth'});},120);}
+  setTimeout(()=>{const e=$('#ls-'+(nx?nx.id:s.id));if(e)e.scrollIntoView({block:'start',behavior:'smooth'});},140);}
+function labNoteDone(id){const st=labSteps(crop()),me=st.find(x=>x.id===id);if(!me||!me.done||S.tab!=='lab')return false;labFinish(me);return true;}
 let advT;function labAdvance(){clearTimeout(advT);advT=setTimeout(()=>{if(!S.lab||!S.lab.go||S.guide)return;
   const a=document.activeElement;if(a&&a.dataset&&a.dataset.k&&labGlowKeys().includes(a.dataset.k))return;   // still typing in a needed field
   const g=labGoSteps();if(!g||g.s.go)return;
@@ -1583,6 +1591,7 @@ document.addEventListener('change',e=>{const t=e.target;
   if(t.tagName==='SELECT'&&/^shop\.supplies\.\d+\.unit$/.test(t.dataset.k||'')){set(t.dataset.k,t.value);save();render();return;}
   if(t.tagName==='SELECT'&&t.dataset.k){set(t.dataset.k,t.value);save();refresh();}
   if(t.dataset&&t.dataset.k)labAdvance();
+  if(t.dataset&&t.dataset.k&&t.dataset.k.startsWith('lab.notes.')&&t.value.trim()&&labNoteDone(t.dataset.k.slice(10)))return;
   if(S.tab==='lab'&&t.dataset&&t.dataset.k&&(t.tagName==='INPUT'||t.tagName==='TEXTAREA')){const y=window.scrollY;render();window.scrollTo(0,y);return;}
   if(t.dataset&&t.dataset.k==='c.price'&&t.type==='text'){const v=num(t.value);if(!isNaN(v)){crop().price=v.toFixed(2);save();}closePriceEdit();}
   if(t.id==='fileIn'&&t.files&&t.files[0])restore(t.files[0]);});
