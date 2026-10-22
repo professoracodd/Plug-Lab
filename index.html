@@ -1,0 +1,1646 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0b1b36">
+<title>Plug Lab · Propagation Business Assignment</title>
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icon-180.png">
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Plug Lab">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=block" rel="stylesheet">
+<style>
+:root{
+  --primary:#c4b5fd;--on-primary:#000000;--primary-container:#c4b5fd;--primary-fixed:#1a1730;--primary-fixed-dim:#c4b5fd;
+  --secondary:#f9a8d4;--secondary-container:#1f1119;
+  --surface:#000000;--sc-lowest:#0a0a0c;--sc-low:#111114;--sc:#16161a;--sc-high:#1d1d22;--sc-highest:#2c2c33;
+  --on-surface:#ffffff;--on-sv:#a1a1aa;--outline:#52525b;--outline-v:#27272a;--error:#fca5a5;
+  --grad:linear-gradient(90deg,#c4b5fd 0%,#f9a8d4 30%,#fdba74 55%,#86efac 78%,var(--acc) 100%);
+  --page:#000000;--hero-bg:#0a0a0c;--bar-bg:rgba(0,0,0,.72);--glass:rgba(255,255,255,.02);--tint:rgba(196,181,253,.1);--line:rgba(255,255,255,.09);--muted-2:rgba(161,161,170,.75);
+  --pink:rgba(249,168,212,.05);--pink-ink:#f9a8d4;--pink-line:rgba(249,168,212,.5);
+  --mint:rgba(134,239,172,.05);--mint-ink:#86efac;--mint-line:rgba(134,239,172,.5);
+  --butter:rgba(253,230,138,.05);--butter-ink:#fde68a;--butter-line:rgba(253,230,138,.5);
+  --sky:rgb(var(--acc-rgb) / .05);--sky-ink:var(--acc);--sky-line:rgb(var(--acc-rgb) / .5);
+  --lav:rgba(196,181,253,.06);--lav-ink:#c4b5fd;--lav-line:rgba(196,181,253,.5);
+  --peach:rgba(253,186,116,.05);--peach-ink:#fdba74;--peach-line:rgba(253,186,116,.5);
+  --good:#86efac;--good-bg:rgba(134,239,172,.07);--bad-bg:rgba(252,165,165,.08);--scrim:rgba(0,0,0,.7);
+  --shadow-sm:none;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0;width:100%;background:var(--surface);color:var(--on-surface)}
+body{background:var(--page) fixed;font:400 16px/22px Inter,-apple-system,system-ui,sans-serif;letter-spacing:-.011em;-webkit-font-smoothing:antialiased;-webkit-tap-highlight-color:transparent;overscroll-behavior-y:none;min-height:100vh}
+button,input,select,textarea{font:inherit;color:inherit;letter-spacing:inherit}
+button{background:none;border:0;padding:0;margin:0;cursor:pointer;text-align:inherit}
+::-webkit-scrollbar{display:none}
+p{margin:0}
+
+/* icons */
+.ms{font-family:'Material Symbols Outlined';font-weight:normal;font-style:normal;font-size:20px;line-height:1;width:1em;height:1em;overflow:hidden;letter-spacing:normal;text-transform:none;display:inline-block;white-space:nowrap;direction:ltr;font-feature-settings:'liga';-webkit-font-feature-settings:'liga';font-variation-settings:'FILL' 0,'wght' 400,'GRAD' 0,'opsz' 24;user-select:none;flex:none}
+html:not(.icons-ok) .ms{visibility:hidden}
+html.no-icons .ms{display:none}
+.ms.sm{font-size:16px}.ms.xs{font-size:14px}.ms.pri{color:var(--primary)}
+
+/* type */
+.caps{font-size:11px;line-height:14px;letter-spacing:.06em;font-weight:600;text-transform:uppercase}
+.foot{font-size:13px;line-height:18px;letter-spacing:-.003em}
+.callout{font-size:15px;line-height:20px;letter-spacing:-.009em}
+.bodyE{font-size:16px;line-height:22px;font-weight:600}
+.bodyE.sm{font-size:13px;line-height:17px}
+.title{font-size:17px;line-height:22px;font-weight:600;letter-spacing:-.016em;margin:0}
+.metric{font-size:28px;line-height:32px;font-weight:700;letter-spacing:-.025em}
+.b{font-weight:700}.muted{color:var(--on-sv)}.pri{color:var(--primary)}
+.num{font-variant-numeric:tabular-nums}
+.blk{display:block}
+.tiny{font-size:10px;line-height:13px;color:var(--muted-2);margin-top:2px;font-weight:500}
+.neg{color:var(--error)!important}
+.flex{display:flex;align-items:center;gap:4px}
+.empty{padding:8px 0}
+
+/* header */
+header.top{position:fixed;top:0;left:0;right:0;z-index:50;background:var(--bar-bg);-webkit-backdrop-filter:blur(24px);backdrop-filter:blur(24px);padding-top:env(safe-area-inset-top,0px);box-shadow:0 1px 0 var(--line)}
+.top-in{height:56px;padding:0 16px;display:flex;align-items:center;justify-content:space-between;position:relative;max-width:720px;margin:0 auto}
+.brand{display:flex;align-items:center;gap:6px;z-index:1}
+.logo{width:32px;height:32px;border-radius:10px;background:#0a0a0c;color:#fff;display:grid;place-items:center;box-shadow:inset 0 0 0 1px var(--lav-line)}
+.logo .ms{font-size:19px}
+.brand-name{font-size:20px;line-height:25px;font-weight:800;letter-spacing:-.02em;background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+.top-title{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;pointer-events:none;font-size:17px;line-height:22px;font-weight:600;letter-spacing:-.016em}
+.top-act{display:flex;align-items:center;gap:4px;z-index:1}
+.icon-btn{width:44px;height:44px;border-radius:50%;display:grid;place-items:center;color:var(--on-sv);transition:color .15s}
+.icon-btn:hover{color:var(--primary)}
+.icon-btn .ms{font-size:22px}
+.avatar{width:32px;height:32px;border-radius:50%;background:#fff;color:#000;display:grid;place-items:center;transition:transform .1s}
+.avatar:active{transform:scale(.92)}
+.avatar .ms{font-size:18px}
+
+/* layout */
+main{padding:calc(56px + env(safe-area-inset-top,0px) + 4px) 0 calc(96px + env(safe-area-inset-bottom,0px))}
+#main{max-width:720px;margin:0 auto;padding:0 16px;display:flex;flex-direction:column;gap:16px}
+
+/* crop picker */
+.crop-pick{display:flex;gap:8px;align-items:center}
+.cp-sel{flex:1;min-width:0;position:relative;display:block}
+.cp-sel .ms{position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--acc2);pointer-events:none;font-size:20px}
+.cp-sel select{text-align:left;text-align-last:left;padding:11px 34px 11px 40px;font-weight:600;font-size:16px;border-radius:12px;background-color:var(--sc-low);border-color:rgb(var(--acc-rgb) / .4);text-overflow:ellipsis}
+.cp-add{width:46px;height:46px;flex:none;border-radius:12px;display:grid;place-items:center;background:var(--sc-low);border:1px solid rgb(var(--acc-rgb) / .4);color:#fff}
+.cp-add .ms{font-size:24px}
+.cp-sel select.beacon,#cropSel.beacon{border-color:var(--glow)!important}
+.pre-pick{padding:12px;display:flex;flex-direction:column;gap:10px}
+.pre-pick .chip{align-self:flex-start}
+/* pills + capsule */
+.pills{display:flex;align-items:center;gap:4px;overflow-x:auto;margin:0 -16px;padding:4px 16px;scrollbar-width:none}
+.pill{flex:none;display:flex;align-items:center;gap:6px;padding:6px 14px;border-radius:999px;background:var(--glass);border:1px solid var(--line);color:var(--on-sv);font-size:11px;line-height:14px;letter-spacing:.06em;font-weight:600;text-transform:uppercase;transition:transform .1s,background .15s;max-width:240px}
+.pill .t{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.pill:hover{border-color:var(--lav-line);color:var(--lav-ink)}
+.pill:active{transform:scale(.95)}
+.pill.on{background:#fff;color:#000;border-color:#fff}
+.pill .ms{font-size:15px}
+.pill.add{padding:5px 9px}
+.pill.add .ms{font-size:16px}
+.capsule{margin-top:10px;background:var(--glass);border:1px solid var(--line);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);border-radius:12px;padding:8px 12px;display:flex;align-items:center;justify-content:space-between;gap:10px;box-shadow:var(--shadow-sm);font-size:13px;line-height:18px;color:var(--on-sv)}
+.capsule.first{margin-top:4px}
+.capsule b{color:var(--on-surface);font-weight:600}
+.cap-l,.cap-r{display:flex;align-items:center;gap:6px;min-width:0}
+.cap-l span:last-child,.cap-r span:last-child{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.capsule .ms{font-size:18px}
+.vr{width:1px;height:14px;background:var(--line);flex:none}
+
+/* cards */
+.card{background:var(--sc-lowest);border-radius:18px;padding:16px;border:1px solid var(--line)}
+.card-h{display:flex;align-items:center;justify-content:space-between;gap:10px;padding-bottom:4px;margin-bottom:4px}
+.card-h p{margin-top:2px}
+.hero{display:flex;flex-direction:column;gap:16px;position:relative;overflow:hidden}
+.card.hero{background:var(--hero-bg)}
+.hero::before{content:"";position:absolute;inset:0 0 auto 0;height:2px;background:var(--grad);opacity:.9}
+.hero-top{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.hero-l{display:flex;flex-direction:column;min-width:0}
+.metric-row{display:flex;align-items:baseline;gap:8px;margin-top:2px;white-space:nowrap}
+.stepper{display:flex;align-items:center;background:transparent;border:1px solid var(--line);padding:4px;border-radius:12px;box-shadow:inset 0 2px 4px rgba(0,0,0,.05);gap:4px;flex:none}
+.stepper button{width:36px;height:36px;border-radius:8px;background:var(--sc);color:#fff;display:grid;place-items:center;box-shadow:var(--shadow-sm);transition:transform .1s}
+.stepper button:active{transform:scale(.9)}
+.stepper .ms{font-size:18px}
+.badge-wrap{padding:4px 6px;min-width:58px;text-align:center}
+.badge{display:inline-block;font-size:11px;line-height:14px;letter-spacing:.06em;font-weight:700;text-transform:uppercase;color:var(--lav-ink);background:transparent;box-shadow:inset 0 0 0 1px var(--lav-line);padding:2px 8px;border-radius:999px;white-space:nowrap}
+.badge.soft{font-weight:600;padding:2px 6px;border-radius:4px;background:var(--sc-high);color:var(--on-sv);text-transform:none;letter-spacing:.02em}
+.badge.soft.hi{background:var(--tint);color:var(--primary)}
+.slider{display:flex;flex-direction:column;gap:6px}
+.slider-lab{display:flex;justify-content:space-between;align-items:center;gap:8px;color:var(--on-sv)}
+.glow{display:inline-block;background:var(--good-bg);box-shadow:inset 0 0 0 1px var(--mint-line);color:var(--good)!important;border-radius:999px;padding:3px 10px;font-weight:700;white-space:nowrap;animation:glow 2.2s ease-in-out infinite}
+.badge.glow{text-transform:none;letter-spacing:.02em;padding:3px 8px}
+.glow.neg{background:var(--bad-bg);box-shadow:inset 0 0 0 1px rgba(252,165,165,.5)!important;color:var(--error)!important;animation:none;box-shadow:none}
+@keyframes glow{0%,100%{box-shadow:inset 0 0 0 1px rgba(134,239,172,.5),0 0 4px rgba(134,239,172,.15)}50%{box-shadow:inset 0 0 0 1px rgba(134,239,172,.9),0 0 16px rgba(134,239,172,.45)}}
+@media (prefers-reduced-motion:reduce){.glow{animation:none;box-shadow:inset 0 0 0 1px rgba(134,239,172,.8),0 0 10px rgba(134,239,172,.3)}}
+.range{width:100%;height:28px;accent-color:var(--primary);cursor:pointer;margin:0;padding:0;background:none;border:0}
+.seg-row{display:flex;align-items:center;justify-content:space-between;gap:8px 10px;flex-wrap:wrap;padding-top:4px}
+.seg{background:var(--sc-low);border:1px solid var(--line);padding:4px;border-radius:12px;display:flex;gap:4px}
+.seg button{padding:4px 12px;border-radius:8px;font-size:11px;line-height:14px;letter-spacing:.06em;font-weight:600;text-transform:uppercase;color:var(--on-sv);display:flex;align-items:center;gap:4px;transition:all .15s;white-space:nowrap}
+.seg button.on{background:var(--sc-high);color:#fff;box-shadow:inset 0 0 0 1px var(--lav-line)}
+.seg i{width:6px;height:6px;border-radius:50%;background:var(--lav-ink);display:inline-block}
+.hero-pf{align-self:flex-start;margin-top:10px}
+.seg.full{width:100%}
+.seg.full button{flex:1;justify-content:center}
+.pay{color:var(--good)}
+.panel{border-radius:14px;padding:10px 12px 12px;display:flex;flex-direction:column;gap:8px}
+.panel.buy{background:var(--peach);box-shadow:inset 0 0 0 1px var(--peach-line)}
+.panel.use{background:var(--lav);box-shadow:inset 0 0 0 1px var(--lav-line)}
+.panel-h{display:flex;align-items:center;gap:6px;font-size:11px;line-height:14px;letter-spacing:.06em;font-weight:700;text-transform:uppercase}
+.panel.buy .panel-h,.panel.buy .fld>.caps{color:var(--peach-ink)}
+.panel.use .panel-h,.panel.use .fld>.caps{color:var(--lav-ink)}
+.panel .fld>.caps{opacity:.8}
+.panel-g{display:grid;grid-template-columns:1.15fr .85fr 1fr;gap:8px}
+.panel.use .panel-g{grid-template-columns:repeat(2,minmax(0,1fr))}
+.panel.use .panel-g .fld:nth-child(3){grid-column:1/-1}
+.panel input,.panel select{background-color:var(--sc-lowest);padding:8px 10px}
+.panel select{padding-right:26px;background-position:right 8px center}
+.panel.buy input,.panel.buy select{border-color:var(--peach-line)}
+.panel.use input{border-color:var(--lav-line)}
+.panel.buy input:focus,.panel.buy select:focus{border-color:var(--peach-ink);box-shadow:0 0 0 3px rgba(253,186,116,.16)}
+.panel.use input:focus{border-color:var(--lav-ink);box-shadow:0 0 0 3px rgba(196,181,253,.16)}
+.panel .pre i{left:10px}.panel .pre input{padding-left:21px}
+.panel .auto-hint:empty{display:none}
+.sub2{display:flex;gap:6px;min-width:0;white-space:nowrap;overflow:hidden}
+.sub2 .sep{color:var(--on-sv)}
+.sub2 .m-buy{overflow:hidden;text-overflow:ellipsis}
+.m-use{color:var(--lav-ink)}.m-buy{color:var(--peach-ink)}
+.legend{display:flex;gap:12px;flex-wrap:wrap}
+.legend span{display:inline-flex;align-items:center;gap:5px}
+.legend i{width:8px;height:8px;border-radius:3px;background:currentColor;opacity:.85}
+.auto-hint{color:var(--good)}
+.auto-hint.neg{color:var(--on-sv)!important}
+.tot-line{display:flex;justify-content:space-between;align-items:center;padding:12px 0 0;margin-top:4px;border-top:1px solid var(--line)}
+.tot-line b{font-size:17px}
+.time-card{padding:12px 16px;display:flex;flex-direction:column;gap:4px}
+.time-top{display:flex;align-items:center;gap:10px}
+.time-ic{width:30px;height:30px;border-radius:9px;display:grid;place-items:center;flex:none}
+.time-l{display:flex;flex-direction:column;flex:1;min-width:0}
+.time-v{font-size:20px;line-height:24px;font-weight:700;letter-spacing:-.02em;white-space:nowrap}
+.range.sm{height:22px}
+.mini-stat{background:var(--sc-low);border-radius:12px;padding:8px 12px;text-align:right;display:flex;flex-direction:column;gap:2px;flex:none}
+
+/* pastel tones */
+.tn-pink{background:var(--pink)!important;color:var(--pink-ink)!important;box-shadow:inset 0 0 0 1px var(--pink-line)!important}
+.tn-mint{background:var(--mint)!important;color:var(--mint-ink)!important;box-shadow:inset 0 0 0 1px var(--mint-line)!important}
+.tn-butter{background:var(--butter)!important;color:var(--butter-ink)!important;box-shadow:inset 0 0 0 1px var(--butter-line)!important}
+.tn-sky{background:var(--sky)!important;color:var(--sky-ink)!important;box-shadow:inset 0 0 0 1px var(--sky-line)!important}
+.tn-lav{background:var(--lav)!important;color:var(--lav-ink)!important;box-shadow:inset 0 0 0 1px var(--lav-line)!important}
+.tn-peach{background:var(--peach)!important;color:var(--peach-ink)!important;box-shadow:inset 0 0 0 1px var(--peach-line)!important}
+.tile[class*=tn-]{border-color:transparent;box-shadow:none}
+.tile[class*=tn-] .tile-h,.mini-stat[class*=tn-] .caps{color:inherit}
+.tile[class*=tn-] .tile-v,.mini-stat[class*=tn-] .bodyE{color:#fff}
+.tile[class*=tn-] .tiny{color:var(--muted-2)}
+/* tiles */
+.tiles{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.tiles.two{grid-template-columns:repeat(2,minmax(0,1fr))}
+.tiles.in{margin-top:12px}
+.tile{background:var(--sc-lowest);border-radius:14px;padding:12px;box-shadow:var(--shadow-sm);border:1px solid var(--line);display:flex;flex-direction:column;justify-content:space-between;min-width:0}
+.tile.soft{background:var(--sc-low);box-shadow:none;border:0;gap:4px}
+.tile-h{display:flex;align-items:center;gap:4px;color:var(--on-sv);min-width:0}
+.tile-h .caps{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tile-v{margin-top:8px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+
+/* rows */
+.rows>*+*{border-top:1px solid var(--line)}
+.row{width:100%;padding:10px 0;display:flex;align-items:center;justify-content:space-between;gap:12px;text-align:left;user-select:none}
+.row.static{cursor:default}
+.row:not(.static):hover .row-l .bodyE{color:var(--primary)}
+.row.hl .bodyE{color:var(--primary)}
+.row-l{display:flex;align-items:center;gap:12px;min-width:0}
+.row-l>span:last-child{min-width:0}
+.row-l .bodyE,.row-l .foot{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;transition:color .15s,opacity .15s}
+.row-r{text-align:right;flex:none;display:flex;flex-direction:column;align-items:flex-end;gap:3px}
+.chev,.check{width:20px;height:20px;border-radius:6px;background:transparent;box-shadow:inset 0 0 0 1px var(--lav-line);display:grid;place-items:center;color:var(--lav-ink);flex:none;transition:transform .2s,background .15s,color .15s}
+.dot-ic{width:28px;height:28px;border-radius:8px;background:var(--sc);display:grid;place-items:center;color:var(--primary);flex:none;transition:background .15s}
+.dot-ic.on{background:#fff!important;color:#000!important;box-shadow:none!important}
+.item.open .chev{transform:rotate(180deg);background:#fff;color:#000;box-shadow:none}
+.check{color:var(--on-primary)}
+.check .ms{opacity:0}
+.check.on{background:var(--mint-ink);box-shadow:none}
+.check.on .ms{color:#000}
+.check.on .ms{opacity:1}
+.row.done .row-l .bodyE{text-decoration:line-through;opacity:.4}
+.editor{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;padding:2px 0 14px 32px}
+.fld{display:flex;flex-direction:column;gap:4px;min-width:0}
+.fld>.caps{color:var(--on-sv)}
+.wide{grid-column:1/-1}
+.ed-foot{display:flex;align-items:center;justify-content:space-between;gap:8px}
+
+/* inputs */
+input,select,textarea{width:100%;min-width:0;background:var(--sc-low);border:1px solid var(--line);border-radius:10px;padding:9px 11px;font-size:16px;line-height:20px;outline:none;transition:border-color .15s,background .15s,box-shadow .15s}
+input:focus,select:focus,textarea:focus{border-color:var(--primary-fixed-dim);background:var(--sc-lowest);box-shadow:0 0 0 3px var(--tint)}
+input::placeholder,textarea::placeholder{color:var(--muted-2)}
+input[type=number]{-moz-appearance:textfield;appearance:textfield;font-variant-numeric:tabular-nums}
+input::-webkit-outer-spin-button,input::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
+select{appearance:none;-webkit-appearance:none;padding-right:30px;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%239a9aa8' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 11px center}
+textarea{min-height:140px;resize:vertical;line-height:1.5}
+.pre,.suf{position:relative;display:block}
+.pre i,.suf i{position:absolute;top:50%;transform:translateY(-50%);font-style:normal;color:var(--on-sv);pointer-events:none}
+.pre i{left:11px;font-size:15px}
+.pre input{padding-left:23px}
+.suf i{right:11px;font-size:12px}
+.suf input{padding-right:54px}
+
+/* grouped list */
+.glist{background:var(--sc-low);border:1px solid var(--line);border-radius:12px;overflow:hidden}
+.gl-row{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:6px 6px 6px 14px;min-height:50px;cursor:text}
+.gl-row+.gl-row{border-top:1px solid var(--sc-high)}
+.gl-row .callout{min-width:0}
+.gl-in{flex:0 0 132px;position:relative;min-width:0}
+.gl-in.wide-in{flex:0 1 220px}
+.gl-in input{background:var(--sc-lowest);text-align:right;padding:8px 10px}
+.gl-in.pre i{position:absolute;left:10px;top:50%;transform:translateY(-50%);font-style:normal;color:var(--on-sv);font-size:15px;pointer-events:none}
+.btn-row{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap}
+.chip{display:inline-flex;align-items:center;gap:5px;padding:7px 12px;border-radius:999px;background:var(--sc);color:var(--on-sv);font-size:13px;font-weight:500;transition:background .15s}
+.chip:hover{background:var(--sc-high)}
+.chip.danger{color:var(--error)}
+.note{margin:10px 2px 0}
+
+/* sections */
+.sec-h{display:flex;align-items:center;gap:6px;margin:12px 0 0}
+.sec-h.static{margin:12px 0 2px}
+.card-h+.sec-h,.card-h+div>.sec-h:first-child{margin-top:4px}
+.sec-in{flex:1;background:transparent;border-color:transparent;padding:4px 0;border-radius:6px;color:var(--primary);font-size:11px;line-height:14px;letter-spacing:.06em;font-weight:700;text-transform:uppercase}
+.sec-in:focus{padding:4px 8px}
+.link{display:inline-flex;align-items:center;gap:2px;color:var(--primary);font-size:12px;line-height:16px;font-weight:500;white-space:nowrap}
+.link:hover{text-decoration:underline}
+.link:active{opacity:.6}
+.link.danger{color:var(--error)}
+.icon-sm{width:28px;height:28px;border-radius:8px;display:grid;place-items:center;color:var(--on-sv);flex:none}
+.icon-sm:hover{color:var(--error);background:var(--sc-low)}
+
+/* bars */
+.bars{display:flex;flex-direction:column;gap:10px;padding-top:4px}
+.bar-row{display:grid;grid-template-columns:minmax(0,128px) 1fr 54px;gap:10px;align-items:center;font-size:13px;line-height:18px}
+.bar-row .n{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.bar-track{height:6px;background:var(--sc);border-radius:999px;overflow:hidden}
+.bar-fill{height:100%;background:var(--primary-container);border-radius:999px;transition:width .3s}
+.bar-fill.pk{background:#fdba74}
+.bar-row .v{text-align:right;font-weight:600;font-variant-numeric:tabular-nums}
+
+/* tools */
+.tools{display:flex;flex-direction:column;gap:8px}
+.grid2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.tool{background:var(--sc-lowest);padding:12px;border-radius:14px;box-shadow:var(--shadow-sm);border:1px solid var(--line);display:flex;flex-direction:column;align-items:flex-start;gap:2px;transition:transform .1s;text-align:left}
+.tool:active{transform:scale(.98)}
+.tool-ic{width:28px;height:28px;border-radius:8px;background:var(--sc);color:var(--primary);display:grid;place-items:center;margin-bottom:8px}
+.tool-ic.sec{color:var(--secondary)}
+.tool-ic .ms{font-size:18px}
+.master{width:100%;background:#fff;color:#000;border-radius:14px;padding:14px 16px;box-shadow:0 0 28px rgba(196,181,253,.14);display:flex;align-items:center;justify-content:center;gap:8px;font-size:16px;line-height:22px;font-weight:600;letter-spacing:.01em;transition:transform .1s}
+.master:active{transform:scale(.98)}
+
+/* conversions */
+details.conv{margin-top:14px}
+details.conv summary{cursor:pointer;color:var(--on-sv);display:flex;align-items:center;gap:6px;list-style:none}
+details.conv summary::-webkit-details-marker{display:none}
+.conv-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:0 16px;margin-top:8px;font-size:13px;line-height:18px}
+.conv-grid div{display:flex;justify-content:space-between;gap:8px;padding:6px 0;border-bottom:1px solid var(--sc-high)}
+.conv-grid b{font-weight:600;white-space:nowrap}
+
+/* per-tab edge glow */
+body{--tc:249 168 212}
+.edge{position:fixed;inset:0;pointer-events:none;z-index:55;box-shadow:inset 0 0 0 1.5px rgb(var(--tc) / .65),inset 0 0 22px 2px rgb(var(--tc) / .38),inset 0 0 70px 6px rgb(var(--tc) / .12);animation:edgePulse 2.8s ease-in-out infinite}
+@keyframes edgePulse{0%,100%{opacity:.5}50%{opacity:1}}
+@media (prefers-reduced-motion:reduce){.edge{animation:none;opacity:.8}}
+@supports (padding:max(0px)){.edge{border-radius:max(0px,env(safe-area-inset-bottom,0px))}}
+/* tab bar */
+nav.tabbar{position:fixed;left:0;right:0;bottom:0;z-index:50;padding-bottom:env(safe-area-inset-bottom,0px);background:var(--bar-bg);-webkit-backdrop-filter:blur(24px);backdrop-filter:blur(24px);box-shadow:0 -1px 0 var(--line)}
+.tab-in{display:flex;align-items:center;justify-content:space-around;height:64px;padding:0 4px;max-width:720px;margin:0 auto}
+.tab{display:flex;flex-direction:column;align-items:center;justify-content:center;min-width:64px;min-height:44px;gap:2px;color:var(--on-sv);transition:color .15s}
+.tab:hover{color:var(--on-surface)}
+.tab.on{color:rgb(var(--tc))}
+.tab.on .ms{background:rgb(var(--tc) / .08);box-shadow:inset 0 0 0 1px rgb(var(--tc) / .6),0 0 12px rgb(var(--tc) / .25);border-radius:12px;width:52px;height:30px;line-height:30px;text-align:center}
+.tab .ms{font-size:24px}
+.tab.on .ms{font-variation-settings:'FILL' 1,'wght' 400,'GRAD' 0,'opsz' 24}
+
+/* action sheet */
+.scrim{position:fixed;inset:0;background:var(--scrim);z-index:60;opacity:0;pointer-events:none;transition:opacity .2s}
+.scrim.on{opacity:1;pointer-events:auto}
+.sheet{position:fixed;left:0;right:0;bottom:0;z-index:61;max-width:560px;margin:0 auto;background:var(--surface);border-radius:20px 20px 0 0;padding:8px 16px calc(16px + env(safe-area-inset-bottom,0px));transform:translateY(105%);transition:transform .28s cubic-bezier(.2,.8,.2,1);box-shadow:0 -8px 30px rgba(0,0,0,.12);max-height:90vh;overflow-y:auto}
+.sheet.on{transform:none}
+.grab{width:36px;height:5px;border-radius:3px;background:var(--sc-highest);margin:0 auto 12px}
+.sheet h3{font-size:17px;line-height:22px;font-weight:600;letter-spacing:-.016em;text-align:center;margin:0 0 12px}
+.s-cap{padding:0 4px 6px;color:var(--on-sv)}
+.s-group{background:var(--sc-lowest);border-radius:12px;overflow:hidden;margin-bottom:12px;box-shadow:var(--shadow-sm)}
+.s-item{width:100%;display:flex;align-items:center;gap:12px;padding:11px 14px;font-size:15px;line-height:20px;transition:background .15s}
+.s-item+.s-item{border-top:1px solid var(--sc-high)}
+button.s-item:hover{background:var(--sc-low)}
+.s-item .ic{width:30px;height:30px;border-radius:8px;background:var(--sc);color:var(--primary);display:grid;place-items:center;flex:none}
+.s-item .ic .ms{font-size:18px}
+.s-item .txt{flex:1;text-align:left;min-width:0}
+.s-item .txt small{display:block;font-size:12px;line-height:16px;color:var(--on-sv)}
+.s-item.danger,.s-item.danger .ic{color:var(--error)}
+.switch{position:relative;width:46px;height:28px;flex:none}
+.switch input{opacity:0;position:absolute;inset:0;margin:0;padding:0;width:100%;height:100%;cursor:pointer;z-index:1}
+.switch span{position:absolute;inset:0;border-radius:999px;background:var(--sc-highest);transition:background .2s}
+.switch span::after{content:'';position:absolute;top:3px;left:3px;width:22px;height:22px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.2);transition:transform .2s}
+.switch input:checked+span{background:var(--lav-ink)}
+.switch input:checked+span::after{transform:translateX(18px)}
+.switch input:focus-visible+span{box-shadow:0 0 0 3px var(--tint)}
+.cancel{width:100%;padding:13px;border-radius:12px;background:var(--sc-lowest);font-weight:600;color:var(--primary);box-shadow:var(--shadow-sm);text-align:center}
+
+.resume{position:fixed;left:50%;top:calc(64px + env(safe-area-inset-top,0px));transform:translateX(-50%);z-index:60;display:flex;align-items:center;gap:10px;padding:8px 8px 8px 14px;border-radius:14px;background:var(--sc-lowest);box-shadow:inset 0 0 0 1px var(--butter-line),0 10px 30px rgba(0,0,0,.5);color:var(--on-surface);font-size:14px;max-width:calc(100% - 32px)}
+.resume[hidden]{display:none}
+.resume>.ms{color:var(--butter-ink);font-size:18px}
+.resume .txt{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.resume button{padding:6px 12px;border-radius:9px;background:#fff;color:#000;font-weight:600;font-size:13px}
+.resume button.x{background:transparent;color:var(--on-sv);padding:4px;display:grid;place-items:center}
+.resume button.x .ms{font-size:18px}
+.toast{position:fixed;left:50%;bottom:calc(84px + env(safe-area-inset-bottom,0px));transform:translateX(-50%) translateY(12px);background:var(--on-surface);color:var(--surface);padding:10px 16px;border-radius:12px;font-size:14px;font-weight:600;opacity:0;pointer-events:none;transition:all .25s;z-index:70;max-width:calc(100% - 32px);text-align:center}
+.toast.on{opacity:1;transform:translateX(-50%) translateY(0)}
+
+:focus-visible{outline:2px solid var(--primary);outline-offset:2px}
+.top-act{gap:0}
+input:focus-visible,select:focus-visible,textarea:focus-visible{outline:none}
+
+@media (min-width:640px){
+  .editor{grid-template-columns:repeat(4,minmax(0,1fr))}
+  .gl-in{flex-basis:160px}
+}
+@media (max-width:380px){
+  .seg button{padding:4px 8px}
+  .metric{font-size:24px;line-height:28px}
+  .badge-wrap{min-width:50px;padding:4px 2px}
+  .tile{padding:10px}
+  .editor{padding-left:0}
+}
+
+/* print fallback */
+#printArea{display:none}
+@media print{
+  body{background:#fff;color:#000}
+  header.top,main,nav.tabbar,.scrim,.sheet,.toast{display:none!important}
+  #printArea{display:block;font:11pt/1.45 Arial,sans-serif}
+  #printArea .pg{page-break-after:always}
+  #printArea h1{font-size:22pt;margin:0 0 4pt}
+  #printArea .meta{color:#555;margin-bottom:12pt;font-size:9.5pt}
+  #printArea table{width:100%;border-collapse:collapse;margin:6pt 0 14pt;font-size:9.5pt}
+  #printArea th{background:#111114;color:#fff;text-align:left;padding:5pt}
+  #printArea td{border-bottom:1px solid #ddd;padding:5pt}
+  #printArea td.sec{background:#f5f5f7;font-weight:bold;color:#111114}
+  #printArea h3{font-size:13pt;margin:10pt 0 4pt}
+  #printArea .notes{white-space:pre-wrap;font-size:10pt}
+}
+
+/* ---------- Plug additions ---------- */
+body[data-tab=price]{--tc:249 168 212}
+.tab{min-width:56px}
+.sum-row{display:grid;grid-template-columns:minmax(0,1fr) 112px 96px;gap:8px;align-items:baseline;padding:9px 0;font-size:14px;line-height:19px}
+.sum-row+.sum-row{border-top:1px solid var(--line)}
+.sum-row>span:first-child{color:var(--on-sv)}
+.sum-row b,.sum-row .caps{text-align:right;font-weight:600}
+.sum-h{padding-top:2px}
+.sum-h .caps{color:var(--on-sv)}
+.sum-row.tot>span:first-child{color:var(--on-surface);font-weight:600}
+.sum-row.tot b{font-size:17px;font-weight:700}
+.kv .link{font-size:13px;margin-left:6px}
+.fgrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:8px}
+.fgrid.three{grid-template-columns:repeat(3,minmax(0,1fr))}
+@media (max-width:420px){.fgrid.three{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.fld .tiny{margin-top:0}
+.suf input{padding-right:46px}
+.suf i{font-size:12px;letter-spacing:0}
+input.need{border-color:var(--butter-line);background:var(--butter)}
+input.need:focus{border-color:var(--butter-ink);box-shadow:0 0 0 3px rgba(253,230,138,.16)}
+input.flash{animation:flash 1.4s ease 2}
+@keyframes flash{50%{box-shadow:0 0 0 4px rgba(253,230,138,.45);border-color:var(--butter-ink)}}
+.calc-line{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-top:12px;padding:10px 12px;border-radius:12px;background:var(--sc-low);border:1px solid var(--line);font-size:13px;line-height:18px;color:var(--on-sv)}
+.calc-line b{color:var(--good);font-size:15px;font-weight:700;font-variant-numeric:tabular-nums;white-space:nowrap}
+.calc-line b.dim{color:var(--on-sv);font-weight:600}
+.qchips{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+.qchip{padding:5px 11px;border-radius:999px;border:1px solid var(--line);font-size:12px;line-height:16px;font-weight:600;color:var(--on-sv);font-variant-numeric:tabular-nums;transition:all .15s}
+.qchip.on{background:#fff;color:#000;border-color:#fff}
+.qchip:active{transform:scale(.95)}
+.sec-note{margin-top:8px;color:var(--on-sv)}
+.card-ic{width:30px;height:30px;border-radius:9px;display:grid;place-items:center;flex:none}
+.card-ic .ms{font-size:18px}
+.card-t{display:flex;align-items:center;gap:10px;min-width:0}
+.price-in{display:none;max-width:150px}
+.price-in input{font-size:24px;line-height:30px;font-weight:700;padding:6px 10px 6px 24px}
+.price-in.on{display:block}
+.metric-btn{display:flex;align-items:baseline;gap:6px}
+.metric-btn .ms{font-size:16px;color:var(--on-sv);align-self:center}
+.metric-btn.off{display:none}
+.slider-ends{display:flex;justify-content:space-between;color:var(--muted-2);font-size:11px;font-variant-numeric:tabular-nums;margin-top:-2px}
+.sugg{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 12px;border-radius:12px;background:var(--lav);box-shadow:inset 0 0 0 1px var(--lav-line);font-size:13px;line-height:18px}
+.sugg b{color:var(--lav-ink)}
+.sugg button{padding:6px 12px;border-radius:9px;background:#fff;color:#000;font-weight:600;font-size:13px;flex:none}
+.sugg[hidden]{display:none}
+.miss-wrap{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+.mchip{display:inline-flex;align-items:center;gap:5px;padding:6px 10px;border-radius:999px;background:var(--butter);color:var(--butter-ink);box-shadow:inset 0 0 0 1px var(--butter-line);font-size:12px;line-height:16px;font-weight:600}
+.mchip .ms{font-size:14px}
+.mchip:active{transform:scale(.96)}
+.miss-card{border-color:var(--butter-line)}
+.bar-fill.c-mint{background:#86efac}.bar-fill.c-lav{background:#c4b5fd}.bar-fill.c-peach{background:#fdba74}
+.bar-fill.c-sky{background:var(--acc)}.bar-fill.c-pink{background:#f9a8d4}.bar-fill.c-butter{background:#fde68a}.bar-fill.c-gray{background:#a1a1aa}
+.bar-row{grid-template-columns:minmax(0,140px) 1fr 62px}
+.bar-row .v.dash{color:var(--muted-2);font-weight:500}
+.kv{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:9px 0;font-size:14px;line-height:19px}
+.kv+.kv{border-top:1px solid var(--line)}
+.kv span:first-child{color:var(--on-sv);display:flex;align-items:center;gap:8px;min-width:0}
+.kv>span:first-child{white-space:nowrap;flex:none}
+.kv b{font-weight:600;font-variant-numeric:tabular-nums;text-align:right}
+.kv .ms{font-size:18px}
+.cost-row{display:grid;grid-template-columns:minmax(0,1fr) 116px 32px;gap:8px;align-items:center}
+.cost-row+.cost-row{margin-top:8px}
+.cost-row input{padding:8px 10px}
+.cost-row .pre i{left:10px}.cost-row .pre input{padding-left:21px}
+.h-row{display:grid;grid-template-columns:minmax(0,1fr) 92px 92px 32px;gap:8px;align-items:end}
+.h-row+.h-row{margin-top:10px}
+.h-row input{padding:8px 10px}
+.h-row .pre i{left:10px}.h-row .pre input{padding-left:21px}
+.sw-row{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:4px}
+.date-in{color-scheme:dark}
+.howto h4{font-size:15px;line-height:20px;font-weight:700;margin:14px 0 4px}
+.howto p{font-size:14px;line-height:20px;color:var(--on-sv)}
+.howto .f{font-size:13px;line-height:19px;background:var(--sc-low);border:1px solid var(--line);border-radius:10px;padding:8px 10px;margin-top:6px;color:var(--on-surface);font-variant-numeric:tabular-nums}
+.empty-note{padding:6px 0 2px;color:var(--on-sv)}
+.tn-gray{background:rgba(161,161,170,.06)!important;color:#d4d4d8!important;box-shadow:inset 0 0 0 1px rgba(161,161,170,.45)!important}
+[data-r=plan],[data-r=miss]{display:flex;flex-direction:column;gap:16px}
+[data-r=miss]:empty{display:none}
+.kv b small{display:block;font-size:12px;line-height:16px;font-weight:500;color:var(--on-sv)}
+.bench{margin-top:12px;padding:10px 12px 12px;border-radius:14px;background:var(--sc-low);border:1px solid var(--line)}
+.bench .fgrid{margin-top:6px}
+.bench-top{display:flex;align-items:center;gap:10px}
+.bench-sp{flex:1}
+.fit-line{margin-top:8px;color:var(--good);font-weight:600}
+.fit-line:empty{display:none}
+.big-in input{font-size:22px;line-height:28px;font-weight:700;padding:8px 12px}
+
+/* ---------- dark blue theme ---------- */
+:root{
+  --primary:var(--acc);--primary-container:var(--acc);--primary-fixed-dim:var(--acc);--secondary:var(--acc2);
+  --surface:#0b1b36;--page:#0b1b36;--hero-bg:var(--sc-lowest);--sc-lowest:var(--sc-lowest);--sc-low:#162f5a;--sc:#1c3a6c;--sc-high:#24477f;--sc-highest:#2e5592;
+  --on-surface:#ffffff;--on-sv:#d3def2;--muted-2:rgba(211,222,242,.72);--outline:#4a6a9e;--outline-v:#24477f;
+  --line:rgba(170,200,255,.16);--bar-bg:rgba(11,27,54,.86);--glass:rgba(255,255,255,.05);--tint:rgb(var(--acc-rgb) / .2);
+  --grad:linear-gradient(90deg,var(--accs),var(--acc),#e0f2fe);
+  --pink:rgb(var(--acc-rgb) / .08);--pink-ink:var(--acc2);--pink-line:rgb(var(--acc-rgb) / .45);
+  --mint:rgb(var(--acc-rgb) / .08);--mint-ink:var(--acc2);--mint-line:rgb(var(--acc-rgb) / .45);
+  --butter:rgb(var(--acc-rgb) / .08);--butter-ink:var(--acc2);--butter-line:rgb(var(--acc-rgb) / .45);
+  --sky:rgb(var(--acc-rgb) / .08);--sky-ink:var(--acc2);--sky-line:rgb(var(--acc-rgb) / .45);
+  --lav:rgb(var(--acc-rgb) / .08);--lav-ink:var(--acc2);--lav-line:rgb(var(--acc-rgb) / .45);
+  --peach:rgb(var(--acc-rgb) / .08);--peach-ink:var(--acc2);--peach-line:rgb(var(--acc-rgb) / .45);
+  --good:#4ade80;--good-bg:rgba(74,222,128,.1);--error:#f87171;--bad-bg:rgba(248,113,113,.1);--scrim:rgba(4,12,26,.72);
+}
+body,body[data-tab=price]{--tc:96 165 250}
+html,body{background:var(--page)}
+.brand-name{background:none;-webkit-background-clip:border-box;background-clip:border-box;color:#fff}
+.logo{background:var(--sc);box-shadow:inset 0 0 0 1.5px #7aa2dc;width:34px;height:34px;border-radius:10px}
+.logo-svg{width:20px;height:26px;display:block}
+.tn-gray{background:rgb(var(--acc-rgb) / .08)!important;color:var(--acc2)!important;box-shadow:inset 0 0 0 1px rgb(var(--acc-rgb) / .45)!important}
+.card{box-shadow:0 1px 0 rgba(255,255,255,.03) inset}
+.pill.on,.qchip.on{background:#fff;color:#0b1b36;border-color:#fff}
+.switch input:checked+span{background:var(--accs)}
+.range{accent-color:var(--accs)}
+.calc-line b{color:#fff;white-space:normal;text-align:right}
+.calc-line b.neg{color:var(--error)!important}
+.fit-line{color:var(--acc2)}
+.cost{color:var(--error)!important}
+.pos{color:var(--good)!important}
+.sum-row.costs b{color:var(--error)}
+.sum-row.mine>span:first-child{color:var(--on-surface)}
+.sum-row.profit b:not(.neg){color:var(--good)}
+.bar-fill[class*="c-"]{background:#f87171}
+.bar-row .v:not(.dash){color:var(--error)}
+.edge{box-shadow:inset 0 0 0 1.5px rgb(var(--tc) / .55),inset 0 0 22px 2px rgb(var(--tc) / .3),inset 0 0 70px 6px rgb(var(--tc) / .1)}
+input.need{border-color:rgb(var(--acc-rgb) / .6);background:rgb(var(--acc-rgb) / .1)}
+.mchip{background:rgb(var(--acc-rgb) / .1);color:var(--acc2);box-shadow:inset 0 0 0 1px rgb(var(--acc-rgb) / .5)}
+.sugg b{color:var(--acc2)}
+.master,.tour-btn,.resume button,.sugg button{color:#0b1b36}
+/* guide lights */
+@keyframes beacon{0%,100%{box-shadow:0 0 0 2px rgb(var(--glow-rgb) / .95),0 0 10px 3px rgb(var(--glow-rgb) / .45)}50%{box-shadow:0 0 0 3px var(--acc2),0 0 26px 10px rgb(var(--glow-rgb) / .6)}}
+.beacon{animation:beacon 1.3s ease-in-out infinite!important;position:relative;z-index:2}
+input.beacon,select.beacon{border-color:var(--glow)!important}
+.card.beacon{border-color:var(--glow)}
+.tab.beacon{animation:none!important}
+.tab.beacon .ms{animation:beacon 1.3s ease-in-out infinite;border-radius:12px;width:52px;height:30px;line-height:30px;text-align:center;color:var(--acc2)}
+.pill.beacon{border-color:var(--glow)}
+.guide{position:fixed;left:50%;transform:translateX(-50%);top:calc(64px + env(safe-area-inset-top,0px));z-index:58;display:flex;align-items:center;gap:10px;padding:8px 8px 8px 12px;border-radius:14px;background:var(--sc-lowest);box-shadow:inset 0 0 0 1px rgb(var(--glow-rgb) / .6),0 10px 30px rgba(0,0,0,.45);width:min(560px,calc(100% - 32px))}
+.guide[hidden]{display:none}
+.g-dot{width:10px;height:10px;border-radius:50%;background:var(--glow);flex:none;animation:beacon 1.3s ease-in-out infinite}
+.g-txt{flex:1;min-width:0;font-size:14px;line-height:18px}
+.g-txt small{display:block;color:var(--on-sv);font-size:12px;line-height:16px}
+.guide button{padding:6px 12px;border-radius:9px;background:transparent;color:var(--on-sv);font-weight:600;font-size:13px;box-shadow:inset 0 0 0 1px var(--line)}
+body.guiding main{padding-top:calc(56px + env(safe-area-inset-top,0px) + 70px)}
+.alert{display:flex;gap:10px;align-items:flex-start;padding:12px 14px;border-radius:14px;font-size:14px;line-height:20px}
+.alert .ms{font-size:20px;flex:none;margin-top:1px}
+.alert.bad{background:rgba(248,113,113,.12);box-shadow:inset 0 0 0 1px rgba(248,113,113,.6)}.alert.bad .ms,.alert.bad b{color:#fca5a5}
+.alert.warn{background:rgb(var(--acc-rgb) / .1);box-shadow:inset 0 0 0 1px rgb(var(--acc-rgb) / .55)}.alert.warn .ms,.alert.warn b{color:var(--acc2)}
+.alert.info{background:rgb(var(--acc-rgb) / .06);box-shadow:inset 0 0 0 1px var(--line)}
+.alert-note{margin:-6px 4px 0}
+.src-cmp{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;margin-top:10px}
+.src-cmp .caps{grid-column:1/-1;color:var(--on-sv)}
+.src-cmp button{display:flex;flex-direction:column;gap:2px;padding:8px 10px;border-radius:10px;background:var(--sc-low);border:1px solid var(--line);text-align:left;font-size:12px;line-height:16px;color:var(--on-sv)}
+.src-cmp button b{font-size:15px;line-height:20px;color:#fff;font-variant-numeric:tabular-nums}
+.src-cmp button.on{border-color:var(--acc);background:rgb(var(--acc-rgb) / .12)}
+.dep{display:contents}
+.dep[hidden],.fgrid.dep[hidden]{display:none!important}
+.fgrid.dep{display:grid}
+.src-opts{display:flex;flex-direction:column;gap:8px;margin-top:6px}
+.src-opt{display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:14px;background:var(--sc-low);border:1px solid var(--line);text-align:left;width:100%}
+.src-opt>.ms{font-size:22px;color:var(--on-sv);flex:none}
+.src-opt .t{flex:1;min-width:0;font-size:15px;line-height:20px;font-weight:600}
+.src-opt small{display:block;font-size:12px;line-height:16px;color:var(--on-sv);font-weight:500}
+.src-opt b{text-align:right;font-size:16px;line-height:20px;font-variant-numeric:tabular-nums;flex:none}
+.src-opt.on{border-color:var(--acc);background:rgb(var(--acc-rgb) / .14);box-shadow:0 0 0 1px var(--acc) inset}
+.src-opt.on>.ms{color:var(--acc2)}
+.tour-ov{position:fixed;inset:0;z-index:95;background:rgba(4,12,26,.8);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);display:grid;place-items:center;padding:16px;opacity:0;transition:opacity .3s}
+.tour-ov.on{opacity:1}
+.tour-box{width:min(880px,100%);background:var(--sc-lowest);border:1px solid var(--line);border-radius:22px;padding:18px;display:flex;flex-direction:column;gap:14px;box-shadow:0 20px 60px rgba(0,0,0,.5)}
+.tour-h{display:flex;align-items:center;gap:12px}
+.tour-h h2{margin:0;font-size:22px;line-height:28px;font-weight:800}
+.tour-h p{color:var(--on-sv);font-size:14px;line-height:19px}
+.tour-box video{width:100%;aspect-ratio:16/9;border-radius:14px;background:#000;display:block}
+.tour-btns{display:flex;justify-content:flex-end;gap:10px}
+.tour-go{padding:11px 18px;border-radius:12px;background:#fff;color:#0b1b36;font-weight:700;font-size:15px}
+.tour-go[hidden],.tour-btns .chip[hidden]{display:none}
+.tour-box>.foot{text-align:center}
+.bp-wrap{margin-top:8px;border-radius:12px;overflow:hidden;line-height:0}
+#bp{width:100%;height:auto;display:block}
+.ex-note{border-color:rgb(var(--glow-rgb) / .5)}
+.ex-note .btn-row{margin-top:10px}
+@media (prefers-reduced-motion:reduce){.beacon,.tab.beacon .ms,.g-dot{animation:none!important;box-shadow:0 0 0 3px var(--glow),0 0 16px 4px rgb(var(--glow-rgb) / .5)!important}}
+/* folding */
+.fold-h{cursor:pointer;user-select:none;-webkit-user-select:none}
+.fold-ic{color:var(--on-sv);font-size:24px;transition:transform .2s;flex:none}
+.folded>.fold-ic,.folded .fold-btn .fold-ic,.fold-btn[aria-expanded="false"] .fold-ic{transform:rotate(-90deg)}
+.card:has(>.card-h.folded)>*:not(.card-h){display:none!important}
+.card:has(>.card-h.folded)>.card-h{padding-bottom:0;margin-bottom:0}
+.card-h.folded .card-t p{display:none}
+.bench.folded>*:not(.bench-top):not(.fit-line){display:none!important}
+.bench.folded .fit-line{margin-top:6px}
+.fold-btn{margin-left:-6px}
+.bench-top input{flex:1;min-width:0}
+
+/* ---------- per-tab edge glow and tab icon color (the rest stays blue) ---------- */
+:root{--acc:#93c5fd;--acc2:#bfdbfe;--accs:#3b82f6;--glow:#7dd3fc;--acc-rgb:147 197 253;--glow-rgb:125 211 252}
+body{transition:background-color .35s ease}
+body[data-tab=crop]{--tc:114 202 158}
+body[data-tab=costs]{--tc:180 114 202}
+body[data-tab=benches]{--tc:114 187 202}
+body[data-tab=plan]{--tc:202 161 114}
+/* ---------- Plug Lab ---------- */
+body[data-tab=lab]{--tc:214 186 110}
+.tab{min-width:0;flex:1 1 0}
+.tab .caps{font-size:10px;letter-spacing:.04em}
+.lab-hero{gap:14px}
+.lab-top{display:flex;justify-content:space-between;align-items:center;gap:14px}
+.lab-id{min-width:0}
+.lab-team{font-size:24px;line-height:29px;font-weight:800;letter-spacing:-.02em;margin:2px 0 4px;overflow-wrap:anywhere}
+.ring{--p:0;flex:none;width:76px;height:76px;border-radius:50%;display:grid;place-content:center;text-align:center;position:relative;isolation:isolate}
+.ring::before{content:"";position:absolute;inset:0;border-radius:50%;z-index:-1;background:conic-gradient(rgb(214 186 110) calc(var(--p)*1%),rgba(255,255,255,.12) 0);
+  -webkit-mask:radial-gradient(farthest-side,transparent calc(100% - 7px),#000 calc(100% - 6px));mask:radial-gradient(farthest-side,transparent calc(100% - 7px),#000 calc(100% - 6px))}
+.ring b{font-size:22px;line-height:24px;font-weight:800}.ring small{font-size:11px;color:var(--on-sv)}
+.lab-nums{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.ln{background:var(--sc-low);border:1px solid var(--line);border-radius:12px;padding:9px 10px;display:flex;flex-direction:column;gap:2px;min-width:0}
+.ln .caps{font-size:10px;color:var(--on-sv)}.ln b{font-size:17px;line-height:22px;font-weight:700;overflow-wrap:anywhere}
+.lab-step{padding:0;overflow:hidden}
+.lab-step.next{border-color:rgb(214 186 110 / .55);box-shadow:0 0 0 1px rgb(214 186 110 / .25),0 0 18px rgb(214 186 110 / .12)}
+.ls-h{display:flex;align-items:center;gap:12px;width:100%;padding:14px 16px;text-align:left;color:inherit;background:none}
+.ls-h[aria-expanded="false"] .fold-ic{transform:rotate(-90deg)}
+.ls-n{flex:none;width:32px;height:32px;border-radius:50%;display:grid;place-content:center;font-weight:800;font-size:15px;background:var(--sc);color:#fff}
+.lab-step.next .ls-n{background:rgb(214 186 110);color:#1b1608}
+.lab-step.done .ls-n{background:var(--good);color:#06240f}.lab-step.done .ls-n .ms{font-size:20px}
+.ls-t{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}.ls-t b{font-size:16px;line-height:21px;font-weight:600}
+.ls-t small{font-size:12px;color:var(--on-sv)}
+.ls-b{padding:0 16px 16px;display:flex;flex-direction:column;gap:10px}
+.ls-list{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:6px;font-size:14px;line-height:20px;color:var(--on-surface)}
+.ls-links{display:flex;flex-wrap:wrap;gap:8px}
+.ls-links .chip{text-decoration:none}
+.ls-keys{background:var(--sc-low);border:1px solid var(--line);border-radius:14px;padding:10px 12px}
+.ls-keys>.caps{font-size:10px;color:var(--on-sv);display:block;margin-bottom:2px}
+.ls-keys .kv{font-size:13px;padding:7px 0}.ls-keys .kv b{text-align:right}
+.chip.primary{background:rgb(214 186 110);color:#1b1608;font-weight:600}
+.chip.on{background:var(--good);color:#06240f;font-weight:600}
+.chip.use{align-self:flex-start;margin-top:8px}
+.paths{display:flex;flex-direction:column;gap:10px}
+.path{display:flex;align-items:flex-start;gap:12px;text-align:left;padding:14px;border-radius:16px;background:var(--sc-low);border:1px solid var(--line);color:inherit;position:relative}
+.path .ms{font-size:24px;color:var(--acc2);margin-top:2px}
+.path-l{position:absolute;top:10px;right:12px;font-weight:800;font-size:13px;color:var(--on-sv)}
+.path .t{display:flex;flex-direction:column;gap:3px;padding-right:18px}.path b{font-size:15px;line-height:20px}
+.path small{font-size:13px;line-height:18px;color:var(--on-sv)}.path em{font-style:normal;font-size:12px;line-height:16px;color:rgb(214 186 110)}
+.path.on{border-color:rgb(214 186 110);box-shadow:0 0 0 1px rgb(214 186 110 / .5);background:rgb(214 186 110 / .1)}
+.tool{background:var(--sc-low);border:1px solid var(--line);border-radius:14px;padding:12px;display:flex;flex-direction:column}
+.tool>.caps{font-size:10px;color:var(--on-sv)}
+.tt-row{padding-top:10px}.tt-row+.tt-row{border-top:1px solid var(--line);margin-top:12px}
+.tool .calc-line{margin-top:10px}
+.bal{display:flex;flex-direction:column;gap:8px;margin-top:6px}.bal .callout{font-size:14px;line-height:20px}
+.alert.good{background:rgba(74,222,128,.1);box-shadow:inset 0 0 0 1px rgba(74,222,128,.5)}.alert.good .ms{color:var(--good)}
+
+.ln b{white-space:nowrap;font-size:clamp(14px,4.4vw,17px)}
+.ln .caps{white-space:nowrap}
+@media (max-width:380px){.top-title{display:none}.tab .caps{font-size:9px;letter-spacing:.02em}.lab-team{font-size:21px;line-height:26px}.ring{width:64px;height:64px}.lab-nums{gap:6px}.ln{padding:8px}}
+
+</style>
+</head>
+<body data-tab="lab">
+<div class="edge" aria-hidden="true"></div>
+<header class="top">
+  <div class="top-in">
+    <div class="brand"><span class="logo"><svg class="logo-svg" viewBox="14 12 72 96" aria-hidden="true"><path d="M50 45 C 39 45 25 38 23 21 C 38 21 50 30 50 45 Z" fill="#fff"/>
+<path d="M50 41 C 52 26 64 15 81 17 C 81 34 67 42 50 42 Z" fill="#fff"/>
+<path d="M50 44 V51" stroke="#fff" stroke-width="5" stroke-linecap="round"/><path d="M38 50 H62 Q67 50 66.4 54.6 L57.2 91.6 Q56.4 95.5 52.6 95.5 H47.4 Q43.6 95.5 42.8 91.6 L33.6 54.6 Q33 50 38 50 Z" fill="none" stroke="#fff" stroke-width="4.2" stroke-linejoin="round"/><g fill="none" stroke="#fff" stroke-width="1.4" stroke-linecap="round">
+<path d="M42 57 C 41 66 46 72 45.5 86"/><path d="M50 56 C 52 66 48 76 50 90"/><path d="M58 57 C 59 66 54 72 54.5 86"/>
+<path d="M43 67 L46.5 70.5"/><path d="M57 70 L53.5 73.5"/><path d="M46 79 L49 82"/></g><g fill="none" stroke="#fff" stroke-width="1.3" stroke-linecap="round"><path d="M35.8 63.3 C36.6 65.8 33.0 69.4 33.9 71.5"/><path d="M38.4 73.6 C36.3 77.0 38.3 79.4 37.6 82.2"/><path d="M40.7 82.3 C41.4 85.1 37.7 89.1 39.8 91.1"/><path d="M64.2 63.5 C63.3 66.8 67.6 71.3 65.3 73.6"/><path d="M61.5 73.8 C63.6 77.9 62.1 81.0 63.8 84.5"/><path d="M58.8 84.3 C57.8 86.6 61.8 90.2 60.9 92.2"/></g><g fill="none" stroke="#fff" stroke-width="1.3" stroke-linecap="round">
+<path d="M46.5 95.5 C 45 99 47 101 43.5 104"/><path d="M50 95.8 C 51.5 99.5 48.5 101.5 50.5 105.5"/><path d="M53.5 95.5 C 55 99 53 101 56.5 104"/></g></svg></span><span class="brand-name">Plug Lab</span></div>
+    <div class="top-title" id="topTitle">Price</div>
+    <div class="top-act"><button class="icon-btn" data-a="tab:lab" aria-label="Lab steps"><span class="ms" aria-hidden="true">help</span></button><button class="icon-btn" data-a="menu" aria-label="Menu"><span class="ms" aria-hidden="true">menu</span></button></div>
+  </div>
+</header>
+
+<main><div id="main"></div></main>
+
+<nav class="tabbar" aria-label="Sections">
+  <div class="tab-in">
+    <button class="tab" data-a="tab:lab" data-tab="lab"><span class="ms" aria-hidden="true">science</span><span class="caps">Lab</span></button>
+    <button class="tab" data-a="tab:price" data-tab="price"><span class="ms" aria-hidden="true">sell</span><span class="caps">Price</span></button>
+    <button class="tab" data-a="tab:crop" data-tab="crop"><span class="ms" aria-hidden="true">eco</span><span class="caps">Crop</span></button>
+    <button class="tab" data-a="tab:costs" data-tab="costs"><span class="ms" aria-hidden="true">payments</span><span class="caps">Costs</span></button>
+    <button class="tab" data-a="tab:benches" data-tab="benches"><span class="ms" aria-hidden="true">table_rows</span><span class="caps">Benches</span></button>
+    <button class="tab" data-a="tab:plan" data-tab="plan"><span class="ms" aria-hidden="true">handshake</span><span class="caps">Contract</span></button>
+  </div>
+</nav>
+
+<div class="scrim" id="scrim" data-a="closeSheet"></div>
+<div class="sheet" id="sheet" role="dialog" aria-modal="true" aria-label="Menu" aria-hidden="true"></div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+<div class="guide" id="guideBar" hidden><span class="g-dot" aria-hidden="true"></span><span class="g-txt" id="guideTxt"></span><button data-a="guideStop">Skip</button></div>
+<input type="file" id="fileIn" accept=".json,application/json" hidden>
+
+<script>
+(function(){var d=document.documentElement,done=false;function ok(){done=true;d.classList.remove('no-icons');d.classList.add('icons-ok');}function bad(){if(!done){done=true;d.classList.add('no-icons');}}
+try{document.fonts.load("24px 'Material Symbols Outlined'","eco").then(function(f){f&&f.length?ok():bad();},bad);}catch(e){bad();}setTimeout(function(){if(!done)bad();},4000);})();
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js" defer></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js" defer></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js" defer></script>
+<script>
+(function(){
+'use strict';
+const KEY='plugLab.v1',OLD_KEY='plugLab.none';
+const $=s=>document.querySelector(s),$$=s=>Array.from(document.querySelectorAll(s));
+const uid=()=>Math.random().toString(36).slice(2,9);
+const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const COSTS=['Structure payment or depreciation','Utilities (power, gas)','Water','Insurance','Shared labor (watering, spraying, cleanup)','Other overhead'];
+const SRC={stock:{n:'In-house mother stock',ic:'park',cut:'Cuttings (mother stock)',sub:'Cut from your own stock plants'},buy:{n:'Bought in',ic:'local_shipping',cut:'Cuttings (bought in)',sub:'Unrooted cuttings shipped to you'},collect:{n:'Collected offsite',ic:'directions_car',cut:'Cuttings (collected)',sub:'A trip to take cuttings elsewhere'},seed:{n:'Seed',ic:'grass',cut:'Seed',sub:'Sown right in the plug tray'}};
+const isSeed=c=>(c||crop()).src==='seed';
+
+/* ---------- state ---------- */
+// Cubic inches per cell for common liner inserts that fit a 1020 plug tray (manufacturer specs; brands vary):
+// 32 Garden City Plastics CT32 150 mL · 38 and 50 and 72 T.O. Plastics round propagation trays · 128 Grower Select 17.5 mL
+const CELL_VOL={32:9.15,38:7.2,50:4.34,72:2.68,128:1.07};
+// Top diameter of standard nursery containers (Elite series via Greenhouse Megastore): 300 = #1, 1200 = #3, 2000 = #5
+const POTS={'1':{n:'#1',d:6.375},'3':{n:'#3',d:10.5},'5':{n:'#5',d:11.875}};
+const UNITS=['gal','qt','fl oz','lb','oz','roll','box','bag','case','each'];
+// Example values so a first-time user can see the app working. Replace with your own.
+// Example varieties. Patent status: Coleus 'Inky Fingers' not patented (NC Farms); Lavandula Sensational! 'Tesseract' PP31786;
+// Salvia 'Love and Wishes' listed PPAF (Flowers by the Sea). Coleus URC price from NC Farms (22.2¢, units of 100).
+// Salvia rooting time from the 'SER-WISH' patent (rooted cutting in 21–28 days). Everything else is a starting estimate to edit.
+const BASE={cells:'50',cellVol:String(CELL_VOL[50]),volAuto:1,src:'stock',cpc:1,fillMin:'3',gradeMin:'3',royalty:'',buy:{each:'0.25',per:'1000',freight:'40'},collect:{rate:'',trip:'',perTrip:''},seed:{price:'',per:'',freight:'',packs:'',perCell:'',rate:''}};
+const TRIP={rate:'250',trip:'40',perTrip:'1000'};
+const P=(name,noHorm,o)=>({name,noHorm,crop:Object.assign(JSON.parse(JSON.stringify(BASE)),o)});
+const PRESETS={
+  coleus:P("Coleus 'Inky Fingers'",1,{stock:{plant:'3',life:'6',upkeep:'0.25',perMonth:'15',harvest:'400',pot:'1'},buy:{each:'0.222',per:'1000',freight:'40'},collect:TRIP,
+    stickRate:'250',mistWk:'3',hardWk:'2',strike:'95',cull:'5',price:'0.75'}),
+  lavender:P("Lavandula Sensational! 'Tesseract'",0,{stock:{plant:'4',life:'12',upkeep:'0.25',perMonth:'6',harvest:'250',pot:'3'},
+    stickRate:'200',mistWk:'5',hardWk:'3',strike:'80',cull:'10',patent:true,ppaf:'PP31786',royalty:'0.12',price:'auto'}),
+  erigeron:P("Erigeron glaucus 'Wayne Roderick'",1,{stock:{plant:'3',life:'12',upkeep:'0.25',perMonth:'10',harvest:'300',pot:'1'},collect:TRIP,
+    stickRate:'225',mistWk:'4',hardWk:'2',strike:'85',cull:'5',price:'auto'}),
+  scabiosa:P('Scabiosa farinosa',1,{stock:{plant:'3',life:'12',upkeep:'0.25',perMonth:'8',harvest:'300',pot:'1'},collect:TRIP,
+    stickRate:'225',mistWk:'4',hardWk:'3',strike:'80',cull:'10',price:'auto'}),
+  salvia:P("Salvia 'Love and Wishes'",1,{stock:{plant:'4',life:'6',upkeep:'0.25',perMonth:'10',harvest:'300',pot:'1'},
+    stickRate:'225',mistWk:'3',hardWk:'2',strike:'90',cull:'5',patent:true,ppaf:'PPAF',royalty:'0.12',price:'auto'}),
+  ajuga:P("Ajuga reptans 'Catlin\'s Giant'",1,{stock:{plant:'3',life:'12',upkeep:'0.25',perMonth:'12',harvest:'300',pot:'1'},collect:TRIP,
+    stickRate:'225',mistWk:'3',hardWk:'2',strike:'90',cull:'5',price:'auto'}),
+  // Deergrass: Theodore Payne Foundation seed packet, $7 for about 3,100 seeds. Germination 2 to 6 weeks (Jelitto: 4 to 6 at 68°F).
+  // Seeds per cell, sowing rate, weeks and fill % are starting estimates to edit.
+  deergrass:P('Muhlenbergia rigens (deergrass)',1,{cells:'72',cellVol:String(CELL_VOL[72]),src:'seed',buy:{each:'',per:'',freight:''},
+    seed:{price:'7',per:'3100',freight:'',packs:'',perCell:'5',rate:'300'},stickRate:'',mistWk:'4',hardWk:'6',strike:'85',cull:'10',price:'auto'})};
+const EX_SUP={'Rooting hormone':['1','each','30','12'],'Fungicide':['1','qt','60','12'],'Fertilizer':['1','bag','45','6'],'Tags':['1','box','40','6'],'Sticky cards':['1','box','25','3']};
+const EX_COSTS=['3000','2400','600','800','',''];
+const isHorm=x=>/hormone|iba|rootone|dip.?n.?grow|hormex/i.test(x.n||'');
+function fromPreset(k,sup){const p=PRESETS[k];const c=Object.assign(newCrop(),JSON.parse(JSON.stringify(p.crop)),{name:p.name,id:uid(),preset:k});c.stock=Object.assign(newCrop().stock,c.stock);
+  c.off=p.noHorm?((sup||(S&&S.shop.supplies))||[]).filter(isHorm).map(x=>x.id):[];return c;}
+function newSupply(n){return {id:uid(),n:n||'',qty:'',unit:'each',price:'',months:''};}
+function defaultSupplies(){return ['Rooting hormone','Fungicide','Fertilizer','Tags','Sticky cards','Carrying flats'].map(newSupply);}
+function newBench(type){return {id:uid(),type:type||'mist',len:'',wid:'',count:''};}
+function newCrop(name){return {id:uid(),name:name||'New crop',cells:'50',src:'stock',
+  stock:{plant:'',life:'',upkeep:'',perMonth:'',harvest:'',pot:'3'},buy:{each:'',per:'',freight:''},collect:{rate:'',trip:'',perTrip:''},seed:{price:'',per:'',freight:'',packs:'',perCell:'',rate:''},
+  cpc:1,cellVol:String(CELL_VOL[50]),volAuto:1,off:[],patent:false,ppaf:'',stickRate:'',fillMin:'',gradeMin:'',mistWk:'',hardWk:'',strike:'',cull:'',royalty:'',price:''};}
+const EX_BENCH=[['mist','12','4','2'],['open','20','4','3']];const EX_OLD_STOCK=['stock','12','4','2'];
+const EX_FIELDS={wage:'18',occ:'75',mistAdd:'0.03',mixYd:'45',pack:'10',trayPrice:'2.50',trayUses:'5'};
+const hasBench=b=>num(b.len)>0&&num(b.wid)>0&&num(b.count)>0;
+// Fill example costs and benches. onlyBlank keeps anything the grower already entered.
+function exampleShop(sh,onlyBlank){let n=0;const put=(o,k,v)=>{if(!v)return;if(onlyBlank&&o[k]!==''&&o[k]!=null)return;if(o[k]!==v){o[k]=v;n++;}};
+  Object.keys(EX_FIELDS).forEach(k=>put(sh,k,EX_FIELDS[k]));sh.costs.forEach((x,i)=>put(x,'v',EX_COSTS[i]));
+  if(!onlyBlank||!sh.benches.some(hasBench)){sh.benches=EX_BENCH.map(e=>Object.assign(newBench(e[0]),{len:e[1],wid:e[2],count:e[3]}));n++;}
+  sh.supplies.forEach(x=>{const e=EX_SUP[x.n];if(e&&(!onlyBlank||!(num(x.price)>0))){x.qty=e[0];x.unit=e[1];x.price=e[2];x.months=e[3];n++;}});return n;}
+// Clear only values that still match the examples; anything the grower typed stays.
+function clearShop(sh){const clr=(o,k,v)=>{if(v&&String(o[k])===v)o[k]='';};
+  Object.keys(EX_FIELDS).forEach(k=>clr(sh,k,EX_FIELDS[k]));sh.costs.forEach((x,i)=>clr(x,'v',EX_COSTS[i]));
+  sh.benches=sh.benches.filter(b=>!b.auto&&!EX_BENCH.some(e=>b.type===e[0]&&b.len===e[1]&&b.wid===e[2]&&b.count===e[3]));if(!sh.benches.length)sh.benches=[newBench('mist'),newBench('open')];
+  sh.supplies.forEach(x=>{const e=EX_SUP[x.n];if(e&&x.qty===e[0]&&x.unit===e[1]&&x.price===e[2]&&x.months===e[3]){x.qty='';x.unit='each';x.price='';x.months='';}});}
+const isBlankCrop=c=>/^(new crop|crop \d+)$/i.test(String(c.name||'').trim())&&!c.price&&!c.stickRate&&!c.strike&&!c.mistWk&&!c.hardWk&&
+  ![c.stock,c.buy,c.collect].some(o=>o&&Object.keys(o).some(k=>k!=='pot'&&o[k]!==''&&o[k]!=null));
+function defaults(ex){const sup=defaultSupplies();const c=newCrop();c.name='';const all=[c];const d={v:1,presets:9,example:false,guide:null,tab:'lab',cur:c.id,crops:all,lab:labDefault(),
+  shop:{wage:'',margin:40,rateMode:'calc',rateDirect:'',mistAdd:'',costs:COSTS.map(n=>({n,v:''})),occ:'',weeks:'52',flatL:'21.5',flatW:'11',benches:[newBench('mist'),newBench('open')],
+    mixYd:'',pack:'',trayPrice:'',trayUses:'',supplies:sup,flatsYr:''},
+  plan:{trays:'',ship:''}};return d;}
+function normalize(o){if(!o||typeof o!=='object'||!Array.isArray(o.crops)||!o.crops.length)return defaults(true);const d=defaults(false);
+  const s=Object.assign({},d.shop,o.shop||{});if(!Array.isArray(s.costs))s.costs=d.shop.costs;if(!(o.shop&&Array.isArray(o.shop.supplies))){s.supplies=defaultSupplies();const oh=(o.shop&&Array.isArray(o.shop.hormones))?o.shop.hormones:[];const h0=s.supplies[0];if(oh[0]){h0.n=oh[0].n||h0.n;h0.price=oh[0].price||'';h0.qty=oh[0].price?'1':'';}}
+  delete s.hormones;delete s.tagPrice;if(!Array.isArray(s.benches))s.benches=[newBench('mist'),newBench('open')];
+  const crops=o.crops.map(c=>{const b=newCrop();const r=Object.assign(b,c);r.stock=Object.assign(newCrop().stock,c.stock||{});if(!(c.stock&&c.stock.pot))r.stock.pot=/^coleus$/i.test(String(c.name||'').trim())?'1':'3';r.buy=Object.assign(newCrop().buy,c.buy||{});r.collect=Object.assign(newCrop().collect,c.collect||{});r.seed=Object.assign(newCrop().seed,c.seed||{});if(!r.id)r.id=uid();if(!SRC[r.src])r.src='stock';if(c.patent==null)r.patent=num(c.royalty)>0;if(!Array.isArray(r.off))r.off=[];
+    if(c.hormone===''&&!Array.isArray(c.off))r.off=s.supplies.filter(isHorm).map(x=>x.id);
+    if(c.cellVol==null){const v=CELL_VOL[num(r.cells)];r.cellVol=v?String(v):'';r.volAuto=1;}
+    ['hormone','flatsPerYd','tags','other'].forEach(k=>delete r[k]);return r;});
+  if(!o.presets&&!crops.some(c=>/^coleus$/i.test(String(c.name).trim())))crops.push(fromPreset('coleus',s.supplies));
+  let ex=!!o.example;
+  if((o.presets||0)<3){
+    // drop leftover blank crops so the app opens on the Coleus example
+    for(let k=crops.length-1;k>=0;k--)if(crops.length>1&&isBlankCrop(crops[k]))crops.splice(k,1);
+    if(!crops.some(c=>/^coleus$/i.test(String(c.name).trim())))crops.push(fromPreset('coleus',s.supplies));
+    if(exampleShop(s,true)>0)ex=true;}
+  if((o.presets||0)<6){const pc=(o.crops.find(c=>/^coleus$/i.test(String(c.name||'').trim()))||{}).stock;const op=pc&&POTS[pc.pot]?pc.pot:'1';
+    s.benches.forEach(b=>{if(b.type!=='stock')return;if(!POTS[b.pot])b.pot=op;if(b.len===EX_OLD_STOCK[1]&&b.wid===EX_OLD_STOCK[2]&&b.count===EX_OLD_STOCK[3])b.auto=1;});
+    const autos=s.benches.filter(b=>b.type==='stock'&&b.auto);autos.slice(1).forEach(b=>s.benches.splice(s.benches.indexOf(b),1));}
+  if((o.presets||0)<5)crops.forEach(c=>{if(!/^coleus$/i.test(String(c.name).trim()))return;const p=PRESETS.coleus.crop;
+    ['buy','collect'].forEach(g=>{c[g]=c[g]||{};Object.keys(p[g]).forEach(k=>{if(c[g][k]===''||c[g][k]==null)c[g][k]=p[g][k];});});});
+  if((o.presets||0)<3)crops.forEach(c=>{if(!/^coleus$/i.test(String(c.name).trim()))return;const p=PRESETS.coleus.crop;
+    Object.keys(p).forEach(k=>{if(typeof p[k]==='string'&&k!=='src'&&(c[k]===''||c[k]==null))c[k]=p[k];});Object.keys(p.stock).forEach(k=>{if(!c.stock[k])c.stock[k]=p.stock[k];});});
+  crops.forEach(c=>{const b=c.buy||(c.buy={});if(b.each==null){b.each=num(b.box)>0&&num(b.per)>0?String(+(num(b.box)/num(b.per)).toFixed(4)):'';}delete b.box;});
+  if((o.presets||0)<9&&!crops.some(c=>c.preset==='deergrass'))crops.push(fromPreset('deergrass',s.supplies));
+  if((o.presets||0)<8)crops.forEach(c=>{const k=c.preset||Object.keys(PRESETS).find(x=>PRESETS[x].name===String(c.name).trim());if(!k||!PRESETS[k])return;const p=PRESETS[k].crop;
+    ['each','per','freight'].forEach(x=>{if(!c.buy[x])c.buy[x]=p.buy[x];});if(p.patent&&!c.royalty)c.royalty=p.royalty;if(p.patent&&!c.ppaf)c.ppaf=p.ppaf;});
+  if((o.presets||0)<7){crops.forEach(c=>{if(/^coleus$/i.test(String(c.name).trim())){c.name=PRESETS.coleus.name;c.preset='coleus';}});
+    Object.keys(PRESETS).forEach(k=>{if(k!=='coleus'&&!crops.some(c=>c.preset===k||String(c.name).trim()===PRESETS[k].name))crops.push(fromPreset(k,s.supplies));});}
+  const cur=crops.some(c=>c.id===o.cur)?o.cur:crops[0].id;
+  return {v:1,presets:9,example:false,lab:labNorm(o.lab),guide:(o.guide&&o.guide.id)?o.guide:null,tab:['lab','price','crop','costs','benches','plan'].includes(o.tab)?o.tab:'lab',cur,crops,shop:s,plan:Object.assign({},d.plan,o.plan||{})};}
+let S;try{S=normalize(JSON.parse(localStorage.getItem(KEY)||localStorage.getItem(OLD_KEY)));}catch(e){S=defaults(true);}
+S.tab='lab';
+// presets priced 'auto' start at the target-margin price
+function autoPrice(c){if(c.price!=='auto')return;c.price='';const was=S.cur;S.cur=c.id;syncStockBench();const r=calc(c);if(r.sugg!=null)c.price=(Math.ceil(r.sugg*100-1e-6)/100).toFixed(2);S.cur=was;syncStockBench();}
+let saveT;function save(){clearTimeout(saveT);saveT=setTimeout(()=>{try{localStorage.setItem(KEY,JSON.stringify(S));}catch(e){}},150);}
+function saveNow(){clearTimeout(saveT);try{localStorage.setItem(KEY,JSON.stringify(S));}catch(e){}}
+const crop=()=>S.crops.find(c=>c.id===S.cur)||S.crops[0];
+
+function resolve(key){const p=key.split('.');let o=p[0]==='c'?crop():p[0]==='shop'?S.shop:p[0]==='plan'?S.plan:p[0]==='lab'?S.lab:null;for(let i=1;i<p.length-1;i++){if(o==null)return[null];o=o[p[i]];}return [o,p[p.length-1]];}
+function get(key){const[o,k]=resolve(key);return o?o[k]:'';}
+function set(key,v){const[o,k]=resolve(key);if(o)o[k]=v;}
+
+/* ---------- numbers ---------- */
+function num(x){if(x===''||x==null)return NaN;const v=parseFloat(String(x).replace(/[$,%\s]/g,''));return isFinite(v)?v:NaN;}
+const opt=x=>{const v=num(x);return isNaN(v)?0:v;};
+function money(v,d=2){if(v==null||isNaN(v))return '—';const neg=v<0;const s=Math.abs(v).toLocaleString('en-US',{minimumFractionDigits:d,maximumFractionDigits:d});return (neg?'−$':'$')+s;}
+function plug(v){if(v==null||isNaN(v))return '—';return money(v,Math.abs(v)<10?3:2);}
+function n1(v,d=1){if(v==null||isNaN(v))return '—';return (+v.toFixed(d)).toLocaleString('en-US',{maximumFractionDigits:d});}
+function pct(v){if(v==null||isNaN(v)||!isFinite(v))return '—';return (v*100).toFixed(1).replace(/\.0$/,'')+'%';}
+
+/* ---------- benches ---------- */
+function flatIn(){const L=num(S.shop.flatL),W=num(S.shop.flatW);return L>0&&W>0?{L,W,sqft:L*W/144}:null;}
+function fits(b){const f=flatIn();const l=num(b.len)*12,w=num(b.wid)*12;if(!f||!(l>0)||!(w>0))return 0;
+  return Math.max(Math.floor(l/f.L+1e-9)*Math.floor(w/f.W+1e-9),Math.floor(l/f.W+1e-9)*Math.floor(w/f.L+1e-9));}
+function stockPot(){const b=S.shop.benches.find(x=>x.type==='stock');return b&&POTS[b.pot]?b.pot:'1';}
+function potFit(b,pot){const d=(POTS[pot]||POTS['3']).d;const l=num(b.len)*12,w=num(b.wid)*12;if(!(l>0)||!(w>0))return 0;return Math.floor(l/d+1e-9)*Math.floor(w/d+1e-9);}
+const usesStock=c=>(c||crop()).src==='stock';
+function benchTotals(withStock=true){let mist=0,open=0,area=0,stockArea=0,stockFit=0;const pots={'1':0,'3':0,'5':0};S.shop.benches.forEach(b=>{const n=Math.max(0,Math.round(opt(b.count)));
+  if(b.type==='stock'){if(!withStock)return;Object.keys(pots).forEach(k=>pots[k]+=potFit(b,k)*n);stockFit+=potFit(b,POTS[b.pot]?b.pot:'1')*n;stockArea+=opt(b.len)*opt(b.wid)*n;}
+  else{const per=fits(b);if(b.type==='open')open+=per*n;else mist+=per*n;}area+=opt(b.len)*opt(b.wid)*n;});return {mist,open,area,stockArea,pots,stockFit};}
+function capacity(r){const t=benchTotals();const m=r.mw,h=r.hw,out={mist:t.mist,open:t.open,m,h};
+  if(!(m+h>0))return Object.assign(out,{why:'weeks'});
+  let batch,every,limit;
+  if(m>0&&h>0){const hold=Math.ceil(h/m-1e-9);const byOpen=Math.floor(t.open/hold);batch=Math.min(t.mist,byOpen);every=m;limit=t.mist<=byOpen?'mist':'open';out.hold=hold;}
+  else if(m>0){batch=t.mist;every=m;limit='mist';}
+  else{batch=t.open;every=h;limit='open';}
+  if(r.stockFit>0&&r.stockK>0&&r.cuts>0&&batch>0){const perTurn=r.stockFit*r.stockK*every/(52/12);const bs=Math.floor(perTurn/r.cuts+1e-9);out.stockBatch=bs;if(bs<batch){batch=bs;limit='stock';}}
+  out.batch=batch;out.every=every;out.limit=limit;
+  if(!(batch>0))return Object.assign(out,{why:limit==='stock'?'stock':m>0&&!(t.mist>0)?'mist':'open'});
+  const wk=Math.min(52,opt(S.shop.weeks)||52);out.weeks=wk;out.turns=Math.floor(wk/every+1e-9);out.flats=batch*out.turns;out.first=m+h;
+  out.idleMist=m>0?1-batch/t.mist:0;out.idleOpen=h>0&&t.open?1-batch*(out.hold||1)/t.open:0;
+  out.plugs=r.sell!=null?out.flats*r.sell:null;out.rev=out.plugs!=null&&r.price!=null?out.plugs*r.price:null;
+  out.cost=r.total!=null?out.flats*r.total:null;out.profit=out.rev!=null&&out.cost!=null?out.rev-out.cost:null;
+  return out;}
+
+function flatsBasis(c){const v=num(S.shop.flatsYr);if(v>0)return {n:v,auto:false};
+  const k=capacity({mw:opt(c.mistWk),hw:opt(c.hardWk)});return {n:k.flats||0,auto:true};}
+
+// Stock plants needed to keep the mist bench full, versus pots that fit in the stock area
+function stockNeed(c,r){if(c.src!=='stock'||!(r.stockK>0)||!(r.cuts>0))return null;const k0=capacity({mw:r.mw,hw:r.hw});const pot=POTS[stockPot()].n;
+  const fit=r.stockFit||0;if(!(k0.batch>0))return {text:fit?`Room for ${fit.toLocaleString('en-US')} in ${pot} pots`:'Add a stock area on Benches',short:false};
+  const perMonth=k0.batch*r.cuts*(52/12)/k0.every;const need=Math.ceil(perMonth/r.stockK-1e-9);
+  if(!fit)return {need,fit,text:`Need ${need.toLocaleString('en-US')} · add a stock area on Benches`,short:true};
+  return {need,fit,short:need>fit,text:`Need ${need.toLocaleString('en-US')} · room for ${fit.toLocaleString('en-US')} in ${pot} pots`};}
+
+// Cost per plug for this crop under each cutting source (only the selected one is used)
+function srcCompare(c){return Object.keys(SRC).map(k=>{const t=JSON.parse(JSON.stringify(c));t.src=k;const r=calc(t);return {k,v:r.perPlug};});}
+
+// Stock plants this crop needs to keep the mist bench full
+function stockPlantsNeeded(c){const K=num(c.stock.perMonth),cuts=num(c.cells)*(Math.max(1,Math.round(opt(c.cpc))||1));if(!(K>0)||!(cuts>0))return null;
+  const k0=capacity({mw:opt(c.mistWk),hw:opt(c.hardWk)});if(!(k0.batch>0))return null;return Math.ceil(k0.batch*cuts*(52/12)/k0.every/K-1e-9);}
+// When a crop uses mother stock, keep a stock bench sized to hold what it needs. Benches you set up by hand are left alone.
+function syncStockBench(){const c=crop();if(c.src!=='stock')return;const sb=S.shop.benches.filter(b=>b.type==='stock');let a=sb.find(b=>b.auto);
+  if(sb.length&&!a)return;if(!a){a=Object.assign(newBench('stock'),{auto:1,pot:'1',wid:'4',count:'1',len:'4'});S.shop.benches.push(a);save();}
+  const need=stockPlantsNeeded(c);if(!need)return;const d=POTS[POTS[a.pot]?a.pot:'1'].d,w=num(a.wid)>0?num(a.wid):4;const per=Math.max(1,Math.floor(w*12/d+1e-9));
+  const len=String(Math.max(1,Math.ceil(Math.ceil(need/per)*d/12-1e-9)));if(a.len!==len||a.count!=='1'){a.len=len;a.count='1';a.need=need;save();}else a.need=need;}
+
+/* ---------- the costing model ---------- */
+function calc(c){
+  const s=S.shop,miss=[];
+  const need=(val,key,label,tab,allowZero)=>{const v=num(val);if(isNaN(v)||v<0||(!allowZero&&v===0)){miss.push({key,label,tab});return null;}return v;};
+  const all=(...a)=>a.every(x=>x!=null&&!isNaN(x));
+  const own=!!s.ownLabor;const W=own?(num(s.wage)>0?num(s.wage):0):need(s.wage,'shop.wage','Hourly wage','costs');let harvPay=0,stockSpace=null,stockK=null,stockFit=null;
+  // bench rate ($ per sq ft per week)
+  let R=null,costSum=0;
+  if(s.rateMode==='direct'){R=need(s.rateDirect,'shop.rateDirect','Bench rate','costs');}
+  else{costSum=s.costs.reduce((a,r)=>a+opt(r.v),0);
+    if(!(costSum>0))miss.push({key:'shop.costs.0.v',label:'Yearly facility costs',tab:'costs'});
+    const bt=benchTotals(usesStock(c));const sq=bt.area>0?bt.area:null;if(!sq)miss.push({key:'shop.benches.0.len',label:'Benches',tab:'benches'});const oc=need(s.occ,'shop.occ','% of bench in use','costs'),wk=need(s.weeks,'shop.weeks','Weeks you grow per year','benches');
+    if(costSum>0&&all(sq,oc,wk))R=costSum/(sq*Math.min(oc,100)/100*Math.min(wk,52));}
+  const A=opt(s.mistAdd);
+  // tray
+  const cells=need(c.cells,'c.cells','Cells per plug tray','crop');
+  const seed=c.src==='seed';
+  const cpc=seed?Math.max(1,Math.round(opt(c.seed.perCell))||1):Math.max(1,Math.round(opt(c.cpc))||1);
+  const cuts=cells!=null?cells*cpc:null;
+  // cuttings
+  let unit=null,harvRate=null;
+  if(c.src==='stock'){const P=need(c.stock.plant,'c.stock.plant','Cost per stock plant','costs',true),L=need(c.stock.life,'c.stock.life','Stock plant life','costs'),K=need(c.stock.perMonth,'c.stock.perMonth','Cuttings per plant per month','costs'),H=need(c.stock.harvest,'c.stock.harvest','Harvest rate','crop');harvRate=H;
+    const pd=POTS[stockPot()].d;stockSpace=R!=null?Math.pow(pd/12,2)*R*52/12:null;stockK=K;stockFit=benchTotals().stockFit;
+    if(all(P,L,K,H,W)&&stockSpace!=null){unit=(P/L+opt(c.stock.upkeep)+stockSpace)/K+(own?0:W/H);harvPay=W/H;}}
+  else if(c.src==='buy'){const B=need(c.buy.each,'c.buy.each','Price per cutting','costs');let fr=0;if(opt(c.buy.freight)>0){const N=need(c.buy.per,'c.buy.per','Cuttings per order','costs');fr=N!=null?opt(c.buy.freight)/N:null;}if(B!=null&&fr!=null)unit=B+fr;}
+  else if(seed){const Pk=need(c.seed.price,'c.seed.price','Price per packet','costs'),N=need(c.seed.per,'c.seed.per','Seeds per packet','costs');let fr=0;
+    if(opt(c.seed.freight)>0){const k=need(c.seed.packs,'c.seed.packs','Packets per order','costs');fr=k!=null?opt(c.seed.freight)/k:null;}
+    if(all(Pk,N)&&fr!=null)unit=(Pk+fr)/N;}
+  else{const Rt=need(c.collect.rate,'c.collect.rate','Collecting rate','crop');harvRate=Rt;const trip=opt(c.collect.trip);let tp=0;
+    if(trip>0){const pt=need(c.collect.perTrip,'c.collect.perTrip','Cuttings per trip','costs');tp=pt!=null?trip/pt:null;}
+    if(all(Rt,W)&&tp!=null){unit=(own?0:W/Rt)+tp;harvPay=W/Rt;}}
+  const cutCost=unit!=null&&cuts!=null?unit*cuts:null;
+  // potting mix: cells × cell volume, plus packing and waste
+  const cv=need(c.cellVol,'c.cellVol','Cell volume','crop');const pk=Math.max(0,opt(s.pack));
+  const ydPerFlat=cells!=null&&cv!=null?cells*cv*(1+pk/100)/46656:null;const tpb=ydPerFlat?1/ydPerFlat:null;
+  const mp=need(s.mixYd,'shop.mixYd','Potting mix price','costs');
+  const media=mp!=null&&ydPerFlat!=null?mp*ydPerFlat:null;
+  const tp=need(s.trayPrice,'shop.trayPrice','Plug tray price','costs');const uses=Math.max(1,opt(s.trayUses)||1);
+  const trayCost=tp!=null?tp/uses:null;
+  // supplies: each purchase spread over the plug trays made until the next purchase
+  const off=c.off||[];const fy=flatsBasis(c);let supCost=0;const supUsed=[];
+  s.supplies.forEach((x,i)=>{if(off.includes(x.id))return;const p=num(x.price);if(!(p>0))return;const q=num(x.qty)>0?num(x.qty):1,mo=num(x.months);
+    if(!(mo>0)){miss.push({key:'shop.supplies.'+i+'.months',label:(x.n||'Supply')+': how often',tab:'costs'});supCost=null;return;}
+    const per=fy.n>0?q*p/(fy.n*mo/12):null;supUsed.push({x,per});if(per==null)supCost=null;else if(supCost!=null)supCost+=per;});
+  if(supUsed.length&&!(fy.n>0)){miss.push({key:'shop.flatsYr',label:'Plug trays per year',tab:'costs'});supCost=null;}
+  // labor
+  const sr=seed?need(c.seed.rate,'c.seed.rate','Sowing rate','crop'):need(c.stickRate,'c.stickRate','Sticking rate','crop');const fm=opt(c.fillMin),gm=opt(c.gradeMin);
+  const stickN=seed?cells:cuts;
+  const laborAmt=all(W,sr)&&stickN!=null?W*(stickN/sr+(fm+gm)/60):null;const labor=own?0:laborAmt;
+  const ownPay=own&&laborAmt!=null&&cuts!=null?laborAmt+harvPay*cuts:null;
+  const laborHrs=sr!=null&&stickN!=null?stickN/sr+(fm+gm)/60:null;
+  // bench
+  const fl=flatIn();if(!fl)miss.push({key:'shop.flatL',label:'Plug tray size',tab:'benches'});const sq=fl?fl.sqft:null;const mw=opt(c.mistWk),hw=opt(c.hardWk);
+  if(!(mw+hw>0)){miss.push({key:'c.mistWk',label:'Weeks on the bench',tab:'crop'});}
+  const space=R!=null&&sq!=null&&mw+hw>0?sq*(mw*(R+A)+hw*R):null;
+  const sqftWk=sq!=null?sq*(mw+hw):null;
+  // yield
+  const st=need(c.strike,'c.strike',seed?'Cells that fill %':'Rooting %','crop');const cl=Math.min(opt(c.cull),100);
+  const sell=cells!=null&&st!=null?cells*Math.min(st,100)/100*(1-cl/100):null;
+  const roy=c.patent&&c.src!=='buy'&&!seed?opt(c.royalty):0;const royCost=sell!=null?roy*sell:null;
+  const parts=[
+    {k:'cut',n:SRC[c.src].cut,v:cutCost,col:'mint'},
+    {k:'media',n:'Potting mix',v:media,col:'peach'},
+    {k:'tray',n:'Plug tray',v:trayCost,col:'sky'},
+    ...(supUsed.length?[{k:'sup',n:'Supplies',v:supCost,col:'lav'}]:[]),
+    ...(own?[]:[{k:'labor',n:'Labor',v:labor,col:'pink'}]),
+    {k:'space',n:'Bench space',v:space,col:'butter'},
+    ...(roy>0?[{k:'roy',n:'Royalty',v:royCost,col:'gray'}]:[])];
+  const total=parts.every(p=>p.v!=null)?parts.reduce((a,p)=>a+p.v,0):null;
+  const perPlug=total!=null&&sell>0?total/sell:null;
+  const perCut=total!=null&&cuts?total/cuts:null;
+  const price=num(c.price);const hasPrice=!isNaN(price);
+  const rev=hasPrice&&sell!=null?price*sell:null;
+  const profit=rev!=null&&total!=null?rev-total:null;
+  const margin=profit!=null&&rev>0?profit/rev:null;
+  const tm=num(s.margin)/100;const sugg=perPlug!=null&&tm<1&&tm>=0?perPlug/(1-tm):null;
+  const seen={};const m2=miss.filter(x=>seen[x.key]?false:(seen[x.key]=1));
+  return {W,R,A,costSum,cells,cpc,cuts,stickN,seed,unit,harvRate,media,tpb,ydPerFlat,cv,trayCost,supCost,supUsed,fy,labor,own,ownPay,stockSpace,stockK,stockFit,laborHrs,sr,fm,gm,sq,mw,hw,space,sqftWk,
+    st,cl,sell,royCost,parts,total,perPlug,perCut,price:hasPrice?price:null,rev,profit,margin,sugg,tm,miss:m2};
+}
+
+/* ---------- UI helpers ---------- */
+function fld(label,key,o={}){const v=get(key);
+  return `<label class="fld${o.wide?' wide':''}"><span class="caps">${label}</span><span class="${o.pre?'pre':''}${o.suf?' suf':''}">${o.pre?`<i style="left:11px;right:auto">${o.pre}</i>`:''}<input type="text" inputmode="${o.text?'text':'decimal'}" data-k="${key}" value="${esc(v)}" placeholder="${esc(o.ph||'')}" autocomplete="off" enterkeyhint="done" aria-label="${esc(o.aria||label)}">${o.suf?`<i style="right:11px;left:auto">${o.suf}</i>`:''}</span>${o.hint?`<span class="tiny">${o.hint}</span>`:''}</label>`;}
+function foldBtn(k){const f=folded(k);return `<button class="icon-sm fold-btn" data-a="foldItem:${k}" aria-label="${f?'Expand':'Collapse'}" aria-expanded="${!f}"><span class="ms sm fold-ic">expand_more</span></button>`;}
+const OPEN={};
+function folded(k){return !OPEN[k];}
+function cardHead(icon,tone,title,sub,key){const k=S.tab+':'+(key||title),f=folded(k);return `<div class="card-h fold-h${f?' folded':''}" data-a="fold:${esc(k)}" role="button" tabindex="0" aria-expanded="${!f}"><div class="card-t"><span class="card-ic tn-${tone}"><span class="ms" aria-hidden="true">${icon}</span></span><div><h2 class="title">${title}</h2>${sub?`<p class="foot muted">${sub}</p>`:''}</div></div><span class="ms fold-ic" aria-hidden="true">expand_more</span></div>`;}
+function pills(){return `<section class="crop-pick" aria-label="Crop"><label class="cp-sel"><span class="ms" aria-hidden="true">eco</span><select id="cropSel" aria-label="Choose a crop">${S.crops.map(c=>`<option value="${c.id}"${c.id===S.cur?' selected':''}>${esc(c.name||'Untitled')}</option>`).join('')}</select></label><button class="cp-add" data-a="addCrop" aria-label="Add a variety"><span class="ms" aria-hidden="true">add</span></button></section>`;}
+function missCard(r,tab){const list=tab?r.miss.filter(x=>x.tab===tab):r.miss;if(!list.length)return '';
+  return `<section class="card miss-card">${cardHead('pending_actions','butter','Still needed',tab?'Fill these in to finish the price.':'Tap one to go to it. Until these are in, the price can\'t be figured.')}<div class="miss-wrap">${list.map(x=>`<button class="mchip" data-a="jump:${x.key}|${x.tab}"><span class="ms" aria-hidden="true">${{costs:'payments',benches:'table_rows'}[x.tab]||'eco'}</span>${esc(x.label)}</button>`).join('')}</div></section>`;}
+
+/* ---------- PRICE tab ---------- */
+function vPrice(){const c=crop(),r=calc(c);const p=num(c.price);
+  return pills()+`
+<section class="card hero" aria-label="Price per plug">
+  <div class="hero-top">
+    <div class="hero-l"><span class="caps muted">Price per plug</span>
+      <div class="metric-row"><button class="metric-btn" data-a="editPrice" aria-label="Type an exact price"><span class="metric num" data-o="price">${isNaN(p)?'—':money(p)}</span><span class="ms" aria-hidden="true">edit</span></button>
+      <span class="pre price-in" id="priceIn"><i>$</i><input type="text" inputmode="decimal" data-k="c.price" value="${esc(c.price)}" aria-label="Exact price per plug" enterkeyhint="done"></span></div>
+    </div>
+    <div class="stepper"><button data-a="price:-1" aria-label="Lower price one cent"><span class="ms">remove</span></button><button data-a="price:1" aria-label="Raise price one cent"><span class="ms">add</span></button></div>
+  </div>
+  <div class="slider"><input class="range" type="range" min="0" max="5" step="0.01" value="${isNaN(p)?0:Math.min(p,5)}" data-k="c.price" aria-label="Price per plug slider"><div class="slider-ends"><span>$0</span><span>$5.00</span></div></div>
+  <div class="sugg" data-o="suggBox"${r.sugg==null?' hidden':''}><span>At your <b data-o="tm">${Math.round(r.tm*100)}%</b> target margin: <b data-o="sugg">—</b></span><button data-a="useSugg">Use</button></div>
+  <div class="seg-row"><span class="foot cost" data-o="costLine"></span><span class="glow num" data-o="mgnBadge"></span></div>
+</section>
+<div data-r="miss"></div>
+<section class="card">${cardHead('summarize','sky','Summary','')}<div data-r="sum"></div></section>
+<section class="card">${cardHead('stacked_bar_chart','peach','Cost per plug tray','Where the money goes, before it sells.')}<div data-r="bars"></div></section>`;}
+
+function barsHTML(r){const tot=r.total||r.parts.reduce((a,p)=>a+(p.v||0),0)||1;
+  return `<div class="bars">${r.parts.map(p=>`<div class="bar-row"><span class="n">${esc(p.n)}</span><div class="bar-track"><div class="bar-fill c-${p.col}" style="width:${p.v!=null?Math.max(0,p.v/tot*100):0}%"></div></div><span class="v${p.v==null?' dash':''}">${p.v==null?'needs info':money(p.v)}</span></div>`).join('')}</div>`;}
+
+function summaryHTML(r){const k=capacity(r),yr=k.batch>0;
+  const cell=(v,neg)=>`<b class="num${neg?' neg':''}">${v}</b>`;
+  const row=(l,a,b,cls,na,nb)=>`<div class="sum-row${cls?' '+cls:''}"><span>${l}</span>${cell(a,na)}${cell(b,nb)}</div>`;
+  let h=`<div class="sum-row sum-h"><span></span><span class="caps">Per plug tray</span><span class="caps">Per year</span></div>`;
+  h+=row('Sellable plugs',r.sell!=null?n1(r.sell,1):'—',yr&&k.plugs!=null?Math.floor(k.plugs).toLocaleString('en-US'):'—');
+  h+=row('Cost',money(r.total),yr?money(k.cost,0):'—','costs');
+  h+=row('Income',money(r.rev),yr?money(k.rev,0):'—');
+  if(r.own)h+=row('Your labor pay',money(r.ownPay),yr&&r.ownPay!=null?money(k.flats*r.ownPay,0):'—','mine');
+  h+=row('Profit',money(r.profit),yr?money(k.profit,0):'—','tot profit',r.profit<0,yr&&k.profit<0);
+  {const st=stockNeed(crop(),r);if(st&&st.short)h+=`<p class="foot neg note">${st.fit?`You need ${st.need.toLocaleString('en-US')} stock plants to keep the mist bench full but have room for ${st.fit.toLocaleString('en-US')}.`:'Add a mother stock area on the Benches tab.'}</p>`;}
+  if(r.own)h+=`<p class="foot muted note">Profit includes your labor pay, since you do the work yourself.</p>`;
+  if(yr)h+=`<p class="foot muted note">${k.batch.toLocaleString('en-US')} plug trays in and out every ${n1(k.every,1)} wk${k.every===1?'':'s'}, ${k.flats.toLocaleString('en-US')} plug trays a year. ${k.limit==='stock'?'Your mother stock sets the limit.':`Your ${k.limit} benches set the limit.`}</p>`;
+  else if(k.why==='stock')h+=`<p class="foot muted note">Your mother stock can't fill a round. Add stock area on the Benches tab.</p>`;
+  else if(k.why==='weeks')h+=`<p class="foot muted note">Add weeks on the bench on the Crop tab to see the year.</p>`;
+  else h+=`<p class="foot muted note">Add your ${k.why==='mist'?'mist':'open'} benches on the Benches tab to see the year.</p>`;
+  return h;}
+
+/* ---------- CROP tab ---------- */
+function vCrop(){const c=crop(),r=calc(c),s=S.shop;
+  return pills()+`
+<section class="card">${cardHead('eco','mint','Crop','')}<div class="fgrid">${fld('Name','c.name',{text:true,wide:true})}</div>
+  <div class="btn-row"><button class="chip" data-a="dupCrop"><span class="ms sm">content_copy</span>Duplicate</button>${S.crops.length>1?`<button class="chip danger" data-a="delCrop"><span class="ms sm">delete</span>Delete</button>`:''}</div></section>
+
+<section class="card">${cardHead('grid_on','sky','Plug tray','')}
+  <div class="fgrid">${fld('Cells per plug tray','c.cells',{wide:true})}</div>
+  <div class="qchips">${[32,38,50,72,128].map(n=>`<button class="qchip${num(c.cells)===n?' on':''}" data-a="cells:${n}">${n}</button>`).join('')}</div>
+  <div class="sw-row" style="margin-top:14px"><div><span class="bodyE sm blk">${isSeed(c)?'Seeds per cell':'Cuttings per cell'}</span><span class="foot muted">${isSeed(c)?'A pinch per cell so most cells fill':'More than one for a fuller plug'}</span></div>
+    <div class="stepper"><button data-a="cpc:-1" aria-label="Fewer per cell"><span class="ms">remove</span></button><span class="badge-wrap"><span class="badge" data-o="cpc">${r.cpc}</span></span><button data-a="cpc:1" aria-label="More per cell"><span class="ms">add</span></button></div></div>
+  <div class="fgrid">${fld('Cell volume','c.cellVol',{suf:'in³',wide:true,hint:CELL_VOL[num(c.cells)]?'Typical for a '+num(c.cells)+'-cell insert. Check yours; brands vary.':'Check the insert\'s spec sheet'})}</div>
+  <div class="calc-line"><span style="white-space:nowrap">Mix per plug tray</span><b data-o="mixLine">—</b></div></section>
+
+<section class="card">${cardHead(SRC[c.src].ic,'mint','Cuttings or seed','Costs for each are on the Costs tab.','Cuttings source')}
+  <div class="src-opts" data-o="srcCmp" role="radiogroup" aria-label="Cuttings or seed"></div>
+</section>
+
+<section class="card">${cardHead('inventory_2','lav','Supplies used','Prices are on the Costs tab.')}
+  ${s.supplies.some(x=>num(x.price)>0)?s.supplies.filter(x=>num(x.price)>0).map(x=>`<div class="sw-row sup-sw"><span class="callout">${esc(x.n||'Untitled')}</span><label class="switch"><input type="checkbox" data-sup="${x.id}"${(c.off||[]).includes(x.id)?'':' checked'} aria-label="${esc(x.n||'Supply')} used on this crop"><span></span></label></div>`).join(''):'<p class="foot muted empty-note">No supplies have prices yet. Add them on the Costs tab.</p>'}</section>
+
+<section class="card">${cardHead('pan_tool','pink','Labor','')}
+  <div class="fgrid">${c.src==='stock'?fld('Harvest rate','c.stock.harvest',{suf:'/hr',wide:true,hint:'Cuttings you can take from stock plants per hour'}):c.src==='collect'?fld('Collecting rate','c.collect.rate',{suf:'/hr',wide:true,hint:'Cuttings you can collect per hour, including time on site'}):''}${isSeed(c)?fld('Sowing rate','c.seed.rate',{suf:'/hr',wide:true,hint:'Cells sown per hour'}):fld('Sticking rate','c.stickRate',{suf:'/hr',wide:true,hint:'Cuttings prepped, dipped and stuck per hour'})}${fld('Fill plug trays','c.fillMin',{suf:'min',hint:'Per plug tray'})}${fld('Grade & ship','c.gradeMin',{suf:'min',hint:'Per plug tray'})}</div>
+  <p class="foot muted note">Watering and care while ${isSeed(c)?'germinating':'rooting'} are in your bench rate.</p></section>
+
+<section class="card">${cardHead('schedule','butter','Growing','')}
+  <div class="fgrid">${isSeed(c)?fld('Germinating','c.mistWk',{suf:'wks',hint:'Under mist or a dome'})+fld('Growing on','c.hardWk',{suf:'wks',hint:'Open bench, to finish'})
+  +fld('Cells that fill','c.strike',{suf:'%',hint:'Cells with a seedling'})+fld('Grade-out loss','c.cull',{suf:'%',hint:'Filled but not sellable'})
+  :fld('Under mist','c.mistWk',{suf:'wks',hint:'Rooting'})+fld('Hardening off','c.hardWk',{suf:'wks',hint:'Open bench, to finish'})
+  +fld('Rooting','c.strike',{suf:'%',hint:'Cuttings that root'})+fld('Grade-out loss','c.cull',{suf:'%',hint:'Rooted but not sellable'})}
+</div></section>
+<div data-r="missCrop"></div>`;}
+
+/* ---------- COSTS tab ---------- */
+function exNote(){return S.example?`<section class="card ex-note"><p class="callout"><b>Example numbers are filled in</b> so the example varieties work. Replace them with yours, or clear them. Anything you already typed in was kept.</p>
+  <div class="btn-row"><button class="chip" data-a="exKeep"><span class="ms sm">check</span>Keep them</button><button class="chip danger" data-a="exClear"><span class="ms sm">delete_sweep</span>Clear examples</button></div></section>`:'';}
+function cuttingCosts(c){const nm=esc(c.name||'this crop');
+  const f={stock:`${fld('Cost per stock plant','c.stock.plant',{pre:'$',hint:'What it cost to buy or grow one'})}${fld('Stock plant life','c.stock.life',{suf:'mo',hint:'Months you cut from it'})}
+      ${fld('Cuttings per plant','c.stock.perMonth',{suf:'/mo',hint:'Usable cuttings a month'})}${fld('Upkeep per plant','c.stock.upkeep',{pre:'$',suf:'/mo',hint:'Water, fertilizer, care'})}`,
+    buy:`${fld('Price per cutting','c.buy.each',{pre:'$',wide:true,hint:'Unrooted cutting price from your supplier'})}${fld('Freight per order','c.buy.freight',{pre:'$',hint:'Shipping and box fees, if any'})}<div class="dep" data-dep="perOrder">${fld('Cuttings per order','c.buy.per',{hint:'Spreads the freight'})}</div>`,
+    seed:`${fld('Price per packet','c.seed.price',{pre:'$',hint:'Or per ounce or pound'})}${fld('Seeds per packet','c.seed.per',{hint:'Seeds in that amount'})}${fld('Shipping per order','c.seed.freight',{pre:'$',hint:'If any'})}<div class="dep" data-dep="packs">${fld('Packets per order','c.seed.packs',{hint:'Spreads the shipping'})}</div><div class="calc-line" style="grid-column:1/-1"><span>Per seed</span><b data-o="perSeed">—</b></div>`,
+    collect:`${fld('Trip cost','c.collect.trip',{pre:'$',hint:'Gas or fees per trip, if any'})}<div class="dep" data-dep="perTrip">${fld('Cuttings per trip','c.collect.perTrip',{})}</div>`};
+  return `<section class="card">${cardHead(isSeed(c)?'grass':'content_cut','mint',isSeed(c)?'Seed':'Cuttings',`For ${nm} · ${isSeed(c)?'grown from seed':SRC[c.src].n.toLowerCase()}`,'Cuttings')}
+  <div class="fgrid">${f[c.src]}</div>
+  ${c.src==='stock'?'<p class="foot muted note">Bench space for stock plants is added from the pot size on the Benches tab.</p>':''}
+  <div class="sw-row" style="margin-top:14px"><div><span class="bodyE sm blk">Patented or trademarked variety</span><span class="foot muted">Adds a royalty per plug</span></div><label class="switch"><input type="checkbox" data-patent="1"${c.patent?' checked':''} aria-label="Patented or trademarked variety"><span></span></label></div>
+  ${c.patent?`<div class="fgrid">${fld('Royalty per plug','c.royalty',{pre:'$',hint:c.src==='buy'||c.src==='seed'?'Not added: purchased cuttings and seed usually include it':'Estimate. Get the real rate from the licensing agent.'})}${fld('PPAF number','c.ppaf',{text:true,hint:'Patent or PPAF number'})}</div>`:''}</section>`;}
+function vCosts(){const s=S.shop,area=benchTotals(usesStock()).area;
+  return exNote()+`
+<section class="card">${cardHead('payments','pink','Labor','')}<div class="fgrid">${fld('Hourly wage','shop.wage',{pre:'$',suf:'/hr',wide:true,hint:s.ownLabor?'What your time is worth. Used to show your pay.':'Include payroll taxes if you pay them'})}</div>
+  <div class="sw-row" style="margin-top:14px"><div><span class="bodyE sm blk">I do the labor myself</span><span class="foot muted">Count labor as your profit instead of a cost</span></div><label class="switch"><input type="checkbox" data-own="1"${s.ownLabor?' checked':''} aria-label="I do the labor myself"><span></span></label></div></section>
+${cuttingCosts(crop())}
+
+<section class="card">${cardHead('grid_on','peach','Potting mix & plug trays','')}
+  <div class="fgrid">${fld('Potting mix','shop.mixYd',{pre:'$',suf:'/yd³',wide:true,hint:'Per cubic yard, delivered'})}${fld('Packing & waste','shop.pack',{suf:'%',wide:true,hint:'Mix used beyond the cell volume, from packing cells and spills. Blank = none.'})}
+  ${fld('Plug tray','shop.trayPrice',{pre:'$',hint:'Each. A separate carrying flat goes under Supplies.'})}${fld('Times reused','shop.trayUses',{hint:'Blank = 1'})}</div></section>
+
+<section class="card">${cardHead('inventory_2','lav','Supplies','Each purchase is spread over the plug trays you make before you buy it again.')}
+  ${s.supplies.map((x,i)=>`<div class="bench sup${folded('i:'+x.id)?' folded':''}">
+    <div class="bench-top">${foldBtn('i:'+x.id)}<input type="text" data-k="shop.supplies.${i}.n" value="${esc(x.n)}" placeholder="Name" aria-label="Supply name" autocomplete="off"><button class="icon-sm" data-a="delSup:${i}" aria-label="Remove ${esc(x.n||'supply')}"><span class="ms sm">close</span></button></div>
+    <div class="fgrid">${fld('Amount','shop.supplies.'+i+'.qty',{hint:'Per purchase. Blank = 1'})}<label class="fld"><span class="caps">Unit</span><select data-k="shop.supplies.${i}.unit" aria-label="Unit">${UNITS.map(u=>`<option${u===x.unit?' selected':''}>${u}</option>`).join('')}</select></label>
+    ${fld(x.unit==='each'||!x.unit?'Price each':'Price per '+esc(x.unit),'shop.supplies.'+i+'.price',{pre:'$'})}${fld('Bought every','shop.supplies.'+i+'.months',{suf:'mo'})}</div>
+    <p class="foot fit-line" data-o="sup${i}"></p></div>`).join('')}
+  <div class="btn-row"><button class="chip" data-a="addSup"><span class="ms sm">add</span>Add a supply</button></div>
+  <div class="dep" data-dep="fy"><div class="fgrid" style="margin-top:12px">${fld('Plug trays per year','shop.flatsYr',{wide:true,hint:'All crops together. Blank = the most your benches can turn of the selected crop.'})}</div>
+  <p class="foot muted note" data-o="fyLine"></p></div></section>
+
+<section class="card">${cardHead('square_foot','butter','Bench rate','One square foot of bench for one week.')}
+  <div class="seg full"><button class="${s.rateMode==='calc'?'on':''}" data-a="rateMode:calc">Figure it</button><button class="${s.rateMode==='direct'?'on':''}" data-a="rateMode:direct">I know my rate</button></div>
+  ${s.rateMode==='calc'?`<div class="sec-h static"><span class="caps muted">Yearly facility costs</span></div>
+    ${s.costs.map((x,i)=>`<div class="cost-row"><input type="text" inputmode="text" data-k="shop.costs.${i}.n" value="${esc(x.n)}" aria-label="Cost name" autocomplete="off"><span class="pre"><i>$</i><input type="text" inputmode="decimal" data-k="shop.costs.${i}.v" value="${esc(x.v)}" aria-label="${esc(x.n)} per year" placeholder="per year" autocomplete="off"></span><button class="icon-sm" data-a="delCost:${i}" aria-label="Remove ${esc(x.n)}"><span class="ms sm">close</span></button></div>`).join('')}
+    <div class="btn-row"><button class="chip" data-a="addCost"><span class="ms sm">add</span>Add a cost</button></div>
+    <div class="fgrid">${fld('Bench in use','shop.occ',{suf:'%',wide:true,hint:'Average share of bench space filled'})}</div>
+    <div class="kv" style="margin-top:8px"><span>Yearly costs</span><b data-o="costSum">—</b></div>
+    <div class="kv"><span>Bench area</span><b>${area>0?n1(area,1)+' sq ft':`<button class="link" data-a="jump:shop.benches.0.len|benches">Add benches</button>`}</b></div>
+    <div class="kv"><span>Weeks a year</span><b>${n1(Math.min(52,opt(s.weeks)||52),0)} <button class="link" data-a="jump:shop.weeks|benches">Change</button></b></div>`
+  :`<div class="fgrid">${fld('Open bench rate','shop.rateDirect',{pre:'$',wide:true,hint:'Per square foot per week'})}</div>`}
+  <div class="fgrid dep" data-dep="mist">${fld('Mist & bottom heat add-on','shop.mistAdd',{pre:'$',wide:true,hint:'Extra per sq ft per week on mist: heat mats, mist water, power. Blank if none.'})}</div>
+  <div class="tot-line"><span class="callout">Open bench</span><b class="num" data-o="rateOpen">—</b></div><div class="kv"><span>Mist bench</span><b data-o="rateMist">—</b></div></section>
+
+<section class="card">${cardHead('percent','mint','Target margin','For the suggested price.')}
+  <div class="slider"><div class="slider-lab"><span class="foot">Profit as a share of the sale price</span><span class="badge" data-o="tm2">${Math.round(opt(s.margin))}%</span></div><input class="range" type="range" min="0" max="80" step="1" value="${opt(s.margin)}" data-k="shop.margin" aria-label="Target margin"></div></section>
+<div data-r="missShop"></div>`;}
+
+/* ---------- BENCHES tab ---------- */
+function vBenches(){const s=S.shop;
+  return exNote()+`
+<section class="card">${cardHead('grid_on','sky','Plug tray size','Every plug tray is a standard 1020.')}
+  <div class="fgrid">${fld('Length','shop.flatL',{suf:'in'})}${fld('Width','shop.flatW',{suf:'in'})}</div>
+  <p class="foot muted note">Measure outside the rim. 1020 plug trays run about 21–21.5 × 10.5–11 in depending on the maker.</p></section>
+
+<section class="card">${cardHead('table_rows','lav','Benches','')}
+  ${s.benches.length?'':'<p class="foot muted empty-note">No benches yet.</p>'}
+  ${s.benches.map((b,i)=>b.type==='stock'&&!usesStock()?'':`<div class="bench${folded('i:'+b.id)?' folded':''}" data-bench="${i}">
+    <div class="bench-top">${foldBtn('i:'+b.id)}<div class="seg"><button class="${b.type!=='open'&&b.type!=='stock'?'on':''}" data-a="benchType:${i}:mist">Mist</button><button class="${b.type==='open'?'on':''}" data-a="benchType:${i}:open">Open</button>${usesStock()?`<button class="${b.type==='stock'?'on':''}" data-a="benchType:${i}:stock">Stock</button>`:''}</div>
+      <span class="bench-sp"></span><button class="icon-sm" data-a="delBench:${i}" aria-label="Remove bench"><span class="ms sm">close</span></button></div>
+    ${b.type==='stock'?`<div class="sw-row" style="margin-top:8px"><span class="callout">Stock pot size</span><div class="seg">${Object.keys(POTS).map(k=>`<button class="${(POTS[b.pot]?b.pot:'1')===k?'on':''}" data-a="bpot:${i}:${k}">${POTS[k].n}</button>`).join('')}</div></div>`:''}
+    <div class="fgrid three">${fld('Length','shop.benches.'+i+'.len',{suf:'ft'})}${fld('Width','shop.benches.'+i+'.wid',{suf:'ft'})}${fld('How many','shop.benches.'+i+'.count',{})}</div><p class="foot fit-line" data-o="fit${i}"></p></div>`).join('')}
+  <div class="btn-row"><button class="chip" data-a="addBench:mist"><span class="ms sm">add</span>Add bench</button></div>
+  <div class="fgrid">${fld('Weeks you grow per year','shop.weeks',{suf:'wks',wide:true})}</div>
+  <div class="kv" style="margin-top:6px"><span>Bench area</span><b data-o="benchArea">—</b></div></section>
+<section class="card">${cardHead('architecture','sky','Blueprint','Every growing area, to scale.')}
+  <div class="bp-wrap"><canvas id="bp" aria-label="Blueprint of your growing areas"></canvas></div>
+  <div class="btn-row"><button class="chip" data-a="bpJpg"><span class="ms sm">image</span>Save as JPG</button></div></section>
+<div data-r="missBench"></div>`;}
+
+/* ---------- PLAN tab ---------- */
+function vPlan(){const c=crop();
+  return pills()+`
+<section class="card hero" aria-label="Contract grow">
+  <div class="hero-top"><div class="hero-l"><span class="caps muted">Contract grow</span><span class="foot muted">How many plug trays the buyer wants</span></div>
+    <div class="stepper"><button data-a="qty:-1" aria-label="One plug tray fewer"><span class="ms">remove</span></button><button data-a="qty:1" aria-label="One plug tray more"><span class="ms">add</span></button></div></div>
+  <div class="fgrid"><label class="fld big-in"><span class="caps">Plug trays</span><input type="text" inputmode="numeric" data-k="plan.trays" value="${esc(S.plan.trays)}" placeholder="0" autocomplete="off" aria-label="Plug trays"></label>
+    <label class="fld big-in"><span class="caps">Ship date</span><input class="date-in" type="date" data-k="plan.ship" value="${esc(S.plan.ship)}" aria-label="Ship date"></label></div>
+</section>
+<div data-r="plan"></div>`;}
+
+function addDays(d,n){const x=new Date(d);x.setDate(x.getDate()+Math.round(n));return x;}
+function fmtDate(d){return d.toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric'});}
+function parseDate(s){const m=/^(\d{4})-(\d{2})-(\d{2})$/.exec(s||'');return m?new Date(+m[1],+m[2]-1,+m[3]):null;}
+function planCalc(c,r){const t=Math.round(opt(S.plan.trays));if(!(t>0))return null;
+  const out={trays:t,cuts:r.cuts!=null?t*r.cuts:null};
+  if(r.sell>0){out.plugs=Math.floor(t*r.sell+1e-9);}
+  if(out.cuts==null||!(r.sell>0))return Object.assign(out,{incomplete:true});
+  const s=S.shop;
+  out.bags=r.tpb?out.trays/r.tpb:null;
+  out.packets=c.src==='seed'&&opt(c.seed.per)>0?Math.ceil(out.cuts/opt(c.seed.per)):null;
+  out.boxes=c.src==='buy'&&opt(c.buy.per)>0&&opt(c.buy.freight)>0?Math.ceil(out.cuts/opt(c.buy.per)):null;
+  out.stock=null;
+  out.hHarv=(c.src!=='buy'&&c.src!=='seed'&&r.harvRate)?out.cuts/r.harvRate:0;
+  out.hStick=r.sr&&r.stickN!=null?t*r.stickN/r.sr:null;
+  out.hTray=out.trays*(r.fm+r.gm)/60;
+  out.hours=out.hStick!=null?out.hHarv+out.hStick+out.hTray:null;
+  out.cost=r.total!=null?out.trays*r.total:null;
+  out.rev=r.price!=null?out.plugs*r.price:null;
+  out.ownPay=r.own&&r.ownPay!=null?t*r.ownPay:null;
+  out.profit=out.cost!=null&&out.rev!=null?out.rev-out.cost:null;
+  // bench space: rounds on the mist bench, and room to hold every tray at ship time
+  const bt=benchTotals(),mw=r.mw,hw=r.hw,wks=mw+hw;
+  out.mist=bt.mist;out.open=bt.open;out.noBench=!(bt.mist+bt.open>0);
+  const roundMax=mw>0?bt.mist:bt.open;
+  out.rounds=roundMax>0?Math.ceil(t/roundMax):null;
+  out.holdMax=bt.open>0?bt.open:(out.rounds===1?bt.mist:0);
+  out.over=!out.noBench&&(roundMax<=0||t>out.holdMax);
+  if(wks>0&&out.rounds){const ship=parseDate(S.plan.ship);const gap=mw>0?mw:hw;const n=out.rounds;
+    const lastStick=ship?addDays(ship,-wks*7):addDays(new Date(new Date().toDateString()),(n-1)*gap*7);
+    out.list=[];for(let k=0;k<n;k++){const st=addDays(lastStick,-(n-1-k)*gap*7);out.list.push({stick:st,move:addDays(st,mw*7),trays:k<n-1?roundMax:t-roundMax*(n-1)});}
+    out.stick=out.list[0].stick;out.ready=ship||addDays(lastStick,wks*7);out.noShip=!ship;out.late=out.stick<new Date(new Date().toDateString());}
+  return out;}
+function planHTML(c,r){const p=planCalc(c,r);
+  if(!p)return `<section class="card"><p class="callout muted">Enter how many plug trays the buyer wants to see plugs, cuttings or seed, dates, labor and profit.</p></section>`;
+  if(p.incomplete)return missCard(r)||`<section class="card"><p class="callout muted">Fill in cells and rooting % for this crop first.</p></section>`;
+  const kv=(ic,l,v)=>`<div class="kv"><span><span class="ms">${ic}</span>${l}</span><b>${v}</b></div>`;
+  const alerts=[];
+  if(p.noBench)alerts.push(['info','Add your benches on the Benches tab to check whether this contract fits.']);
+  else if(p.over)alerts.push(['bad',`<b>More than you have room for.</b> All ${p.trays} plug trays have to sit on your benches until they ship, but your ${p.open>0?'open':'mist'} benches hold ${(p.holdMax||0).toLocaleString('en-US')}. Lower the order, ship it in parts, or add bench space.`]);
+  else if(p.rounds>1)alerts.push(['warn',`<b>Too many to stick at once.</b> Your mist benches hold ${p.mist.toLocaleString('en-US')} plug trays, so stick this in ${p.rounds} rounds, ${n1(r.mw||r.hw,1)} weeks apart. Earlier rounds finish early and wait on the open benches until the ship date.`]);
+  if(c.src==='stock'&&p.list&&r.stockK>0){const big=Math.max(...p.list.map(x=>x.trays))*r.cuts;const months=p.rounds>1&&r.mw>0?r.mw/(52/12):1;
+    p.stock=Math.ceil(big/(r.stockK*months)-1e-9);const pot=POTS[stockPot()].n;
+    if(!r.stockFit)alerts.push(['info',`Add a mother stock area on the Benches tab to check you have enough stock plants.`]);
+    else if(p.stock>r.stockFit)alerts.push(['bad',`<b>Not enough mother stock.</b> The biggest round needs ${big.toLocaleString('en-US')} cuttings, about ${p.stock.toLocaleString('en-US')} stock plants${p.rounds>1?` cut over ${n1(r.mw,1)} weeks`:''}. Your stock area holds ${r.stockFit.toLocaleString('en-US')} in ${pot} pots.`]);}
+  if(p.late&&p.list)alerts.push(['bad',`<b>Too late for this ship date.</b> The first round needed to be stuck by ${fmtDate(p.stick)}. Pick a later ship date or a smaller order.`]);
+  if(alerts.length&&!p.noBench)alerts.push(['note','This assumes the benches are free for this contract.']);
+  return alerts.map(x=>x[0]==='note'?`<p class="foot muted alert-note">${x[1]}</p>`:`<div class="alert ${x[0]}" role="alert"><span class="ms" aria-hidden="true">${x[0]==='bad'?'error':x[0]==='warn'?'warning':'info'}</span><p>${x[1]}</p></div>`).join('')+`<section class="tiles" aria-label="Order size">
+    <div class="tile tn-butter"><div class="tile-h"><span class="caps">Plugs</span></div><div class="tile-v bodyE num">${p.plugs.toLocaleString('en-US')}</div><div class="tiny">to deliver</div></div>
+    <div class="tile tn-mint"><div class="tile-h"><span class="caps">${r.seed?'Seeds':'Cuttings'}</span></div><div class="tile-v bodyE num">${p.cuts.toLocaleString('en-US')}</div><div class="tiny">${r.seed?'to sow':'to take'}</div></div>
+    <div class="tile tn-sky"><div class="tile-h"><span class="caps">Rounds</span></div><div class="tile-v bodyE num${p.over?' neg':''}">${p.rounds||'—'}</div><div class="tiny">${p.over?'won\'t fit':'on your benches'}</div></div></section>
+  <section class="card">${cardHead('event','butter','Schedule',p.noShip?'Starting today. Add a ship date to work backward.':'')}
+    ${p.list?p.list.map((x,k)=>kv(r.seed?'grass':'content_cut',p.list.length>1?`${r.seed?'Sow':'Stick'} round ${k+1}`:(r.seed?'Sow':'Stick'),fmtDate(x.stick)+`<small>${x.stick<new Date(new Date().toDateString())?'<span class="neg">Already past</span> · ':''}${x.trays} plug tray${x.trays===1?'':'s'}${r.mw>0?' · off mist '+fmtDate(x.move):''}</small>`)).join('')+kv('local_shipping',p.noShip?'All ready':'Ship',fmtDate(p.ready)):'<p class="foot muted">'+(p.noBench?'Add your benches on the Benches tab.':'Add weeks under mist and hardening off on the Crop tab.')+'</p>'}</section>
+  <section class="card">${cardHead('checklist','sky','What it takes','')}
+    ${kv('grid_on',r.seed?'Plug trays to sow':'Plug trays to stick',p.trays.toLocaleString('en-US')+`<small>${n1(r.sell,1)} sellable plugs each</small>`)}
+    ${p.stock!=null?kv('park','Stock plants to cut from',p.stock.toLocaleString('en-US')+`<small>for the biggest round${r.stockFit?' · room for '+r.stockFit.toLocaleString('en-US'):''}</small>`):''}
+    ${p.boxes!=null?kv('local_shipping','Cutting orders',p.boxes):''}
+    ${p.packets!=null?kv('grass','Seed packets',p.packets.toLocaleString('en-US')):''}
+    ${kv('inventory_2','Potting mix',p.bags!=null?n1(p.bags,2)+' yd³':'—')}
+    ${kv('pan_tool','Labor',p.hours!=null?n1(p.hours,1)+' hrs':'—')}
+  </section>
+  <section class="card">${cardHead('payments','pink','Money','')}
+    ${kv('receipt_long','Cost to grow',`<span class="cost">${money(p.cost)}</span>`)}
+    ${kv('sell',`${p.plugs.toLocaleString('en-US')} plugs at ${r.price!=null?money(r.price):'your price'}`,money(p.rev))}
+    ${p.ownPay!=null?kv('pan_tool','Your labor pay',money(p.ownPay)+'<small>included in profit</small>'):''}
+    <div class="tot-line"><span class="callout">Profit</span><b class="num ${p.profit<0?'neg':'pos'}">${money(p.profit)}</b></div>
+  </section>`+missCard(r);}
+
+/* ---------- guide ---------- */
+const SEC_ORDER={crop:['Crop','Plug tray','Cuttings source','Supplies used','Labor','Growing'],costs:['Labor','Cuttings','Potting mix & plug trays','Supplies','Bench rate'],benches:['Plug tray size','Benches'],price:['Price']};
+const TAB_ORDER=['crop','costs','benches','price'];
+function secOf(key){const p=(a)=>a.some(x=>key===x||key.startsWith(x));if(key.startsWith('plan.'))return ['plan','Order'];
+  if(key==='c.name')return ['crop','Crop'];if(p(['c.cells','c.cellVol']))return ['crop','Plug tray'];if(p(['c.stock.harvest','c.collect.rate','c.seed.rate']))return ['crop','Labor'];if(p(['c.stock.','c.buy.','c.collect.','c.seed.','c.royalty','c.ppaf']))return ['costs','Cuttings'];
+  if(p(['c.stickRate','c.fillMin','c.gradeMin']))return ['crop','Labor'];if(p(['c.mistWk','c.hardWk','c.strike','c.cull']))return ['crop','Growing'];
+  if(key==='shop.wage')return ['costs','Labor'];if(p(['shop.mixYd','shop.pack','shop.trayPrice','shop.trayUses']))return ['costs','Potting mix & plug trays'];
+  if(p(['shop.supplies','shop.flatsYr']))return ['costs','Supplies'];if(p(['shop.costs','shop.occ','shop.rateDirect','shop.mistAdd']))return ['costs','Bench rate'];
+  if(p(['shop.flatL','shop.flatW']))return ['benches','Plug tray size'];if(p(['shop.benches','shop.weeks']))return ['benches','Benches'];return ['price','Price'];}
+function openFor(tab,key){const [t,sec]=secOf(key);if(t===tab)OPEN[tab+':'+sec]=true;const m=/^shop\.(supplies|benches)\.(\d+)\./.exec(key);if(m){const it=S.shop[m[1]][+m[2]];if(it)OPEN['i:'+it.id]=true;}}
+function guideSteps(){if(S.lab&&S.lab.go&&!S.guide)return labGoSteps();const g=S.guide;if(!g)return null;const c=S.crops.find(x=>x.id===g.id);if(!c)return null;
+  const r=calc(c),st=[];
+  if(g.auto!=null&&c.name===g.auto)st.push({tab:'crop',sec:'Crop',key:'c.name',label:'Name your plant'});
+  r.miss.forEach(m=>{const [tab,sec]=secOf(m.key);st.push({tab,sec,key:m.key,label:m.label});});
+  if(!(g.seen&&g.seen.sup))st.push({tab:'crop',sec:'Supplies used',key:null,label:'Pick the supplies it uses'});
+  if(r.price==null)st.push({tab:'price',sec:'Price',key:'c.price',label:'Set a price'});
+  st.forEach((x,i)=>x.o=TAB_ORDER.indexOf(x.tab)*100+SEC_ORDER[x.tab].indexOf(x.sec)+i/1000);st.sort((a,b)=>a.o-b.o);return {c,st};}
+function applyBeacons(){$$('.beacon').forEach(e=>e.classList.remove('beacon'));const bar=$('#guideBar');
+  const gb=bar.querySelector('button');gb.textContent='Skip';gb.dataset.a='guideStop';
+  const g=guideSteps();if(!g){if(S.guide){S.guide=null;save();}if(S.lab&&S.lab.go){S.lab.go=null;save();}document.body.classList.remove('guiding');bar.hidden=true;
+    if(S.lab&&S.lab.back){if(S.tab==='lab'){S.lab.back=false;save();}else{const t=$('.tab[data-tab=lab]');if(t)t.classList.add('beacon');}}return;}
+  if(g.s){gb.textContent='Back to Lab';gb.dataset.a='labBack';}
+  if(g.s&&!g.st.length){S.lab.go=null;S.lab.back=true;save();setTimeout(()=>toast(`Step ${g.s.n} done. Head back to the Lab tab.`),300);return applyBeacons();}
+  if(!g.st.length){S.guide=null;save();document.body.classList.remove('guiding');bar.hidden=true;const nm=g.c.name||'Your plant';setTimeout(()=>toast(`${nm} is set up`),2400);return;}
+  const s0=g.st[0];bar.hidden=false;document.body.classList.add('guiding');
+  $('#guideTxt').innerHTML=g.s?`<b>Step ${g.s.n} · ${esc(g.s.t)}</b> · ${esc(s0.label)}<small>${s0.key?`${g.st.length} to fill in · follow the light`:'Tap Back to Lab when you finish'}</small>`:`<b>${esc(g.c.name||'New plant')}</b> · ${esc(s0.label)}<small>${g.st.length} step${g.st.length>1?'s':''} left · follow the light</small>`;
+  let el=null;
+  if(S.cur!==g.c.id)el=$('#cropSel')||$('.tab[data-tab=crop]');
+  else if(S.tab!==s0.tab)el=$(`.tab[data-tab=${s0.tab}]`);
+  else if(s0.tab==='price')el=$('[data-o=suggBox]:not([hidden]) button')||$('.metric-btn');
+  else{const h=$(`[data-a="fold:${s0.tab}:${s0.sec}"]`);const card=h&&h.closest('.card');
+    if(h&&h.classList.contains('folded'))el=card;
+    else if(s0.key){const i=$(`[data-k="${s0.key}"]`);
+      if(i){const it=i.closest('.bench.folded');el=it?it.querySelector('.fold-btn'):i;}
+      else el=(card&&card.querySelector('[data-a^="addBench"],[data-a=addCost],[data-a=addSup]'))||card;}
+    else el=card;}
+  if(el)el.classList.add('beacon');}
+
+/* ---------- blueprint ---------- */
+function bpPot(){return stockPot();}
+function bpLayout(cw){const G=[['mist','MIST BENCHES'],['open','OPEN BENCHES'],['stock','MOTHER STOCK AREA']];const all=[];
+  const ws=usesStock();S.shop.benches.forEach(b=>{const n=Math.max(0,Math.round(opt(b.count))),l=num(b.len),w=num(b.wid);if(!(l>0&&w>0&&n>0))return;if(b.type==='stock'&&!ws)return;
+    const t=b.type==='open'||b.type==='stock'?b.type:'mist';for(let i=0;i<n;i++)all.push({b,t,l:Math.max(l,w),w:Math.min(l,w)});});
+  if(!all.length)return null;
+  // page about 1.6× wider than tall: pack benches side by side, 2 ft aisles
+  const aisle=2,est=all.reduce((a,x)=>a+(x.l+aisle)*(x.w+aisle+2),0);
+  const W=Math.max(16,...all.map(x=>x.l),Math.sqrt(est*1.6));
+  const m=Math.round(cw*0.045),u=cw/100,sc=(cw-2*m)/W,lab=u*2.4/sc,gap=u*2.6/sc,head=u*4.2/sc;let y=0;const heads=[],items=[];
+  G.forEach(([t,name])=>{const list=all.filter(x=>x.t===t);if(!list.length)return;heads.push({y,name,t});y+=head;let x=0,rowH=0;
+    list.forEach(it=>{if(x>0&&x+it.l>W+1e-9){x=0;y+=rowH+gap;rowH=0;}it.x=x;it.y=y+lab;items.push(it);x+=it.l+aisle;rowH=Math.max(rowH,lab+it.w);});y+=rowH+gap;});
+  return {W,H:y-gap,heads,items};}
+function drawBlueprint(cv,cw){const L=bpLayout(cw);const f=flatIn();const pot=bpPot(),pd=POTS[pot].d/12;
+  const m=Math.round(cw*0.045),u=cw/100,tbH=Math.round(u*15);
+  const W=L?L.W:24,H=L?L.H:8,s=(cw-2*m)/W,ch=Math.round(m+u*7+H*s+u*4+tbH+m);
+  cv.width=cw;cv.height=ch;const g=cv.getContext('2d');const font=(px,w)=>`${w||500} ${Math.round(px)}px Inter,-apple-system,system-ui,sans-serif`;
+  g.fillStyle='#123c7c';g.fillRect(0,0,cw,ch);
+  // drafting grid
+  const ox=m,oy=m+u*7;
+  g.save();g.strokeStyle='rgba(255,255,255,.06)';g.lineWidth=1;for(let x=ox%s;x<cw;x+=s){g.beginPath();g.moveTo(x,0);g.lineTo(x,ch);g.stroke();}for(let yy=oy%s;yy<ch;yy+=s){g.beginPath();g.moveTo(0,yy);g.lineTo(cw,yy);g.stroke();}
+  g.strokeStyle='rgba(255,255,255,.13)';for(let x=ox%(5*s);x<cw;x+=5*s){g.beginPath();g.moveTo(x,0);g.lineTo(x,ch);g.stroke();}for(let yy=oy%(5*s);yy<ch;yy+=5*s){g.beginPath();g.moveTo(0,yy);g.lineTo(cw,yy);g.stroke();}g.restore();
+  // frame
+  g.strokeStyle='#e6f0ff';g.lineWidth=Math.max(2,u*0.35);g.strokeRect(m*0.5,m*0.5,cw-m,ch-m);g.lineWidth=1;g.strokeRect(m*0.5+u*0.6,m*0.5+u*0.6,cw-m-u*1.2,ch-m-u*1.2);
+  g.fillStyle='#fff';g.font=font(u*3.2,800);g.textBaseline='top';g.fillText('GROWING AREA BLUEPRINT',ox,m*0.5+u*2);
+  if(!L){g.font=font(u*2.2);g.fillStyle='#cfe0ff';g.fillText('Add bench sizes on the Benches tab.',ox,oy+u);return ch;}
+  const X=v=>ox+v*s,Y=v=>oy+v*s;
+  L.heads.forEach(h=>{g.font=font(u*2,700);g.fillStyle='#bfdbfe';g.fillText(h.name,X(0),Y(h.y)+u*0.4);g.strokeStyle='rgba(191,219,254,.5)';g.lineWidth=1;g.beginPath();g.moveTo(X(0),Y(h.y)+u*3.1);g.lineTo(X(L.W),Y(h.y)+u*3.1);g.stroke();});
+  L.items.forEach(it=>{const x=X(it.x),y=Y(it.y),w=it.l*s,h=it.w*s;
+    g.fillStyle=it.t==='mist'?'rgba(147,197,253,.20)':it.t==='stock'?'rgba(255,255,255,.04)':'rgba(255,255,255,.08)';g.fillRect(x,y,w,h);
+    // contents
+    let label='';
+    if(it.t==='stock'){const pot=POTS[it.b.pot]?it.b.pot:'1',pd=POTS[pot].d/12;const nx=Math.floor(it.l/pd+1e-9),ny=Math.floor(it.w/pd+1e-9);g.strokeStyle='rgba(230,240,255,.75)';g.lineWidth=Math.max(1,u*0.12);
+      for(let i=0;i<nx;i++)for(let j=0;j<ny;j++){g.beginPath();g.arc(x+(i+.5)*pd*s,y+(j+.5)*pd*s,pd*s*0.45,0,Math.PI*2);g.stroke();}label=`${(nx*ny).toLocaleString('en-US')} ${POTS[pot].n} pots`;}
+    else if(f){const tL=f.L/12,tW=f.W/12;const a=Math.floor(it.l/tL+1e-9)*Math.floor(it.w/tW+1e-9),b=Math.floor(it.l/tW+1e-9)*Math.floor(it.w/tL+1e-9);
+      const [dx,dy]=a>=b?[tL,tW]:[tW,tL];const nx=Math.floor(it.l/dx+1e-9),ny=Math.floor(it.w/dy+1e-9);const ins=Math.max(1,s*0.04);
+      g.strokeStyle='rgba(230,240,255,.8)';g.lineWidth=Math.max(1,u*0.1);for(let i=0;i<nx;i++)for(let j=0;j<ny;j++)g.strokeRect(x+i*dx*s+ins,y+j*dy*s+ins,dx*s-2*ins,dy*s-2*ins);
+      label=`${(nx*ny).toLocaleString('en-US')} plug trays`;}
+    g.strokeStyle='#fff';g.lineWidth=Math.max(1.5,u*0.28);g.strokeRect(x,y,w,h);
+    g.font=font(u*1.55,600);g.fillStyle='#fff';g.textBaseline='bottom';const dims=`${n1(it.l,1)}′ × ${n1(it.w,1)}′`;g.fillText(dims,x,y-u*0.35);
+    const dw=g.measureText(dims).width;g.font=font(u*1.45,500);g.fillStyle='#cfe0ff';if(dw+g.measureText('  · '+label).width<w+u*2)g.fillText('  · '+label,x+dw,y-u*0.35);g.textBaseline='top';});
+  // title block + scale
+  const bt=benchTotals(usesStock()),ty=ch-m*0.5-u*0.6-tbH,tx=cw*0.42,tw=cw-m*0.5-u*0.6-tx;
+  g.strokeStyle='#e6f0ff';g.lineWidth=Math.max(1.5,u*0.2);g.strokeRect(tx,ty,tw,tbH);g.beginPath();g.moveTo(tx,ty+tbH*0.36);g.lineTo(tx+tw,ty+tbH*0.36);g.stroke();
+  g.fillStyle='#fff';g.font=font(u*2.4,800);g.fillText('PLUG',tx+u*1.5,ty+u*1.3);g.font=font(u*1.5,500);g.fillStyle='#cfe0ff';
+  g.fillText(new Date().toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'}),tx+u*1.5+g.measureText('PLUG').width*1.7+u*2.5,ty+u*2);
+  const lines=[`${bt.mist.toLocaleString('en-US')} mist · ${bt.open.toLocaleString('en-US')} open plug trays`+(bt.pots[pot]?` · ${bt.pots[pot].toLocaleString('en-US')} ${POTS[pot].n} stock pots`:''),
+    `${n1(bt.area,0)} sq ft of benches · plug tray ${S.shop.flatL} × ${S.shop.flatW} in`];
+  if(!usesStock())lines.push(`${crop().name||'This crop'}: ${crop().src==='seed'?'grown from seed':'cuttings '+(crop().src==='buy'?'bought in':'collected')}, no stock area`);
+  g.fillStyle='#fff';g.font=font(u*1.6,600);lines.forEach((t,i)=>{g.font=font(u*(i<2?1.6:1.4),i<2?600:500);g.fillStyle=i<2?'#fff':'#cfe0ff';g.fillText(t,tx+u*1.5,ty+tbH*0.36+u*1.4+i*u*2.4);});
+  const sx=ox,sy=ty+tbH-u*3.5,len=Math.min(10,Math.floor(W/2)),sl=len*s;g.strokeStyle='#fff';g.lineWidth=Math.max(1.5,u*0.25);
+  g.beginPath();g.moveTo(sx,sy);g.lineTo(sx+sl,sy);g.moveTo(sx,sy-u*0.8);g.lineTo(sx,sy+u*0.8);g.moveTo(sx+sl,sy-u*0.8);g.lineTo(sx+sl,sy+u*0.8);g.moveTo(sx+sl/2,sy-u*0.5);g.lineTo(sx+sl/2,sy+u*0.5);g.stroke();
+  g.font=font(u*1.4,600);g.fillStyle='#fff';g.fillText(`${len} ft`,sx,sy+u*1.2);g.fillStyle='#cfe0ff';g.fillText('Aisles shown at 2 ft. Trays and pots drawn to scale.',sx,sy-u*3);
+  return ch;}
+function drawBpPreview(){const cv=$('#bp');if(!cv||!cv.offsetParent)return;const w=Math.round(cv.parentElement.clientWidth*(window.devicePixelRatio||1));drawBlueprint(cv,Math.max(600,w));}
+function exportBlueprint(){const cv=document.createElement('canvas');drawBlueprint(cv,2400);
+  cv.toBlob(b=>{if(b)deliver(b,'plug-blueprint-'+today()+'.jpg');else toast('Couldn\'t make the image');},'image/jpeg',0.92);}
+
+/* ---------- Plug Lab: the student assignment ---------- */
+const PATHS={
+  stock:{L:'A',n:'Grow your own mother stock',ic:'park',sub:'Pick a plant at the college nursery, grow stock plants, and take cuttings from them.',res:'Nursery walk · plant prices · counting cuttings'},
+  buy:{L:'B',n:'Buy in cuttings',ic:'local_shipping',sub:'Order unrooted cuttings from a propagator like North Carolina Farms.',res:'Variety · price per cutting · patents · shipping'},
+  collect:{L:'C',n:'Collect cuttings offsite',ic:'directions_car',sub:'Drive to a garden or growing site and take cuttings, with permission.',res:'Mileage · gas prices · collecting time'},
+  seed:{L:'D',n:'Grow from seed',ic:'grass',sub:'Buy seed and sow it right in the plug tray.',res:'Seed price · seeds per packet · germination'}};
+const LINK={ncf:['North Carolina Farms','https://www.ncfarmsinc.com/'],ncfOrder:['NC Farms: first-time ordering','https://articles.ncfarmsinc.com/first-time-ordering-what-you-need-to-know/'],
+  tp:['Theodore Payne seed store','https://store.theodorepayne.org/collections/seeds-1'],cal:['Calscape (California natives)','https://calscape.org/'],
+  aaa:['AAA gas prices, California','https://gasprices.aaa.com/?state=CA'],irs:['IRS standard mileage rates','https://www.irs.gov/tax-professionals/standard-mileage-rates'],
+  wage:['California minimum wage','https://www.dir.ca.gov/dlse/faq_minimumwage.htm'],bfg:['BFG Supply','https://www.bfgsupply.com/'],ghm:['Greenhouse Megastore','https://www.greenhousemegastore.com/']};
+function labDefault(){return {group:'',members:'',picked:false,go:null,back:false,done:{},exported:false,trip:{miles:'',mpg:'',gas:'',irs:''},tt:{h:{n:'',s:''},s:{n:'',s:''},f:{n:'1',s:''}}};}
+function labNorm(l){const d=labDefault();l=Object.assign(d,l||{});l.trip=Object.assign(labDefault().trip,l.trip||{});l.done=Object.assign({},l.done||{});
+  const t=labDefault().tt;l.tt=Object.assign(t,l.tt||{});['h','s','f'].forEach(k=>{l.tt[k]=Object.assign(labDefault().tt[k],(l.tt||{})[k]||{});});return l;}
+const blank=k=>{const v=get(k);return v==null||String(v).trim()==='';};
+function benchIdx(type){return S.shop.benches.findIndex(b=>type==='open'?b.type==='open':b.type!=='open'&&b.type!=='stock');}
+function ul(items){return `<ul class="ls-list">${items.filter(Boolean).map(x=>`<li>${x}</li>`).join('')}</ul>`;}
+function links(ks){return `<div class="ls-links">${ks.map(k=>`<a class="chip" href="${LINK[k][1]}" target="_blank" rel="noopener"><span class="ms sm" aria-hidden="true">open_in_new</span>${LINK[k][0]}</a>`).join('')}</div>`;}
+function rateRow(id,label,unit,key,keyLabel,div){const n=num(S.lab.tt[id].n),s=num(S.lab.tt[id].s);
+  return `<div class="tt-row"><span class="callout">${label}</span><div class="fgrid tt-g">${fld(id==='f'?'Plug trays':'How many','lab.tt.'+id+'.n',{})}${fld('Seconds','lab.tt.'+id+'.s',{suf:'sec'})}</div>
+    <div class="calc-line"><span>${unit}</span><b data-o="tt_${id}">—</b></div><button class="chip use" data-a="ttUse:${id}|${key}"><span class="ms sm" aria-hidden="true">input</span>Use as ${keyLabel}</button></div>`;}
+function ttVal(id){const n=num(S.lab.tt[id].n),s=num(S.lab.tt[id].s);if(!(n>0&&s>0))return null;return id==='f'?s/60/n:n/s*3600;}
+function benchBalance(c,r){const bt=benchTotals(usesStock(c)),mw=r.mw,hw=r.hw;const out={mist:bt.mist,open:bt.open,mw,hw};
+  if(!(mw+hw>0))return Object.assign(out,{why:'weeks'});
+  if(!(bt.mist>0)&&mw>0)return Object.assign(out,{why:'mist'});
+  out.hold=mw>0&&hw>0?Math.ceil(hw/mw-1e-9):(hw>0?1:0);out.need=mw>0?bt.mist*out.hold:0;
+  out.ok=out.need===0||bt.open>=out.need;out.extra=out.need>0&&bt.open>out.need*1.5;
+  const k=capacity(r);out.stockShort=c.src==='stock'&&k.limit==='stock';if(out.stockShort)out.ok=false;out.k=k;return out;}
+function balanceHTML(c,r){const b=benchBalance(c,r);
+  if(b.why==='weeks')return `<p class="foot muted">Enter your weeks under mist and hardening off (step 4) to check the balance.</p>`;
+  if(b.why==='mist')return `<p class="foot muted">Enter your mist bench size to start.</p>`;
+  const fl=flatIn(),sq=fl?fl.sqft:null;
+  const lines=[`Your mist benches hold <b>${b.mist.toLocaleString('en-US')}</b> plug trays.`,
+    b.hw>0&&b.mw>0?`Each round spends <b>${n1(b.mw,1)}</b> weeks under mist and <b>${n1(b.hw,1)}</b> weeks hardening off. A new round comes off mist every ${n1(b.mw,1)} weeks, so up to <b>${b.hold}</b> round${b.hold>1?'s':''} harden at once.`:'',
+    b.need>0?`Open benches need room for <b>${b.need.toLocaleString('en-US')}</b> plug trays. You have room for <b>${b.open.toLocaleString('en-US')}</b>.`:''].filter(Boolean);
+  let st;if(b.stockShort)st=['bad',`Your stock plants can't keep the mist bench full. Make the stock bench bigger or the mist bench smaller.`];
+  else if(!b.ok){const short=b.need-b.open;st=['bad',`Short by ${short.toLocaleString('en-US')} plug trays${sq?`, about ${Math.ceil(short*sq/0.85)} sq ft more open bench`:''}. Plug trays would have nowhere to go when they come off mist.`];}
+  else if(b.extra)st=['warn',`Balanced, with extra open bench. Your mist bench is the limit, so you could make the open bench smaller or the mist bench bigger.`];
+  else st=['ok','Balanced. Every round has a place to harden off.'];
+  return `<div class="bal">${lines.map(x=>`<p class="callout">${x}</p>`).join('')}<div class="alert ${st[0]==='ok'?'good':st[0]}" role="status"><span class="ms" aria-hidden="true">${st[0]==='ok'?'check_circle':st[0]==='warn'?'info':'error'}</span><p>${st[1]}</p></div></div>`;}
+function tripTool(){return `<div class="tool"><span class="caps">Trip cost calculator</span><div class="fgrid">${fld('Round-trip miles','lab.trip.miles',{suf:'mi'})}${fld('Miles per gallon','lab.trip.mpg',{suf:'mpg'})}${fld('Gas price','lab.trip.gas',{pre:'$',suf:'/gal'})}${fld('IRS mileage rate','lab.trip.irs',{pre:'$',suf:'/mi'})}</div>
+  <div class="calc-line"><span>Gas only</span><b data-o="tripGas">—</b></div><button class="chip use" data-a="tripUse:gas"><span class="ms sm" aria-hidden="true">input</span>Use gas cost</button>
+  <div class="calc-line"><span>IRS rate (gas + wear)</span><b data-o="tripIrs">—</b></div><button class="chip use" data-a="tripUse:irs"><span class="ms sm" aria-hidden="true">input</span>Use IRS cost</button></div>`;}
+function labSteps(c){const p=c.src,seed=p==='seed',r=calc(c);const mi=benchIdx('mist'),oi=benchIdx('open');const L=S.lab;
+  const st=[
+  {id:'team',t:'Name your nursery team',ws:1,inline:true,keys:[['lab.group','Team name'],['lab.members','Team members']],
+    body:`<p class="callout">You're starting a propagation nursery. Your team will pick a plant, research every cost, design your benches, and set a price. Then you'll compare profits with the other teams.</p>${ul(['Pick a team name and list everyone on the team.','On your worksheet, give each person a role: Researcher, Grower, Bookkeeper, Presenter.'])}`,
+    tool:`<div class="fgrid">${fld('Team name','lab.group',{text:true,wide:true})}${fld('Team members','lab.members',{text:true,wide:true,hint:'Separate names with commas'})}</div>`},
+  {id:'path',t:'Choose your adventure',ws:2,inline:true,keys:[],done:()=>L.picked,
+    body:`<p class="callout">Where will your plants come from? Each path has different research. Pick one with your team.</p>`,
+    tool:`<div class="paths">${Object.keys(PATHS).map(k=>{const x=PATHS[k],on=L.picked&&p===k;return `<button class="path${on?' on':''}" data-a="labPath:${k}" aria-pressed="${on}"><span class="path-l">${x.L}</span><span class="ms" aria-hidden="true">${x.ic}</span><span class="t"><b>${x.n}</b><small>${x.sub}</small><em>Research: ${x.res}</em></span></button>`;}).join('')}</div>${L.picked?'<p class="foot muted">You can switch paths, but your research for steps 3 and 5 changes.</p>':''}`},
+  {id:'plant',t:seed?'Pick your seed crop':'Pick your plant',ws:{stock:'3A',buy:'3B',collect:'3C',seed:'3D'}[p],keys:[['c.name','Plant name']],
+    body:{stock:ul(['Walk the college nursery and choose a plant you could take cuttings from again and again.','Write its botanical name, with the cultivar in single quotes.','Note the container size and its price on the nursery price list. You\'ll need it in step 5.','Check the tag for a PP or PPAF number. A patented plant needs a license to propagate.']),
+      buy:ul(['Browse North Carolina Farms\' unrooted cuttings and choose a variety.','Write its botanical name and cultivar.','Record the price per cutting and how many come in an order. You\'ll need them in step 5.','Look for a PP or PPAF number on the listing.'])+links(['ncf','ncfOrder']),
+      collect:ul(['Choose a site you can reach: a family member\'s garden, a farm, or a landscape you have permission to cut from.','Get permission first. Never take cuttings from parks or wild land without a permit.','Skip patented varieties. Propagating them without a license is against the law.','Find the round-trip miles on a map app. You\'ll need it in step 5.']),
+      seed:ul(['Browse the Theodore Payne seed store or Calscape and choose a California native that grows easily from seed.','Record the packet price and about how many seeds are in it.','Look up how long it takes to germinate and whether the seed needs any treatment first.'])+links(['tp','cal'])}[p]},
+  {id:'grow',t:'Plan how it grows',ws:4,keys:[['c.cells','Cells per plug tray'],['c.mistWk',seed?'Weeks to germinate':'Weeks under mist'],['c.hardWk',seed?'Weeks growing on':'Weeks hardening off'],['c.strike',seed?'Cells that fill %':'Rooting %'],['c.cull','Grade-out loss %']],
+    body:`<p class="callout">Research how your plant is propagated. Use your textbook and lecture notes, the supplier's growing information${seed?', and seed sources like Calscape':''}.</p>`+ul([
+      'Pick a plug tray size. Bigger cells (32, 38, 50) suit bigger cuttings; smaller cells (72, 128) suit small cuttings and seedlings.',
+      seed?'How many weeks to germinate? How many more weeks to grow into a plug you can sell?':'How many weeks to root under mist? How many more weeks to harden off on an open bench?',
+      seed?'What percent of cells will have a seedling? What percent will you grade out?':'What percent will root? What percent will you grade out?',
+      seed?'Set seeds per cell on the Crop tab, under Plug tray.':'Will you stick more than one cutting per cell? Set it on the Crop tab, under Plug tray.',
+      seed?'':'Does it need rooting hormone? You\'ll add it as a supply in step 8.'])+(seed?links(['cal']):'')},
+  {id:'source',t:{stock:'Price your mother stock',buy:'Price your cuttings',collect:'Price your collecting trip',seed:'Price your seed'}[p],ws:{stock:'3A',buy:'3B',collect:'3C',seed:'3D'}[p],
+    keys:{stock:[['c.stock.plant','Cost per stock plant'],['c.stock.life','Months you\'ll cut from it'],['c.stock.perMonth','Cuttings per plant per month'],['c.stock.upkeep','Upkeep per plant per month']],
+      buy:[['c.buy.each','Price per cutting'],['c.buy.freight','Freight per order (0 if none)'],...(opt(c.buy.freight)>0?[['c.buy.per','Cuttings per order']]:[])],
+      collect:[['c.collect.trip','Trip cost'],['c.collect.perTrip','Cuttings per trip']],
+      seed:[['c.seed.price','Price per packet'],['c.seed.per','Seeds per packet'],['c.seed.freight','Shipping per order (0 if none)'],...(opt(c.seed.freight)>0?[['c.seed.packs','Packets per order']]:[])]}[p],
+    body:{stock:ul(['Stock plant cost: the nursery price for the container size you picked.','Count the shoots on one plant you could cut today. How fast does it grow back? Turn that into cuttings per plant per month.','Upkeep: water, fertilizer and care for one plant for one month. Estimate it and show your math on the worksheet.','Patented plant? Turn on Patented on the Costs tab and enter the royalty and PP number.']),
+      buy:ul(['Price per cutting: from the variety\'s listing.','Freight: cuttings ship fast in a cooled box. Estimate the shipping for one order, or 0 if it\'s included.','Cuttings per order: how many you\'d order at a time, at least the minimum.','Patented? Record the PP or PPAF number. The price usually includes the royalty.'])+links(['ncf','ncfOrder']),
+      collect:ul(['Use the calculator below. Gas only counts fuel; the IRS rate also covers wear on the car.','Gas cost = round-trip miles ÷ miles per gallon × price per gallon.','Cuttings per trip: how many you can take and still stick them fresh.'])+links(['aaa','irs']),
+      seed:ul(['Price and seed count from the product page. Buying by the ounce or pound? Enter that price and its seed count instead.','Shipping per order, or 0 if you\'d pick it up.','Check your seeds per cell on the Crop tab.'])+links(['tp'])}[p],
+    tool:p==='collect'?tripTool():''},
+  {id:'labor',t:'Time the work',ws:5,keys:[['shop.wage','Hourly wage'],...(p==='stock'?[['c.stock.harvest','Harvest rate']]:p==='collect'?[['c.collect.rate','Collecting rate']]:[]),seed?['c.seed.rate','Sowing rate']:['c.stickRate','Sticking rate'],['c.fillMin','Minutes to fill a plug tray'],['c.gradeMin','Minutes to grade and ship a plug tray']],
+    body:ul(['Wage: look up California\'s minimum wage and a local nursery job posting. Use what you would really pay.','Time trials: do each job in the lab for a few minutes and count. Do it three times, write every trial on the worksheet, and use the average.','Grade and ship: estimate the minutes to check, clean up and pack one plug tray.'])+links(['wage']),
+    tool:`<div class="tool"><span class="caps">Time trial calculator</span>${p==='stock'||p==='collect'?rateRow('h',p==='stock'?'Taking cuttings from stock plants':'Collecting cuttings on site','Cuttings per hour',p==='stock'?'c.stock.harvest':'c.collect.rate','harvest rate'):''}${rateRow('s',seed?'Sowing cells':'Sticking cuttings',seed?'Cells per hour':'Cuttings per hour',seed?'c.seed.rate':'c.stickRate',seed?'sowing rate':'sticking rate')}${rateRow('f','Filling plug trays with mix','Minutes per plug tray','c.fillMin','fill time')}</div>`},
+  {id:'mix',t:'Price your potting mix and plug trays',ws:6,keys:[['shop.mixYd','Potting mix per yd³'],['shop.pack','Packing & waste %'],['shop.trayPrice','Plug tray price'],['shop.trayUses','Times reused'],['c.cellVol','Cell volume']],
+    body:ul(['Potting mix: the price per cubic yard of propagation mix from a local supplier. Only have a bag price? A cubic yard is 27 cubic feet.','Packing & waste: the extra mix lost to packing cells and spills. Estimate it.','Plug tray: one 1020 tray with your cell insert, from a supplier like BFG Supply or Greenhouse Megastore. How many times can you reuse it?','Cell volume fills in for common inserts. Check the insert\'s spec sheet.'])+links(['bfg','ghm'])},
+  {id:'sup',t:'Add your supplies',ws:7,keys:[],done:()=>!!L.done.sup,go:[{tab:'costs',sec:'Supplies',key:null,label:'Price your supplies'}],
+    body:ul(['List what a propagation house buys over and over: rooting hormone (if your plant needs it), fungicide, fertilizer, plant tags, sticky cards.','Find a price, the amount you buy, and how often you\'d buy each one.','On the Crop tab, under Supplies used, turn off anything your plant doesn\'t use.']),
+    tool:`<button class="chip${L.done.sup?' on':''}" data-a="labDone:sup"><span class="ms sm" aria-hidden="true">${L.done.sup?'check_box':'check_box_outline_blank'}</span>Our supplies are in</button>`},
+  {id:'bench',t:'Design your benches',ws:8,keys:[...(mi>=0?[[`shop.benches.${mi}.len`,'Mist bench length'],[`shop.benches.${mi}.wid`,'Mist bench width'],[`shop.benches.${mi}.count`,'Number of mist benches']]:[]),...(oi>=0?[[`shop.benches.${oi}.len`,'Open bench length'],[`shop.benches.${oi}.wid`,'Open bench width'],[`shop.benches.${oi}.count`,'Number of open benches']]:[])],
+    done:()=>benchBalance(c,r).ok===true,
+    body:`<ol class="ls-list">${['Start with the mist bench. Every plug tray starts there. Pick a size that would fit a real greenhouse.','Plug trays move to the open bench to harden off. Size the open bench so every round has a place to go. Watch the balance below.',p==='stock'?'Mother stock: the app adds a stock bench sized to keep your mist bench full. Pick the stock pot size on the Benches tab.':'','Sketch your layout on the worksheet grid. You\'ll export the blueprint in the last step.'].filter(Boolean).map(x=>`<li>${x}</li>`).join('')}</ol>`,
+    tool:`<div class="tool"><span class="caps">Bench balance</span><div data-o="balance" data-html="1">${balanceHTML(c,r)}</div></div>`},
+  {id:'fac',t:'Estimate your greenhouse costs',ws:9,keys:[[`shop.costs.0.v`,COSTS[0]+' per year'],[`shop.costs.1.v`,COSTS[1]+' per year'],[`shop.costs.2.v`,COSTS[2]+' per year'],[`shop.costs.3.v`,COSTS[3]+' per year'],['shop.occ','% of bench in use'],...(benchTotals().mist>0?[['shop.mistAdd','Mist add-on (0 if none)']]:[])],
+    body:`<p class="callout">A greenhouse costs money whether it's full or empty. The app spreads these yearly costs over every square foot of bench, every week.</p>`+ul(['Structure: what the greenhouse costs per year, like a loan payment, or its price ÷ the years it will last.','Utilities and water: a typical monthly bill × 12. Look up your power and water company\'s rates, or ask your instructor about the college greenhouse.','Insurance: find a ballpark yearly cost for a small nursery business.','% of bench in use: benches are never 100% full. What\'s realistic?','Mist add-on: the extra cost per square foot per week for mist and bottom heat. Enter 0 to leave it out.'])},
+  {id:'price',t:'Set your price',ws:10,keys:[['c.price','Price per plug']],
+    body:ul(['Your cost per plug is on the Price tab. That\'s break-even.','Research what liners like yours sell for wholesale, from a grower\'s price list or catalog.','Set a target margin on the Costs tab and compare the suggested price with the market.','Set your price. Can you compete and still make a profit?'])},
+  {id:'order',t:'Take the contract challenge',ws:11,keys:[['plan.trays','Plug trays ordered'],['plan.ship','Ship date']],
+    body:`<p class="callout">Your instructor will give you a buyer's order. Enter it on the Contract tab.</p>`+ul(['Does it fit on your benches? If not, what would you change?',seed?'When do you sow the first round?':'When do you stick the first round?','What\'s your profit on the order?'])},
+  {id:'share',t:'Share your results',ws:12,inline:true,keys:[],done:()=>!!L.exported,
+    body:ul(['Save your results file and turn it in. Your instructor loads every team onto the class board.','Export your blueprint and price list for your presentation slides.','Finish the results and presentation pages of your worksheet.']),
+    tool:`<div class="btn-row">${['labExport:download:Save results file','bpJpg:architecture:Blueprint JPG','pdf:picture_as_pdf:Price list PDF'].map(x=>{const [a,i,t]=x.split(':');return `<button class="chip${a==='labExport'?' primary':''}" data-a="${a}"><span class="ms sm" aria-hidden="true">${i}</span>${t}</button>`;}).join('')}</div>`}];
+  st.forEach((s,i)=>{s.n=i+1;s.left=s.keys.filter(k=>blank(k[0])).length;s.done=s.done?(s.left===0&&s.done()):s.left===0;});
+  return st;}
+function fmtKey(k){const v=get(k);if(v==null||String(v).trim()==='')return '<span class="muted">blank</span>';
+  if(/price|wage|each|freight|trip|plant|upkeep|mixYd|trayPrice|costs\.\d\.v|seed\.price/.test(k)&&!/perTrip/.test(k)&&!isNaN(num(v)))return money(num(v),num(v)<10?2:0);return esc(v);}
+function stepCard(s,next){const k='lab:'+s.id;const open=OPEN[k]!==undefined?OPEN[k]:s===next;
+  const list=s.keys.length&&!s.inline?`<div class="ls-keys"><span class="caps">Your numbers</span>${s.keys.map(([key,l])=>`<div class="kv"><span>${esc(l)}</span><b>${fmtKey(key)}</b></div>`).join('')}</div>`:'';
+  const go=!s.inline&&(s.keys.length||s.go)?`<button class="chip primary" data-a="labGo:${s.id}"><span class="ms sm" aria-hidden="true">near_me</span>${s.left||!s.done?'Go fill it in':'Review it in the app'}</button>`:'';
+  const nx=s.done&&next?`<button class="chip" data-a="labOpen:${next.id}"><span class="ms sm" aria-hidden="true">arrow_downward</span>Next: step ${next.n}</button>`:'';
+  return `<section class="card lab-step${s.done?' done':''}${s===next?' next':''}" id="ls-${s.id}">
+  <button class="ls-h" data-a="labFold:${s.id}" aria-expanded="${open}"><span class="ls-n">${s.done?'<span class="ms" aria-hidden="true">check</span>':s.n}</span>
+    <span class="ls-t"><b>${s.t}</b><small>Worksheet ${s.ws}${!s.done&&s.left?` · ${s.left} to go`:s.done?' · done':''}</small></span><span class="ms fold-ic" aria-hidden="true">expand_more</span></button>
+  ${open?`<div class="ls-b">${s.body||''}${s.tool||''}${list}${go||nx?`<div class="btn-row">${go}${nx}</div>`:''}</div>`:''}</section>`;}
+function vLab(){const c=crop(),r=calc(c),k=capacity(r),L=S.lab;const st=labSteps(c);const nd=st.filter(s=>s.done).length,next=st.find(s=>!s.done);
+  const tile=(l,v,cl)=>`<div class="ln"><span class="caps">${l}</span><b class="num ${cl||''}">${v}</b></div>`;
+  return pills()+`<section class="card hero lab-hero"><div class="lab-top"><div class="lab-id"><span class="caps muted">Plug Lab</span><h1 class="lab-team">${esc(L.group||'Your nursery team')}</h1>
+    <p class="foot muted">${esc(c.name||'No plant yet')}${L.picked?` · Path ${PATHS[c.src].L}: ${PATHS[c.src].n}`:''}</p></div>
+    <div class="ring" style="--p:${(nd/st.length*100).toFixed(1)}" role="img" aria-label="${nd} of ${st.length} steps done"><b>${nd}</b><small>of ${st.length}</small></div></div>
+  <div class="lab-nums">${tile('Cost / plug',plug(r.perPlug))}${tile('Price',r.price!=null?money(r.price):'—')}${tile('Profit / yr',k.profit!=null?money(k.profit,0):'—',k.profit!=null?(k.profit<0?'neg':'pos'):'')}</div>
+  ${next?`<p class="foot muted">Next up: step ${next.n}, ${esc(next.t.toLowerCase())}.</p>`:'<p class="foot pos">Every step is done. Get ready to present.</p>'}</section>`+st.map(s=>stepCard(s,next)).join('');}
+function labResults(){const c=crop(),r=calc(c),k=capacity(r),bt=benchTotals(usesStock(c));const p=planCalc(c,r);
+  let bp='';try{const cv=document.createElement('canvas');drawBlueprint(cv,1000);bp=cv.toDataURL('image/jpeg',0.82);}catch(e){}
+  const n=v=>v==null||isNaN(v)?null:+(+v).toFixed(4);
+  return {app:'plug-lab',v:1,saved:new Date().toISOString(),team:S.lab.group||'',members:S.lab.members||'',
+    crop:{name:c.name||'',path:c.src,pathLetter:PATHS[c.src].L,pathName:PATHS[c.src].n,cells:n(r.cells),perCell:r.cpc,mistWeeks:n(r.mw),hardWeeks:n(r.hw),fillPct:n(r.st),cullPct:n(r.cl),patent:!!c.patent,ppaf:c.ppaf||''},
+    money:{costTray:n(r.total),perPlug:n(r.perPlug),price:n(r.price),sellable:n(r.sell),revTray:n(r.rev),profitTray:n(r.profit),margin:n(r.margin),
+      parts:r.parts.map(x=>({k:x.k,n:x.n,v:n(x.v)})),traysYr:k.flats||null,plugsYr:n(k.plugs),incomeYr:n(k.rev),costYr:n(k.cost),profitYr:n(k.profit),limit:k.limit||null,
+      ownLabor:!!S.shop.ownLabor,ownPayYr:r.own&&r.ownPay!=null&&k.flats?n(r.ownPay*k.flats):null},
+    benches:{area:n(bt.area),mist:bt.mist,open:bt.open,stockPots:c.src==='stock'?(r.stockFit||null):null,balanced:benchBalance(c,r).ok===true},
+    contract:p&&!p.incomplete?{trays:p.trays,ship:S.plan.ship||'',fits:!p.over,rounds:p.rounds,profit:n(p.profit),late:!!p.late}:null,
+    steps:labSteps(c).map(s=>({n:s.n,t:s.t,done:s.done})),blueprint:bp,state:JSON.parse(JSON.stringify(S))};}
+function labExport(){const res=labResults();const slug=(S.lab.group||'team').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'')||'team';
+  S.lab.exported=true;save();deliver(new Blob([JSON.stringify(res)],{type:'application/json'}),'plug-lab-'+slug+'.json');if(S.tab==='lab')render();toast('Results file saved. Turn it in to your instructor.');}
+function labGoSteps(){const L=S.lab;if(!L||!L.go)return null;const c=crop();const s=labSteps(c).find(x=>x.id===L.go);if(!s)return null;
+  let st;if(s.go)st=s.done?[]:s.go.slice();else st=s.keys.filter(k=>blank(k[0])).map(([key,label])=>{const [tab,sec]=secOf(key);return {tab,sec,key,label};});
+  return {c,st,s};}
+function labRefresh(){const c=crop(),r=calc(c);
+  const g=(+S.lab.trip.miles>0&&+S.lab.trip.mpg>0&&+S.lab.trip.gas>0)?num(S.lab.trip.miles)/num(S.lab.trip.mpg)*num(S.lab.trip.gas):null;
+  const i=(+S.lab.trip.miles>0&&+S.lab.trip.irs>0)?num(S.lab.trip.miles)*num(S.lab.trip.irs):null;
+  o('tripGas',g!=null?money(g):'—');o('tripIrs',i!=null?money(i):'—');
+  ['h','s','f'].forEach(id=>{const v=ttVal(id);o('tt_'+id,v==null?'—':id==='f'?n1(v,1)+' min':Math.round(v).toLocaleString('en-US')+' / hr');});
+  const b=$('[data-o=balance]');if(b)b.innerHTML=balanceHTML(c,r);}
+function vBenchesLab(){return `<section class="card">${cardHead('balance','sky','Bench balance','Keeps plug trays moving from mist to hardening off.')}<div data-o="balance">${balanceHTML(crop(),calc(crop()))}</div></section>`+vBenches();}
+/* ---------- render ---------- */
+const VIEWS={lab:vLab,price:vPrice,crop:vCrop,costs:vCosts,benches:vBenchesLab,plan:vPlan};
+const TITLES={lab:'Lab steps',price:'Price',crop:'Crop',costs:'Costs',benches:'Benches',plan:'Contract grow'};
+function render(){document.body.dataset.tab=S.tab;{const m=document.querySelector('meta[name=theme-color]');if(m)m.content=getComputedStyle(document.body).getPropertyValue('--page').trim()||'#0b1b36';}$('#topTitle').textContent=TITLES[S.tab];
+  $$('.tab').forEach(t=>t.classList.toggle('on',t.dataset.tab===S.tab));
+  $('#main').innerHTML=VIEWS[S.tab]();refresh();}
+function o(name,text,html){$$(`[data-o="${name}"]`).forEach(e=>{if(html)e.innerHTML=text;else e.textContent=text;});}
+function deps(c){const show=(n,v)=>$$(`[data-dep="${n}"]`).forEach(e=>e.hidden=!v);
+  show('perTrip',opt(c.collect.trip)>0);show('perOrder',opt(c.buy.freight)>0);show('packs',opt(c.seed.freight)>0);show('fy',S.shop.supplies.some(x=>num(x.price)>0));show('mist',benchTotals().mist>0);
+  const mr=$('[data-o=rateMist]');if(mr)mr.closest('.kv').hidden=!(benchTotals().mist>0);}
+function refresh(){syncStockBench();const c=crop(),r=calc(c);deps(c);const t=S.tab;
+  const missKeys=new Set(r.miss.map(x=>x.key));
+  $$('input[data-k]').forEach(i=>i.classList.toggle('need',missKeys.has(i.dataset.k)));
+  {const op=$(`#cropSel option[value="${c.id}"]`);if(op)op.textContent=c.name||'Untitled';}
+  if(t==='price'){
+    o('price',r.price!=null?money(r.price):'—');
+    o('sugg',r.sugg!=null?money(Math.ceil(r.sugg*100-1e-6)/100):'—');o('tm',Math.round(r.tm*100)+'%');const sb=$('[data-o=suggBox]');if(sb)sb.hidden=r.sugg==null;
+    o('costLine',r.perPlug!=null?`Costs ${plug(r.perPlug)} per plug`:'');
+    const mb=$('[data-o=mgnBadge]');if(mb){if(r.margin!=null){mb.textContent=pct(r.margin)+' margin';mb.classList.toggle('neg',r.profit<0);mb.style.display='';}else mb.style.display='none';}
+    const bm=$('[data-r=miss]');if(bm)bm.innerHTML=missCard(r);
+    const bs=$('[data-r=sum]');if(bs)bs.innerHTML=summaryHTML(r);
+    const bb=$('[data-r=bars]');if(bb)bb.innerHTML=barsHTML(r);
+  }else if(t==='crop'){
+    o('cpc',String(r.cpc));
+    {const el=$('[data-o=srcCmp]');if(el)el.innerHTML=srcCompare(c).map(x=>`<button class="src-opt${x.k===c.src?' on':''}" data-a="src:${x.k}" role="radio" aria-checked="${x.k===c.src}"><span class="ms" aria-hidden="true">${SRC[x.k].ic}</span><span class="t">${SRC[x.k].n}<small>${x.k==='buy'&&num(c.buy.each)>0?plug(num(c.buy.each))+' per cutting'+(opt(c.buy.freight)>0?' + freight':''):x.k==='seed'&&num(c.seed.price)>0&&num(c.seed.per)>0?money(num(c.seed.price))+' for '+num(c.seed.per).toLocaleString('en-US')+' seeds':SRC[x.k].sub}</small></span><b>${x.v!=null?plug(x.v):'needs info'}<small>total per plug</small></b></button>`).join('');}
+    o('mixLine',r.ydPerFlat!=null?`${n1(r.ydPerFlat*27,2)} cu ft · ${n1(r.tpb,0)} plug trays/yd³`:'—');
+    const m=$('[data-r=missCrop]');if(m)m.innerHTML=missCard(r,'crop');
+  }else if(t==='costs'){
+    o('costSum',r.costSum>0?money(r.costSum,0):'—');o('perSeed',r.seed&&r.unit!=null?(r.unit*100).toFixed(r.unit<0.01?3:2)+'¢':'—');
+    o('rateOpen',r.R!=null?money(r.R,3)+' / sq ft / wk':'—');
+    o('rateMist',r.R!=null?money(r.R+r.A,3)+' / sq ft / wk':'—');
+    o('tm2',Math.round(opt(S.shop.margin))+'%');
+    const fy=r.fy;o('fyLine',fy.n>0?(fy.auto?`Using ${fy.n.toLocaleString('en-US')} plug trays a year, the bench max for ${c.name||'this crop'}.`:`Using ${fy.n.toLocaleString('en-US')} plug trays a year.`):'Add benches or plug trays per year to spread supply costs.');
+    S.shop.supplies.forEach((x,i)=>{const p=num(x.price),q=num(x.qty)>0?num(x.qty):1,mo=num(x.months);
+      o('sup'+i,p>0&&mo>0?`${money(q*p)} every ${n1(mo,1)} mo${fy.n>0?' · '+plug(q*p/(fy.n*mo/12))+' per plug tray':''}`:'');});
+    const m=$('[data-r=missShop]');if(m)m.innerHTML=missCard(r,'costs');
+  }else if(t==='benches'){
+    const ws=usesStock(),bt=benchTotals(ws),cn=crop().name||'this crop';
+    o('benchArea',bt.area>0?n1(bt.area,1)+' sq ft':'—');
+    S.shop.benches.forEach((b,i)=>{const n=Math.max(0,Math.round(opt(b.count)));
+      if(b.type==='stock'){if(!ws)return;const pk=POTS[b.pot]?b.pot:'1',f=potFit(b,pk)*n;o('fit'+i,f?(b.auto&&b.need?`Sized for ${cn}: ${b.need.toLocaleString('en-US')} stock plants · holds ${f.toLocaleString('en-US')} ${POTS[pk].n} pots`:`Holds ${f.toLocaleString('en-US')} ${POTS[pk].n} pots`):'');return;}
+      const f=fits(b);o('fit'+i,f?`${f} plug trays each${n>1?' · '+(f*n).toLocaleString('en-US')+' total':''}`:'');});
+    requestAnimationFrame(drawBpPreview);
+    const m=$('[data-r=missBench]');if(m)m.innerHTML=missCard(r,'benches');
+  }else if(t==='plan'){const p=$('[data-r=plan]');if(p)p.innerHTML=planHTML(c,r);}
+  labRefresh();applyBeacons();
+}
+function syncSame(t){$$(`[data-k="${t.dataset.k}"]`).forEach(e=>{if(e!==t&&document.activeElement!==e)e.value=get(t.dataset.k)===''&&e.type==='range'?0:get(t.dataset.k);});}
+
+/* ---------- events ---------- */
+document.addEventListener('input',e=>{const t=e.target;if(!t.dataset||!t.dataset.k)return;
+  let v=t.value;if(t.type==='range'&&t.dataset.k==='c.price')v=(+v).toFixed(2);
+  set(t.dataset.k,v);
+  {const m=/^shop\.benches\.(\d+)\.(len|wid|count)$/.exec(t.dataset.k);if(m){const b=S.shop.benches[+m[1]];if(b&&b.auto&&m[2]!=='wid')b.auto=0;}}
+  if(t.dataset.k==='c.cells'){const c=crop();if(c.volAuto||!c.cellVol){const cv=CELL_VOL[num(v)];c.cellVol=cv?String(cv):'';c.volAuto=1;const ci=$('input[data-k="c.cellVol"]');if(ci)ci.value=c.cellVol;}}
+  if(t.dataset.k==='c.cellVol')crop().volAuto=0;
+  save();syncSame(t);refresh();});
+document.addEventListener('change',e=>{const t=e.target;
+  if(t.dataset&&t.dataset.own){S.shop.ownLabor=t.checked;save();render();toast(t.checked?'Labor now counts as your profit':'Labor counts as a cost again');return;}
+  if(t.id==='presetSel'){$('#presetSub').textContent=presetSub(PRESETS[t.value]);return;}
+  if(t.id==='cropSel'){S.cur=t.value;save();render();return;}
+  if(t.dataset&&t.dataset.patent){crop().patent=t.checked;save();render();return;}
+  if(t.dataset&&t.dataset.sup){const c=crop();c.off=(c.off||[]).filter(x=>x!==t.dataset.sup);if(!t.checked)c.off.push(t.dataset.sup);save();refresh();return;}
+  if(t.tagName==='SELECT'&&/^shop\.supplies\.\d+\.unit$/.test(t.dataset.k||'')){set(t.dataset.k,t.value);save();render();return;}
+  if(t.tagName==='SELECT'&&t.dataset.k){set(t.dataset.k,t.value);save();refresh();}
+  if(S.tab==='lab'&&t.dataset&&t.dataset.k&&t.tagName==='INPUT'){const y=window.scrollY;render();window.scrollTo(0,y);return;}
+  if(t.dataset&&t.dataset.k==='c.price'&&t.type==='text'){const v=num(t.value);if(!isNaN(v)){crop().price=v.toFixed(2);save();}closePriceEdit();}
+  if(t.id==='fileIn'&&t.files&&t.files[0])restore(t.files[0]);});
+document.addEventListener('keydown',e=>{if((e.key==='Enter'||e.key===' ')&&e.target.classList&&e.target.classList.contains('fold-h')){e.preventDefault();e.target.click();return;}if(e.key==='Enter'&&e.target.tagName==='INPUT'&&e.target.type!=='file')e.target.blur();});
+document.addEventListener('focusout',e=>{if(e.target.closest&&e.target.closest('#priceIn'))setTimeout(closePriceEdit,0);
+  if(e.target.dataset&&e.target.dataset.k==='c.name'){const op=$(`#cropSel option[value="${crop().id}"]`);if(op)op.textContent=crop().name||'Untitled';}});
+function closePriceEdit(){const pi=$('#priceIn'),mb=$('.metric-btn');if(pi&&pi.classList.contains('on')){pi.classList.remove('on');if(mb)mb.classList.remove('off');refresh();const rg=$('input[type=range][data-k="c.price"]');if(rg)rg.value=opt(crop().price);}}
+
+document.addEventListener('click',e=>{const b=e.target.closest('[data-a]');if(!b)return;const [a,arg]=b.dataset.a.split(/:(.*)/s);act(a,arg,b);});
+function act(a,arg,b){const c=crop();
+  switch(a){
+  case 'tab':S.tab=arg;if(S.lab.go&&!S.guide){const g=labGoSteps();if(g)g.st.forEach(x=>{if(x.tab===arg){OPEN[x.tab+':'+x.sec]=true;if(x.key)openFor(x.tab,x.key);}});}save();render();window.scrollTo(0,0);
+    if(S.lab.go)setTimeout(()=>{const e=$('.beacon:not(.tab)');if(e)e.scrollIntoView({block:'center',behavior:'smooth'});},120);break;
+  case 'labPath':c.src=arg;S.lab.picked=true;save();render();toast(`Path ${PATHS[arg].L}: ${PATHS[arg].n}`);break;
+  case 'labFold':{const k='lab:'+arg,st=labSteps(c),nx=st.find(x=>!x.done);const cur=OPEN[k]!==undefined?OPEN[k]:!!(nx&&nx.id===arg);OPEN[k]=!cur;render();break;}
+  case 'labOpen':{OPEN['lab:'+arg]=true;render();setTimeout(()=>{const e=$('#ls-'+arg);if(e)e.scrollIntoView({block:'start',behavior:'smooth'});},60);break;}
+  case 'labDone':S.lab.done[arg]=!S.lab.done[arg];save();render();break;
+  case 'labExport':closeSheet();labExport();break;
+  case 'labBack':{const id=S.lab.go;S.lab.go=null;S.lab.back=false;S.tab='lab';save();render();const st=labSteps(c),nx=st.find(x=>!x.done);
+    setTimeout(()=>{const e=$('#ls-'+(nx?nx.id:id));if(e)e.scrollIntoView({block:'start',behavior:'smooth'});},60);break;}
+  case 'labGo':{S.lab.go=arg;S.lab.back=false;const g=labGoSteps();if(!g){S.lab.go=null;break;}
+    const s=g.s;let list=g.st;if(!list.length){S.lab.go=null;list=s.go||s.keys.map(([key,label])=>{const [tab,sec]=secOf(key);return {tab,sec,key,label};});toast('Already done. Here it is to review.');}
+    if(!list.length)break;const t0=list[0].tab;S.tab=t0;list.forEach(x=>{if(x.tab===t0){OPEN[x.tab+':'+x.sec]=true;if(x.key)openFor(x.tab,x.key);}});save();render();window.scrollTo(0,0);
+    setTimeout(()=>{const e=$('.beacon:not(.tab)')||(list[0].key&&$(`[data-k="${list[0].key}"]`));if(e)e.scrollIntoView({block:'center',behavior:'smooth'});},120);break;}
+  case 'ttUse':{const [id,key]=arg.split('|');const v=ttVal(id);if(v==null){toast('Enter how many and the seconds first');break;}set(key,id==='f'?String(+v.toFixed(1)):String(Math.round(v)));save();render();toast('Saved to the app');break;}
+  case 'tripUse':{const m=num(S.lab.trip.miles),v=arg==='gas'?m/num(S.lab.trip.mpg)*num(S.lab.trip.gas):m*num(S.lab.trip.irs);if(!(v>0)){toast('Fill in the trip numbers first');break;}c.collect.trip=v.toFixed(2);save();render();toast('Trip cost set to '+money(v));break;}
+  case 'crop':S.cur=arg;save();render();break;
+  case 'addCrop':openSheet(`<h3>Add a variety</h3><div class="s-group">${item('newBlank','add','mint','Another plant','Try a second plant to compare. The Lab steps follow whichever plant is picked.')}</div>
+    <button class="cancel" data-a="closeSheet">Cancel</button>`,'Add a variety');break;
+  case 'newPresetSel':{const k=$('#presetSel').value;act('newPreset',k);break;}
+  case 'newPreset':{closeSheet();const n=fromPreset(arg);S.crops.push(n);autoPrice(n);S.cur=n.id;S.tab='crop';S.guide={id:n.id,auto:null,seen:{sup:1}};save();render();window.scrollTo(0,0);toast(n.name+' added');break;}
+  case 'newBlank':{closeSheet();const n=newCrop('Crop '+(S.crops.length+1));S.crops.push(n);S.cur=n.id;S.tab='crop';S.guide={id:n.id,auto:n.name,seen:{}};OPEN['crop:Crop']=true;save();render();window.scrollTo(0,0);
+    setTimeout(()=>{const i=$('[data-k="c.name"]');if(i){i.focus();i.select();}},50);break;}
+  case 'dupCrop':{const n=JSON.parse(JSON.stringify(c));n.id=uid();n.name=(c.name||'Crop')+' copy';S.crops.splice(S.crops.indexOf(c)+1,0,n);S.cur=n.id;save();render();toast('Duplicated');break;}
+  case 'delCrop':if(S.crops.length>1&&confirm(`Delete "${c.name||'this crop'}"?`)){const i=S.crops.indexOf(c);S.crops.splice(i,1);S.cur=S.crops[Math.max(0,i-1)].id;save();render();toast('Deleted');}break;
+  case 'price':{const v=Math.max(0,Math.round((opt(c.price)+(+arg)*0.01)*100)/100);c.price=v.toFixed(2);save();const rg=$('input[type=range][data-k="c.price"]');if(rg)rg.value=Math.min(v,5);const pi=$('#priceIn input');if(pi)pi.value=c.price;refresh();break;}
+  case 'editPrice':{const pi=$('#priceIn');b.classList.add('off');pi.classList.add('on');const i=pi.querySelector('input');i.value=c.price;i.focus();i.select();break;}
+  case 'useSugg':{const r=calc(c);if(r.sugg!=null){c.price=(Math.ceil(r.sugg*100-1e-6)/100).toFixed(2);save();render();toast('Price set to '+money(+c.price));}break;}
+  case 'cells':c.cells=arg;if(c.volAuto||!c.cellVol){const cv=CELL_VOL[+arg];c.cellVol=cv?String(cv):'';c.volAuto=1;}save();render();break;
+  case 'cpc':if(isSeed(c)){c.seed.perCell=String(Math.min(20,Math.max(1,(Math.round(opt(c.seed.perCell))||1)+(+arg))));save();refresh();o('cpc',c.seed.perCell);}else{c.cpc=Math.min(5,Math.max(1,(Math.round(opt(c.cpc))||1)+(+arg)));save();refresh();o('cpc',String(c.cpc));}break;
+  case 'src':if(c.src!==arg){c.src=arg;save();render();toast(arg==='stock'?'Using in-house mother stock. Stock bench is back.':arg==='buy'?'Buying in cuttings. Stock bench left out.':arg==='seed'?'Growing from seed. Stock bench left out.':'Collecting cuttings offsite. Stock bench left out.');}break;
+  case 'rateMode':S.shop.rateMode=arg;save();render();break;
+  case 'addCost':S.shop.costs.push({n:'',v:''});save();render();setTimeout(()=>{const i=$$('[data-k^="shop.costs."][data-k$=".n"]').pop();if(i)i.focus();},30);break;
+  case 'delCost':S.shop.costs.splice(+arg,1);save();render();break;
+  case 'addBench':{const nb=newBench(arg);OPEN['i:'+nb.id]=true;S.shop.benches.push(nb);}save();render();setTimeout(()=>{const i=$$('[data-k$=".len"]').pop();if(i){i.scrollIntoView({block:'center'});i.focus();}},40);break;
+  case 'delBench':S.shop.benches.splice(+arg,1);save();render();break;
+  case 'bpot':{const [i,k]=arg.split(':');const b=S.shop.benches[+i];if(b){b.pot=k;save();render();}break;}
+  case 'benchType':{const [i,t]=arg.split(':');if(S.shop.benches[+i])S.shop.benches[+i].type=t;save();render();break;}
+  case 'addSup':{const ns=newSupply();OPEN['i:'+ns.id]=true;S.shop.supplies.push(ns);}save();render();setTimeout(()=>{const i=$$('[data-k^="shop.supplies."][data-k$=".n"]').pop();if(i){i.scrollIntoView({block:'center'});i.focus();}},40);break;
+  case 'delSup':{const x=S.shop.supplies[+arg];if(!x)break;S.shop.supplies.splice(+arg,1);S.crops.forEach(k=>k.off=(k.off||[]).filter(id=>id!==x.id));save();render();break;}
+  case 'qty':{const q=Math.max(0,Math.round(opt(S.plan.trays))+(+arg));S.plan.trays=q?String(q):'';save();const i=$('[data-k="plan.trays"]');if(i)i.value=S.plan.trays;refresh();break;}
+  case 'jump':{const [key,tab]=arg.split('|');S.tab=tab;openFor(tab,key);save();render();setTimeout(()=>{const i=$(`input[data-k="${key}"]`);if(i){i.scrollIntoView({block:'center',behavior:'smooth'});i.classList.add('flash');setTimeout(()=>{i.focus({preventScroll:true});},350);setTimeout(()=>i.classList.remove('flash'),3000);}},30);break;}
+  case 'fold':{OPEN[arg]=!OPEN[arg];b.classList.toggle('folded',!OPEN[arg]);b.setAttribute('aria-expanded',String(!!OPEN[arg]));
+    if(OPEN[arg]&&arg==='benches:Blueprint')requestAnimationFrame(drawBpPreview);
+    if(OPEN[arg]&&S.guide&&arg==='crop:Supplies used'){S.guide.seen=S.guide.seen||{};S.guide.seen.sup=1;save();}applyBeacons();break;}
+  case 'foldItem':{OPEN[arg]=!OPEN[arg];const it=b.closest('.bench');if(it)it.classList.toggle('folded',!OPEN[arg]);b.setAttribute('aria-expanded',String(!!OPEN[arg]));b.setAttribute('aria-label',OPEN[arg]?'Collapse':'Expand');applyBeacons();break;}
+  case 'foldAll':{closeSheet();const shut=arg==='1';$$('[data-a^="fold:"],[data-a^="foldItem:"]').forEach(e=>{const k=e.dataset.a.split(/:(.*)/s)[1];if(shut)delete OPEN[k];else OPEN[k]=true;});
+    if(!shut&&S.tab==='crop'&&S.guide){S.guide.seen=S.guide.seen||{};S.guide.seen.sup=1;save();}render();break;}
+  case 'guideStop':S.guide=null;save();applyBeacons();toast('Guide off');break;
+  case 'exKeep':S.example=false;save();render();break;
+  case 'exClear':if(confirm('Clear the example costs, benches and supplies? Anything you typed in yourself stays, and so do your crops.')){clearShop(S.shop);S.example=false;save();render();toast('Examples cleared');}break;
+  case 'menu':openMenu();break;
+  case 'howto':openHowto();break;
+  case 'tour':closeSheet();setTimeout(showTour,250);break;
+  case 'tourSkip':closeTour();break;
+  case 'closeSheet':closeSheet();break;
+  case 'pdf':closeSheet();exportPDF();break;
+  case 'xlsx':closeSheet();exportXLSX();break;
+  case 'bpJpg':closeSheet();exportBlueprint();break;
+  case 'backup':closeSheet();backup();break;
+  case 'restore':closeSheet();$('#fileIn').value='';$('#fileIn').click();break;
+  case 'reset':closeSheet();if(confirm('Erase every crop, cost and bench on this device?')&&confirm('This can\'t be undone. Erase everything?')){S=defaults(true);for(const k in OPEN)delete OPEN[k];saveNow();render();toast('Started fresh');}break;
+  }}
+
+/* ---------- sheet ---------- */
+function openSheet(html,label){const sh=$('#sheet');sh.innerHTML='<div class="grab"></div>'+html;sh.setAttribute('aria-label',label);sh.classList.add('on');sh.setAttribute('aria-hidden','false');$('#scrim').classList.add('on');}
+function closeSheet(){$('#sheet').classList.remove('on');$('#sheet').setAttribute('aria-hidden','true');$('#scrim').classList.remove('on');}
+function item(a,ic,tone,t,sub,cls){return `<button class="s-item${cls?' '+cls:''}" data-a="${a}"><span class="ic tn-${tone}"><span class="ms" aria-hidden="true">${ic}</span></span><span class="txt">${t}<small>${sub}</small></span></button>`;}
+function presetSub(p){const w=[];p=Object.assign({},p.crop,{noHorm:p.noHorm,patent:p.crop.patent});if(+p.mistWk)w.push(p.mistWk+' wks to root');if(+p.hardWk)w.push(p.hardWk+' to harden and finish');w.push(p.noHorm?'no hormone':'rooting hormone');if(p.patent)w.push('patented');return w.join(' · ');}
+function openMenu(){openSheet(`<h3>Menu</h3>
+  <div class="caps s-cap">This tab</div><div class="s-group">${item('foldAll:0','unfold_more','sky','Expand all','Open every section')}${item('foldAll:1','unfold_less','sky','Collapse all','Show only section titles')}</div>
+  <div class="caps s-cap">Share</div><div class="s-group">${item('pdf','picture_as_pdf','pink','Price list PDF','Every crop, with cost breakdowns')}${item('xlsx','table_view','mint','Excel workbook','Prices, costs and benches')}${item('bpJpg','architecture','sky','Blueprint JPG','All growing areas, to scale')}</div>
+  <div class="caps s-cap">Your data</div><div class="s-group">${item('backup','download','sky','Save a backup','A file you can restore on any device')}${item('restore','upload','lav','Restore a backup','Replaces what\'s on this device')}</div>
+  <div class="s-group">${item('labExport','download','mint','Save results file','For the class board')}${item('howto','help','butter','How the math works','Square-foot-weeks, bench turns, fill rate, margin')}${item('reset','restart_alt','pink','Start fresh','Erase everything on this device','danger')}</div>
+  <button class="cancel" data-a="closeSheet">Done</button>`,'Menu');}
+function openHowto(){openSheet(`<h3>How the math works</h3><div class="howto">
+  <h4>Everything is figured per plug tray</h4><p>Cuttings, potting mix, the plug tray, supplies, labor and bench space add up to the cost of one plug tray.</p>
+  <h4>Potting mix</h4><p>Picking a cell count fills in a typical cell volume for that insert. One cubic yard is 46,656 cubic inches.</p>
+  <div class="f">Mix per plug tray = cells × cell volume × (1 + packing %)<br>Plug trays per yd³ = 46,656 ÷ mix per plug tray</div>
+  <h4>Supplies</h4><p>Each purchase is spread over the plug trays you make before you buy it again.</p>
+  <div class="f">Per plug tray = amount × price ÷ (plug trays per year × months ÷ 12)</div>
+  <p style="margin-top:8px">If you set plug trays in separate carrying flats, add the carrying flats here as a supply bought once a year (every 12 months).</p>
+  <p style="margin-top:8px">Supplies a crop doesn't use (turned off on its Crop tab) aren't charged to it.</p>
+  <h4>Bench space</h4><p>A square-foot-week is one square foot of bench for one week. Your yearly facility costs are divided by every square-foot-week you have to sell.</p>
+  <div class="f">Bench rate = yearly costs ÷ (bench sq ft × % in use × weeks)</div>
+  <div class="f">Space per plug tray = plug tray size × (mist weeks × mist rate + hardening weeks × open rate)</div>
+  <h4>Cuttings</h4><p><b>Mother stock:</b> the plant's cost spread over the months you cut from it, plus monthly upkeep, divided by cuttings per month, plus harvest time.</p>
+  <div class="f">(plant cost ÷ months + upkeep) ÷ cuttings per month + wage ÷ harvest rate</div>
+  <p style="margin-top:8px"><b>Bought in:</b> (box price + freight) ÷ cuttings per box. <b>Collected:</b> wage ÷ collecting rate, plus trip cost ÷ cuttings per trip.</p>
+  <h4>Only sellable plugs pay</h4><p>Cuttings that don't root and plugs you grade out still used space and labor, so the plug tray's cost is divided by what you can sell.</p>
+  <div class="f">Sellable = cells × rooting % × (1 − grade-out %)<br>Cost per plug = cost per plug tray ÷ sellable</div>
+  <h4>Bench turns</h4><p>Each bench holds as many 1020 plug trays as fit, turned whichever way fits more. Every few weeks a batch comes off mist and moves to the open benches, so the mist bench refills on the same schedule.</p>
+  <div class="f">Plug trays per turn = the smaller of mist-bench plug trays or open-bench plug trays<br>Turn every = weeks under mist<br>Plug trays per year = plug trays per turn × turns in your production weeks</div>
+  <p style="margin-top:8px">If hardening off takes longer than rooting, the open benches have to hold more than one batch at a time, and the turn size shrinks to fit.</p>
+  <h4>Bought-in cuttings</h4><p>Enter the price per cutting. Freight is spread over the cuttings in each order.</p>
+  <div class="f">Per cutting = price + freight ÷ cuttings per order</div>
+  <p style="margin-top:8px">Royalties on patented varieties are added only when you propagate them yourself. Bought-in cuttings and seed from a licensed supplier usually include it.</p>
+  <h4>Seed</h4><p>Enter what you paid and how many seeds came in it, a packet, an ounce or a pound. Seeds per cell and cells that fill set how much seed each plug tray uses and how many plugs it makes. Sowing labor is figured per cell.</p>
+  <div class="f">Per seed = (price + shipping ÷ packets per order) ÷ seeds per packet<br>Seed per plug tray = cells × seeds per cell × per seed</div>
+  <h4>Mother stock</h4><p>When a crop uses mother stock, a stock bench appears on the Benches tab, sized to hold the stock plants it needs. Pick #1, #3 or #5 pots there. Pots sit side by side (top diameters 6⅜, 10½ and 11⅞ inches), and each pot's bench space is added to the stock plant's monthly cost. If you change the stock bench's length or count yourself, it stops resizing.</p>
+  <div class="f">Stock plants needed = cuttings per month to keep the mist bench full ÷ cuttings per plant per month</div>
+  <p style="margin-top:8px">If the stock area can't hold that many, yearly production drops to what your stock plants can supply.</p>
+  <p style="margin-top:8px">Only the cutting source you pick counts. If a crop buys or collects its cuttings, the mother stock area is left out of its bench rate, capacity and blueprint.</p>
+  <h4>Doing the labor yourself</h4><p>Turn on "I do the labor myself" on the Costs tab and labor (sticking, filling, grading and harvesting cuttings) leaves your costs. What it would have cost shows as your labor pay, and it's included in profit.</p>
+  <h4>Margin vs. markup</h4><p>Margin is profit as a share of the sale price. Markup is profit as a share of cost. A 40% margin is a 67% markup.</p>
+  <div class="f">Suggested price = cost per plug ÷ (1 − target margin)</div>
+  </div><button class="cancel" data-a="closeSheet" style="margin-top:16px">Done</button>`,'How the math works');}
+
+let toastT;function toast(m){const t=$('#toast');t.textContent=m;t.classList.add('on');clearTimeout(toastT);toastT=setTimeout(()=>t.classList.remove('on'),2200);}
+
+/* ---------- export ---------- */
+const today=()=>{const d=new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');};
+async function deliver(blob,name){
+  try{const f=new File([blob],name,{type:blob.type});if(navigator.canShare&&navigator.canShare({files:[f]})){await navigator.share({files:[f],title:name});return;}}catch(e){if(e&&e.name==='AbortError')return;}
+  const u=URL.createObjectURL(blob);const a=document.createElement('a');a.href=u;a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(u),4000);}
+function rows(){return S.crops.map(c=>({c,r:calc(c)}));}
+function srcLabel(c){return SRC[c.src].n;}
+function exportPDF(){const J=window.jspdf;if(!J||!J.jsPDF){toast('Connect to the internet once to load PDF export');return;}
+  const doc=new J.jsPDF({unit:'pt',format:'letter'});if(typeof doc.autoTable!=='function'){toast('PDF tools are still loading. Try again.');return;}
+  const W=doc.internal.pageSize.getWidth();
+  doc.setFont('helvetica','bold');doc.setFontSize(20);doc.text('Plug price list',40,52);
+  doc.setFont('helvetica','normal');doc.setFontSize(10);doc.setTextColor(110);doc.text(new Date().toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'}),40,68);doc.setTextColor(0);
+  const R=rows();
+  doc.autoTable({startY:84,head:[['Crop','Source','Plug tray','Sellable','Cost / plug','Price / plug','Plug tray sells for','Margin','Plug trays / yr','Income / yr']],
+    body:R.map(({c,r})=>{const k=capacity(r);return [c.name||'Untitled',srcLabel(c),n1(r.cells,0)+' cells',r.sell!=null?n1(r.sell,1):'—',plug(r.perPlug),r.price!=null?money(r.price):'—',money(r.rev),pct(r.margin),k.flats?k.flats.toLocaleString('en-US'):'—',money(k.rev,0)];}),
+    styles:{fontSize:9,cellPadding:5},headStyles:{fillColor:[17,17,20]},alternateRowStyles:{fillColor:[247,247,249]}});
+  R.forEach(({c,r})=>{let y=doc.lastAutoTable.finalY+26;if(y>640){doc.addPage();y=52;}
+    doc.setFont('helvetica','bold');doc.setFontSize(13);doc.text(c.name||'Untitled',40,y);
+    doc.setFont('helvetica','normal');doc.setFontSize(9);doc.setTextColor(110);
+    doc.text([r.cells!=null?n1(r.cells,0)+'-cell plug tray':'',r.cpc+(r.seed?' seed':' cutting')+(r.cpc>1?'s':'')+' per cell',SRC[c.src].n.toLowerCase(),r.mw+r.hw>0?n1(r.mw+r.hw,1)+' weeks':'',r.st!=null?n1(r.st,0)+(r.seed?'% of cells fill':'% rooting'):'',r.cl?n1(r.cl,0)+'% grade-out':'',c.patent&&c.ppaf?'PPAF '+c.ppaf:''].filter(Boolean).join(' · '),40,y+13);doc.setTextColor(0);
+    doc.autoTable({startY:y+20,tableWidth:W-80,head:[['Cost per plug tray','$','Share']],
+      body:[...r.parts.map(p=>[p.n,p.v!=null?money(p.v):'needs info',p.v!=null&&r.total?pct(p.v/r.total):'']),['Total',money(r.total),''],['Per sellable plug',plug(r.perPlug),'']],
+      styles:{fontSize:9,cellPadding:4},headStyles:{fillColor:[60,60,68]},columnStyles:{1:{halign:'right'},2:{halign:'right'}},
+      didParseCell:d=>{if(d.section==='body'&&d.row.index>=r.parts.length)d.cell.styles.fontStyle='bold';}});});
+  deliver(doc.output('blob'),'plug-price-list-'+today()+'.pdf');}
+function exportXLSX(){if(!window.XLSX){toast('Connect to the internet once to load Excel export');return;}
+  const X=window.XLSX,wb=X.utils.book_new(),R=rows();
+  const pl=[['Crop','Source','Royalty per plug','PPAF number','Supplies used','Cells','Cuttings or seeds per cell','Sellable plugs','Weeks','Cost per plug tray','Cost per plug','Price per plug','Plug tray revenue','Profit per plug tray','Margin','Plug trays per turn','Turn every (wks)','Plug trays per year','Income per year','Profit per year']];
+  R.forEach(({c,r})=>{const k=capacity(r);pl.push([c.name,srcLabel(c),c.patent&&num(c.royalty)>0?num(c.royalty):'',c.patent?c.ppaf||'':'',r.supUsed.map(u=>u.x.n).join(', ')||'None',r.cells,r.cpc,r.sell!=null?+r.sell.toFixed(2):'',r.mw+r.hw,r.total!=null?+r.total.toFixed(2):'',r.perPlug!=null?+r.perPlug.toFixed(4):'',r.price!=null?r.price:'',r.rev!=null?+r.rev.toFixed(2):'',r.profit!=null?+r.profit.toFixed(2):'',r.margin!=null?+r.margin.toFixed(4):'',k.batch>0?k.batch:'',k.batch>0?k.every:'',k.flats||'',k.rev!=null?Math.round(k.rev):'',k.profit!=null?Math.round(k.profit):'']);});
+  const ws1=X.utils.aoa_to_sheet(pl);ws1['!cols']=pl[0].map((h,i)=>({wch:i===0?24:14}));X.utils.book_append_sheet(wb,ws1,'Price list');
+  const bd=[['Crop','Cost item','Per plug tray','Per sellable plug']];
+  R.forEach(({c,r})=>{r.parts.forEach(p=>bd.push([c.name,p.n,p.v!=null?+p.v.toFixed(2):'needs info',p.v!=null&&r.sell?+(p.v/r.sell).toFixed(4):'']));bd.push([c.name,'Total',r.total!=null?+r.total.toFixed(2):'',r.perPlug!=null?+r.perPlug.toFixed(4):'']);bd.push([]);});
+  const ws2=X.utils.aoa_to_sheet(bd);ws2['!cols']=[{wch:24},{wch:26},{wch:12},{wch:16}];X.utils.book_append_sheet(wb,ws2,'Cost breakdown');
+  const s=S.shop,sr=calc(crop());
+  const sh=[['Setting','Value'],['Hourly wage',num(s.wage)||''],['Owner does the labor (counted as profit)',s.ownLabor?'Yes':'No'],['Bench rate ($/sq ft/week)',sr.R!=null?+sr.R.toFixed(4):''],['Mist add-on ($/sq ft/week)',opt(s.mistAdd)],['Potting mix per cu yd',num(s.mixYd)||''],['Packing & waste %',opt(s.pack)],['Plug trays per year (supplies)',sr.fy.n||''],['Plug tray each',num(s.trayPrice)||''],['Plug tray reuses',num(s.trayUses)||1],['Target margin',opt(s.margin)/100],['Plug tray size (in)',`${s.flatL} × ${s.flatW}`],...s.benches.map(b=>[`${b.type==='open'?'Open':'Mist'} bench ${b.len}×${b.wid} ft × ${b.count||0}`,fits(b)*Math.max(0,Math.round(opt(b.count)))+' plug trays']),[],['Yearly facility cost','Amount'],...s.costs.map(x=>[x.n,num(x.v)||'']),['Bench sq ft',+benchTotals(usesStock()).area.toFixed(1)],['% in use',num(s.occ)||''],['Production weeks',num(s.weeks)||''],[],['Supply','Amount per purchase','Price per unit','Bought every (months)'],...s.supplies.filter(x=>num(x.price)>0).map(x=>[x.n,(num(x.qty)>0?num(x.qty):1)+' '+x.unit,num(x.price),num(x.months)||''])];
+  const ws3=X.utils.aoa_to_sheet(sh);ws3['!cols']=[{wch:32},{wch:14},{wch:22}];X.utils.book_append_sheet(wb,ws3,'Costs & benches');
+  const out=X.write(wb,{type:'array',bookType:'xlsx'});
+  deliver(new Blob([out],{type:'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'}),'plug-pricing-'+today()+'.xlsx');}
+function backup(){saveNow();deliver(new Blob([JSON.stringify({app:'Plug',saved:new Date().toISOString(),data:S},null,1)],{type:'application/json'}),'plug-backup-'+today()+'.json');}
+function restore(file){const fr=new FileReader();fr.onload=()=>{try{const j=JSON.parse(fr.result);const d=j&&j.app==='plug-lab'&&j.state?j.state:j&&j.data?j.data:j;if(!d||!Array.isArray(d.crops))throw 0;
+    if(!confirm(`Replace what's on this device with the backup (${d.crops.length} crop${d.crops.length>1?'s':''})?`))return;S=normalize(d);saveNow();render();toast('Backup restored');}
+  catch(e){toast('That file isn\'t a Plug backup');}};fr.readAsText(file);}
+
+S.crops.forEach(autoPrice);save();
+/* ---------- welcome tour (first visit only) ---------- */
+const TOUR_KEY='plugTourSeen';
+function tourSeen(){try{return localStorage.getItem(TOUR_KEY)==='1';}catch(e){return true;}}
+function closeTour(){try{localStorage.setItem(TOUR_KEY,'1');}catch(e){}const t=$('#tour');if(!t)return;const v=t.querySelector('video');if(v)v.pause();t.classList.remove('on');setTimeout(()=>t.remove(),300);}
+function showTour(){if($('#tour'))return;const t=document.createElement('div');t.id='tour';t.className='tour-ov';t.setAttribute('role','dialog');t.setAttribute('aria-modal','true');t.setAttribute('aria-label','Welcome tour');
+  t.innerHTML=`<div class="tour-box"><div class="tour-h"><span class="logo">${$('.logo').innerHTML}</span><div><h2>Welcome to Plug</h2><p>A 90-second tour of what it can do.</p></div></div>
+    <video src="plug-walkthrough.mp4" muted autoplay playsinline controls preload="auto"></video>
+    <div class="tour-btns"><button class="chip" data-a="tourSkip">Skip tour</button><button class="tour-go" data-a="tourSkip" hidden>Start using Plug</button></div>
+    <p class="foot muted">You can watch it again from the menu.</p></div>`;
+  document.body.appendChild(t);const v=t.querySelector('video');
+  v.addEventListener('error',closeTour);                       // no video file or offline: skip quietly
+  v.addEventListener('ended',()=>{t.querySelector('.tour-go').hidden=false;t.querySelector('.chip').hidden=true;});
+  const p=v.play();if(p&&p.catch)p.catch(()=>{});requestAnimationFrame(()=>t.classList.add('on'));}
+render();
+window.addEventListener('pagehide',saveNow);
+document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='hidden')saveNow();});
+if('serviceWorker' in navigator&&(location.protocol==='https:'||location.hostname==='localhost'))navigator.serviceWorker.register('sw.js').catch(()=>{});
+window.__plug={labSteps,labResults,benchBalance,drawBlueprint,act,OPEN,guideSteps,calc,capacity,benchTotals,fits,get S(){return S;},crop};
+})();
+</script>
+</body>
+</html>

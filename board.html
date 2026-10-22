@@ -1,0 +1,264 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#0b1b36">
+<title>Plug Lab Class Board</title>
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  color-scheme:dark;
+  --page:#0b1b36;--surface:#102448;--surface-2:#162f5a;--surface-3:#1c3a6c;
+  --line:rgba(170,200,255,.16);--grid:rgba(170,200,255,.10);
+  --text:#ffffff;--text-2:#d3def2;--text-3:rgba(211,222,242,.72);
+  --good:#4ade80;--bad:#f87171;--accent:#d6ba6e;
+  /* categorical slots, dark steps, validated on #102448 */
+  --s1:#3987e5;--s2:#d95926;--s3:#199e70;--s4:#c98500;--s5:#d55181;--s6:#008300;--s7:#9085e9;
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--page);color:var(--text);font-family:Inter,system-ui,-apple-system,"Segoe UI",sans-serif;font-size:15px;line-height:1.45;-webkit-font-smoothing:antialiased}
+button,input{font:inherit;color:inherit}
+button{cursor:pointer;border:0;background:none}
+.wrap{max-width:1180px;margin:0 auto;padding:20px 16px 60px}
+header.top{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-bottom:18px}
+.brand{display:flex;align-items:center;gap:12px;margin-right:auto;min-width:0}
+.brand img{width:44px;height:44px;border-radius:12px;flex:none}
+.brand h1{margin:0;font-size:24px;line-height:28px;font-weight:800;letter-spacing:-.02em}
+.brand p{margin:2px 0 0;color:var(--text-3);font-size:13px}
+.btn{display:inline-flex;align-items:center;gap:8px;padding:10px 16px;border-radius:999px;background:var(--surface-3);font-weight:600;font-size:14px;border:1px solid var(--line);min-height:44px}
+.btn.primary{background:var(--accent);color:#1b1608;border-color:transparent}
+.btn svg{width:18px;height:18px;flex:none}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:18px}
+.card h2{margin:0 0 4px;font-size:18px;line-height:24px;font-weight:700;letter-spacing:-.01em}
+.card .sub{margin:0 0 14px;color:var(--text-3);font-size:13px}
+.grid{display:grid;gap:14px}
+.tiles{grid-template-columns:repeat(4,minmax(0,1fr))}
+.tile{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:14px 16px;min-width:0}
+.tile .k{font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--text-3);font-weight:600}
+.tile .v{font-size:26px;line-height:32px;font-weight:800;font-variant-numeric:tabular-nums;margin-top:4px;overflow-wrap:anywhere}
+.tile .w{font-size:13px;color:var(--text-2);overflow-wrap:anywhere}
+.two{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
+.drop{border:2px dashed var(--line);border-radius:18px;padding:36px 20px;text-align:center;color:var(--text-2)}
+.drop.on{border-color:var(--accent);background:rgba(214,186,110,.06)}
+.drop h2{margin:0 0 6px;font-size:20px}
+.drop ol{text-align:left;display:inline-block;margin:10px 0 18px;padding-left:22px;color:var(--text-2)}
+/* bars */
+.bars{display:flex;flex-direction:column;gap:10px}
+.brow{display:grid;grid-template-columns:minmax(120px,190px) minmax(0,1fr) 92px;align-items:center;gap:10px}
+.bname{display:flex;align-items:center;gap:8px;min-width:0;font-size:14px;font-weight:600}
+.bname span.n{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.pl{flex:none;display:inline-grid;place-content:center;width:22px;height:22px;border-radius:7px;background:var(--surface-3);border:1px solid var(--line);font-size:12px;font-weight:800;color:var(--text)}
+.track{position:relative;height:22px}
+.zero{position:absolute;top:-4px;bottom:-4px;width:1px;background:var(--text-3)}
+.bar{position:absolute;top:3px;height:16px;background:var(--s1);border-radius:0 4px 4px 0}
+.bar.neg{border-radius:4px 0 0 4px}
+.bval{font-variant-numeric:tabular-nums;font-size:14px;font-weight:600;text-align:right;color:var(--text)}
+.stack{display:flex;gap:2px;height:16px;margin:3px 0}
+.seg{height:100%;min-width:2px}
+.seg:first-child{border-radius:0}
+.seg:last-child{border-radius:0 4px 4px 0}
+.legend{display:flex;flex-wrap:wrap;gap:6px 16px;margin:0 0 14px;font-size:13px;color:var(--text-2)}
+.legend i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:6px;vertical-align:-1px}
+.axis{display:grid;grid-template-columns:minmax(120px,190px) minmax(0,1fr) 92px;gap:10px;margin-top:6px;font-size:12px;color:var(--text-3)}
+.axis .ticks{position:relative;height:16px}
+.axis .ticks span{position:absolute;transform:translateX(-50%);white-space:nowrap;font-variant-numeric:tabular-nums}
+.gridlines{position:absolute;inset:0;pointer-events:none}
+.gridlines span{position:absolute;top:0;bottom:0;width:1px;background:var(--grid)}
+[data-tip]{cursor:default}
+#tip{position:fixed;z-index:20;pointer-events:none;background:#0a1530;border:1px solid var(--line);border-radius:10px;padding:8px 10px;font-size:13px;line-height:18px;box-shadow:0 8px 24px rgba(0,0,0,.4);max-width:260px;opacity:0;transition:opacity .1s}
+#tip.on{opacity:1}
+#tip b{display:block;font-size:13px}
+/* paths */
+.paths{grid-template-columns:repeat(4,minmax(0,1fr))}
+.path{background:var(--surface-2);border:1px solid var(--line);border-radius:14px;padding:14px;min-width:0}
+.path h3{margin:0 0 2px;font-size:15px;display:flex;gap:8px;align-items:center}
+.path .cnt{color:var(--text-3);font-size:12px;margin-bottom:8px}
+.path .kv{display:flex;justify-content:space-between;gap:8px;font-size:13px;padding:5px 0;border-top:1px solid var(--line)}
+.path .kv b{font-variant-numeric:tabular-nums}
+.path.none{opacity:.55}
+/* table */
+.tbl-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;border-radius:12px}
+table{border-collapse:collapse;width:100%;font-size:14px;min-width:860px}
+th,td{padding:10px 10px;text-align:right;border-bottom:1px solid var(--line);white-space:nowrap;font-variant-numeric:tabular-nums}
+th:first-child,td:first-child,th:nth-child(2),td:nth-child(2),th:nth-child(3),td:nth-child(3){text-align:left}
+th{font-size:11px;text-transform:uppercase;letter-spacing:.05em;color:var(--text-3);font-weight:600;position:sticky;top:0;background:var(--surface)}
+th button{display:inline-flex;align-items:center;gap:4px;font-weight:600;letter-spacing:inherit;text-transform:inherit;color:inherit;padding:4px 0}
+th button[aria-sort]{color:var(--text)}
+tbody tr{cursor:pointer}
+tbody tr:hover{background:rgba(255,255,255,.03)}
+td.team{font-weight:600}
+.pos{color:var(--good)}.neg{color:var(--bad)}
+.yes{color:var(--good)}.no{color:var(--bad)}
+/* team cards */
+.teams{grid-template-columns:repeat(auto-fill,minmax(250px,1fr))}
+.tcard{background:var(--surface-2);border:1px solid var(--line);border-radius:16px;overflow:hidden;text-align:left;display:flex;flex-direction:column;padding:0}
+.tcard img{width:100%;aspect-ratio:16/10;object-fit:contain;background:#0d2a63;display:block}
+.tcard .noimg{aspect-ratio:16/10;display:grid;place-content:center;color:var(--text-3);font-size:13px;background:var(--surface-3)}
+.tcard .b{padding:12px 14px;display:flex;flex-direction:column;gap:2px}
+.tcard .b b{font-size:15px}.tcard .b span{font-size:13px;color:var(--text-2)}
+.tcard .x{display:flex;justify-content:space-between;margin-top:6px;font-size:13px}
+/* dialog */
+dialog{border:1px solid var(--line);border-radius:20px;background:var(--surface);color:var(--text);padding:0;width:min(860px,calc(100vw - 32px));max-height:calc(100vh - 32px)}
+dialog::backdrop{background:rgba(4,12,26,.75)}
+.dlg{padding:20px;display:flex;flex-direction:column;gap:14px}
+.dlg-h{display:flex;align-items:flex-start;gap:12px}
+.dlg-h h2{margin:0;font-size:22px;line-height:28px}
+.dlg-h p{margin:2px 0 0;color:var(--text-2);font-size:14px}
+.dlg-h .btn{margin-left:auto}
+.dlg img{width:100%;border-radius:12px;background:#0d2a63}
+.kvs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.kvs div{background:var(--surface-2);border-radius:12px;padding:10px 12px}
+.kvs span{display:block;font-size:11px;text-transform:uppercase;letter-spacing:.05em;color:var(--text-3)}
+.kvs b{font-size:17px;font-variant-numeric:tabular-nums}
+.steps{display:flex;flex-wrap:wrap;gap:6px}
+.steps span{font-size:12px;padding:4px 9px;border-radius:999px;background:var(--surface-2);color:var(--text-2)}
+.steps span.d{background:rgba(74,222,128,.14);color:var(--good)}
+.note{color:var(--text-3);font-size:13px;margin:0}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+@media (max-width:900px){.tiles,.paths{grid-template-columns:repeat(2,minmax(0,1fr))}.two{grid-template-columns:minmax(0,1fr)}.kvs{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:560px){.axis .ticks span:nth-child(even){display:none}.brow,.axis{grid-template-columns:minmax(90px,120px) minmax(0,1fr) 74px;gap:8px}.tile .v{font-size:21px;line-height:26px}.brand h1{font-size:20px}}
+@media print{body{background:#fff;color:#000}.btn,#tip{display:none!important}.card,.tile,.path,.tcard{border-color:#ccc;background:#fff;color:#000}:root{--text:#000;--text-2:#222;--text-3:#555;--surface:#fff;--surface-2:#fff;--surface-3:#eee;--line:#ccc;--grid:#ddd}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <div class="brand"><img src="icon-180.png" alt=""><div><h1>Plug Lab class board</h1><p>Load each team's results file to compare crops, costs and profits.</p></div></div>
+    <label class="btn primary" for="files"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 16V4M6 10l6-6 6 6M4 20h16"/></svg>Add team files</label>
+    <input id="files" class="sr" type="file" accept=".json,application/json" multiple>
+    <button class="btn" id="clear" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"/></svg>Clear board</button>
+  </header>
+  <main id="main"></main>
+</div>
+<div id="tip" role="tooltip"></div>
+<dialog id="dlg"></dialog>
+<script>
+(function(){
+'use strict';
+const KEY='plugLabBoard.v1';
+const PATHS={stock:['A','Mother stock'],buy:['B','Buy in'],collect:['C','Collect'],seed:['D','Seed']};
+const PARTS=[['cut','Cuttings or seed','--s1'],['media','Potting mix','--s2'],['tray','Plug tray','--s3'],['sup','Supplies','--s4'],['labor','Labor','--s5'],['space','Bench space','--s6'],['roy','Royalty','--s7']];
+let teams=[];try{teams=JSON.parse(localStorage.getItem(KEY)||'[]');if(!Array.isArray(teams))teams=[];}catch(e){teams=[];}
+let sortK='profitYr',sortDir=-1;
+const $=s=>document.querySelector(s);
+const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const ok=v=>typeof v==='number'&&isFinite(v);
+const money=(v,d)=>ok(v)?(v<0?'−$':'$')+Math.abs(v).toLocaleString('en-US',{minimumFractionDigits:d==null?2:d,maximumFractionDigits:d==null?2:d}):'—';
+const cents=v=>ok(v)?money(v,3):'—';
+const pct=v=>ok(v)?Math.round(v*100)+'%':'—';
+const int=v=>ok(v)?Math.round(v).toLocaleString('en-US'):'—';
+function save(){try{localStorage.setItem(KEY,JSON.stringify(teams));}catch(e){alert('The board is full. Clear it or load fewer files.');}}
+function name(t){return t.team||'Unnamed team';}
+function perPlugPart(t,k){const p=(t.money.parts||[]).find(x=>x.k===k);return p&&ok(p.v)&&ok(t.money.sellable)&&t.money.sellable>0?p.v/t.money.sellable:0;}
+
+function addFiles(list){const fs=[...list];let n=0,bad=0;let left=fs.length;if(!left)return;
+  fs.forEach(f=>{const r=new FileReader();r.onload=()=>{try{const j=JSON.parse(r.result);if(!j||j.app!=='plug-lab'||!j.money)throw 0;delete j.state;
+      const i=teams.findIndex(t=>name(t).toLowerCase()===name(j).toLowerCase());if(i>=0)teams[i]=j;else teams.push(j);n++;}catch(e){bad++;}
+    if(--left===0){save();render();if(bad)alert(`${bad} file${bad>1?'s were':' was'}n't a Plug Lab results file.`);}};r.readAsText(f);});}
+
+function ticks(min,max){const span=max-min||1;const raw=span/4;const p=Math.pow(10,Math.floor(Math.log10(raw)));const step=[1,2,2.5,5,10].map(m=>m*p).find(s=>span/s<=5)||p*10;
+  const out=[];for(let v=Math.ceil(min/step)*step;v<=max+1e-9;v+=step)out.push(+v.toFixed(6));return out;}
+
+function profitChart(list){const rows=list.filter(t=>ok(t.money.profitYr)).sort((a,b)=>b.money.profitYr-a.money.profitYr);
+  if(!rows.length)return '<p class="note">No team has a full year of profit yet.</p>';
+  const vals=rows.map(t=>t.money.profitYr);let min=Math.min(0,...vals),max=Math.max(0,...vals);const tk=ticks(min,max);min=Math.min(min,tk[0]);max=Math.max(max,tk[tk.length-1]);
+  const X=v=>(v-min)/(max-min||1)*100;const z=X(0);
+  const grid=`<div class="gridlines">${tk.map(v=>`<span style="left:${X(v)}%"></span>`).join('')}</div>`;
+  return `<div class="bars" role="list">${rows.map(t=>{const v=t.money.profitYr,l=Math.min(X(v),z),w=Math.abs(X(v)-z);const P=PATHS[t.crop.path]||['?',''];
+    return `<div class="brow" role="listitem"><div class="bname"><span class="pl" title="Path ${P[0]}: ${P[1]}">${P[0]}</span><span class="n">${esc(name(t))}</span></div>
+      <div class="track">${grid}<span class="zero" style="left:${z}%"></span><span class="bar${v<0?' neg':''}" style="left:${l}%;width:${Math.max(w,.4)}%" data-tip="<b>${esc(name(t))}</b>${esc(t.crop.name)} · Path ${P[0]}<br>Profit per year ${money(v,0)}<br>${int(t.money.traysYr)} plug trays a year"></span></div>
+      <div class="bval ${v<0?'neg':''}">${money(v,0)}</div></div>`;}).join('')}</div>
+    <div class="axis" aria-hidden="true"><span></span><div class="ticks">${tk.map(v=>`<span style="left:${X(v)}%">${money(v,0)}</span>`).join('')}</div><span></span></div>`;}
+
+function costChart(list){const rows=list.filter(t=>ok(t.money.perPlug)).sort((a,b)=>a.money.perPlug-b.money.perPlug);
+  if(!rows.length)return '<p class="note">No team has a cost per plug yet.</p>';
+  const used=PARTS.filter(p=>rows.some(t=>perPlugPart(t,p[0])>0));
+  const max=Math.max(...rows.map(t=>t.money.perPlug));const tk=ticks(0,max);const top=Math.max(max,tk[tk.length-1]);
+  const X=v=>v/top*100;
+  return `<div class="legend">${used.map(p=>`<span><i style="background:var(${p[2]})"></i>${p[1]}</span>`).join('')}</div>
+  <div class="bars" role="list">${rows.map(t=>{const P=PATHS[t.crop.path]||['?',''];
+    const segs=used.map(p=>{const v=perPlugPart(t,p[0]);return v>0?`<span class="seg" style="width:${X(v)}%;background:var(${p[2]})" data-tip="<b>${esc(name(t))}</b>${p[1]}: ${cents(v)} per plug<br>${pct(v/t.money.perPlug)} of the cost"></span>`:'';}).join('');
+    return `<div class="brow" role="listitem"><div class="bname"><span class="pl" title="Path ${P[0]}: ${P[1]}">${P[0]}</span><span class="n">${esc(name(t))}</span></div>
+      <div class="track"><div class="gridlines">${tk.map(v=>`<span style="left:${X(v)}%"></span>`).join('')}</div><div class="stack" style="position:relative">${segs}</div></div>
+      <div class="bval">${cents(t.money.perPlug)}</div></div>`;}).join('')}</div>
+  <div class="axis" aria-hidden="true"><span></span><div class="ticks">${tk.map(v=>`<span style="left:${X(v)}%">${money(v,2)}</span>`).join('')}</div><span></span></div>`;}
+
+function pathCards(list){return Object.keys(PATHS).map(k=>{const g=list.filter(t=>t.crop.path===k);const P=PATHS[k];
+  const avg=f=>{const v=g.map(f).filter(ok);return v.length?v.reduce((a,b)=>a+b,0)/v.length:null;};
+  return `<div class="path${g.length?'':' none'}"><h3><span class="pl">${P[0]}</span>${P[1]}</h3><div class="cnt">${g.length} team${g.length===1?'':'s'}</div>
+    <div class="kv"><span>Avg cost per plug</span><b>${cents(avg(t=>t.money.perPlug))}</b></div>
+    <div class="kv"><span>Avg margin</span><b>${pct(avg(t=>t.money.margin))}</b></div>
+    <div class="kv"><span>Avg profit per year</span><b>${money(avg(t=>t.money.profitYr),0)}</b></div></div>`;}).join('');}
+
+const COLS=[['team','Team',t=>name(t)],['path','Path',t=>(PATHS[t.crop.path]||['?'])[0]],['plant','Plant',t=>t.crop.name||''],
+  ['perPlug','Cost / plug',t=>t.money.perPlug,cents],['price','Price',t=>t.money.price,v=>money(v)],['margin','Margin',t=>t.money.margin,pct],
+  ['traysYr','Trays / yr',t=>t.money.traysYr,int],['profitYr','Profit / yr',t=>t.money.profitYr,v=>`<span class="${ok(v)&&v<0?'neg':'pos'}">${money(v,0)}</span>`],
+  ['area','Bench sq ft',t=>t.benches&&t.benches.area,int],['bal','Benches balanced',t=>t.benches&&t.benches.balanced?1:0,v=>v?'<span class="yes">Yes</span>':'<span class="no">No</span>'],
+  ['contract','Contract',t=>t.contract?(t.contract.fits?1:0):-1,(v,t)=>t.contract?(t.contract.fits?`<span class="yes">Fits</span> · ${money(t.contract.profit,0)}`:'<span class="no">Won\'t fit</span>'):'—']];
+function table(list){const col=COLS.find(c=>c[0]===sortK)||COLS[7];
+  const rows=list.slice().sort((a,b)=>{const x=col[2](a),y=col[2](b);if(typeof x==='string'||typeof y==='string')return sortDir*String(x).localeCompare(String(y));
+    const xa=ok(x)?x:-Infinity,ya=ok(y)?y:-Infinity;return sortDir*(xa-ya);});
+  return `<div class="tbl-wrap"><table><thead><tr>${COLS.map(c=>`<th scope="col"><button data-sort="${c[0]}"${c[0]===sortK?` aria-sort="${sortDir>0?'ascending':'descending'}"`:''}>${c[1]}${c[0]===sortK?(sortDir>0?' ▲':' ▼'):''}</button></th>`).join('')}</tr></thead>
+  <tbody>${rows.map(t=>`<tr data-team="${esc(name(t))}" tabindex="0">${COLS.map((c,i)=>{const v=c[2](t);return `<td${i===0?' class="team"':''}>${c[3]?c[3](v,t):esc(v)}</td>`;}).join('')}</tr>`).join('')}</tbody></table></div>`;}
+
+function teamCards(list){return list.slice().sort((a,b)=>name(a).localeCompare(name(b))).map(t=>{const P=PATHS[t.crop.path]||['?',''];
+  return `<button class="tcard" data-team="${esc(name(t))}">${t.blueprint?`<img src="${t.blueprint}" alt="Bench blueprint for ${esc(name(t))}">`:'<div class="noimg">No blueprint</div>'}
+  <div class="b"><b>${esc(name(t))}</b><span>${esc(t.crop.name||'No plant')} · Path ${P[0]}: ${P[1]}</span><div class="x"><span>${cents(t.money.perPlug)} / plug</span><span class="${ok(t.money.profitYr)&&t.money.profitYr<0?'neg':'pos'}">${money(t.money.profitYr,0)} / yr</span></div></div></button>`;}).join('');}
+
+function render(){const m=$('#main');$('#clear').hidden=!teams.length;
+  if(!teams.length){m.innerHTML=`<section class="drop" id="drop"><h2>Drop team results files here</h2>
+    <ol><li>Each team finishes the Lab steps in Plug Lab.</li><li>They tap <b>Save results file</b> in the last step and turn it in.</li><li>Load every file here, or drag them onto this box.</li></ol><br>
+    <label class="btn primary" for="files">Add team files</label><p class="note" style="margin-top:14px">Files stay in this browser. Nothing is uploaded.</p></section>`;return;}
+  const withP=teams.filter(t=>ok(t.money.profitYr)),withC=teams.filter(t=>ok(t.money.perPlug));
+  const best=withP.slice().sort((a,b)=>b.money.profitYr-a.money.profitYr)[0],low=withC.slice().sort((a,b)=>a.money.perPlug-b.money.perPlug)[0];
+  const margins=teams.map(t=>t.money.margin).filter(ok);
+  m.innerHTML=`<section class="grid tiles" aria-label="Class summary">
+    <div class="tile"><div class="k">Teams</div><div class="v">${teams.length}</div><div class="w">${Object.keys(PATHS).filter(k=>teams.some(t=>t.crop.path===k)).length} of 4 paths tried</div></div>
+    <div class="tile"><div class="k">Most profit per year</div><div class="v">${best?money(best.money.profitYr,0):'—'}</div><div class="w">${best?esc(name(best)):''}</div></div>
+    <div class="tile"><div class="k">Lowest cost per plug</div><div class="v">${low?cents(low.money.perPlug):'—'}</div><div class="w">${low?esc(name(low)):''}</div></div>
+    <div class="tile"><div class="k">Average margin</div><div class="v">${margins.length?pct(margins.reduce((a,b)=>a+b,0)/margins.length):'—'}</div><div class="w">Across teams with a price</div></div></section>
+  <div class="grid two" style="margin-top:14px">
+    <section class="card"><h2>Profit per year</h2><p class="sub">A full year of plug trays on each team's benches, at their price.</p>${profitChart(teams)}</section>
+    <section class="card"><h2>Where the money goes</h2><p class="sub">Cost per sellable plug, split by what it pays for. Lowest cost on top.</p>${costChart(teams)}</section></div>
+  <section class="card" style="margin-top:14px"><h2>By path</h2><p class="sub">How each way of getting plants compares.</p><div class="grid paths">${pathCards(teams)}</div></section>
+  <section class="card" style="margin-top:14px"><h2>All teams</h2><p class="sub">Tap a column to sort. Tap a team for its blueprint and details.</p>${table(teams)}</section>
+  <section style="margin-top:14px"><div class="grid teams">${teamCards(teams)}</div></section>`;}
+
+function openTeam(n){const t=teams.find(x=>name(x)===n);if(!t)return;const P=PATHS[t.crop.path]||['?',''];const d=$('#dlg');const M=t.money;
+  const kv=(l,v)=>`<div><span>${l}</span><b>${v}</b></div>`;
+  d.innerHTML=`<div class="dlg"><div class="dlg-h"><div><h2>${esc(name(t))}</h2><p>${esc(t.members||'')}</p><p>${esc(t.crop.name||'')} · Path ${P[0]}: ${P[1]}${t.crop.patent&&t.crop.ppaf?' · '+esc(t.crop.ppaf):''}</p></div>
+    <button class="btn" data-close>Close</button></div>
+    <div class="kvs">${kv('Cost per plug',cents(M.perPlug))}${kv('Price per plug',money(M.price))}${kv('Margin',pct(M.margin))}${kv('Cost per plug tray',money(M.costTray))}${kv('Sellable plugs per tray',ok(M.sellable)?M.sellable.toFixed(1):'—')}${kv('Plug trays per year',int(M.traysYr))}
+      ${kv('Income per year',money(M.incomeYr,0))}${kv('Profit per year',money(M.profitYr,0))}${kv('Bench area',ok(t.benches.area)?int(t.benches.area)+' sq ft':'—')}
+      ${kv('Weeks to finish',ok(t.crop.mistWeeks)&&ok(t.crop.hardWeeks)?t.crop.mistWeeks+' + '+t.crop.hardWeeks:'—')}${kv('Cells per tray',int(t.crop.cells))}${kv(t.crop.path==='seed'?'Cells that fill':'Rooting',ok(t.crop.fillPct)?Math.round(t.crop.fillPct)+'%':'—')}</div>
+    ${M.ownLabor?`<p class="note">This team does its own labor, so labor shows as their pay${ok(M.ownPayYr)?` (${money(M.ownPayYr,0)} a year)`:''} instead of a cost.</p>`:''}
+    ${t.contract?`<p class="note">Contract: ${int(t.contract.trays)} plug trays${t.contract.ship?' shipping '+esc(t.contract.ship):''} · ${t.contract.fits?'fits':'won\'t fit'} · ${t.contract.rounds||'—'} round${t.contract.rounds===1?'':'s'} · profit ${money(t.contract.profit,0)}${t.contract.late?' · too late to start':''}</p>`:''}
+    ${t.blueprint?`<img src="${t.blueprint}" alt="Bench blueprint for ${esc(name(t))}">`:''}
+    <div class="steps">${(t.steps||[]).map(s=>`<span class="${s.done?'d':''}">${s.n}. ${esc(s.t)}</span>`).join('')}</div>
+    <p class="note">Saved ${t.saved?new Date(t.saved).toLocaleString():''}</p></div>`;
+  d.showModal();}
+
+document.addEventListener('change',e=>{if(e.target.id==='files'&&e.target.files){addFiles(e.target.files);e.target.value='';}});
+document.addEventListener('click',e=>{const s=e.target.closest('[data-sort]');if(s){const k=s.dataset.sort;if(k===sortK)sortDir=-sortDir;else{sortK=k;sortDir=['team','path','plant','perPlug'].includes(k)?1:-1;}render();return;}
+  const tm=e.target.closest('[data-team]');if(tm){openTeam(tm.dataset.team);return;}
+  if(e.target.closest('[data-close]')||e.target.id==='dlg'){$('#dlg').close();return;}
+  if(e.target.closest('#clear')){if(confirm('Remove every team from the board?')){teams=[];save();render();}}});
+document.addEventListener('keydown',e=>{if(e.key==='Enter'&&e.target.matches('tr[data-team]'))openTeam(e.target.dataset.team);});
+['dragover','dragenter'].forEach(ev=>document.addEventListener(ev,e=>{e.preventDefault();const d=$('#drop');if(d)d.classList.add('on');}));
+document.addEventListener('dragleave',e=>{const d=$('#drop');if(d&&!e.relatedTarget)d.classList.remove('on');});
+document.addEventListener('drop',e=>{e.preventDefault();const d=$('#drop');if(d)d.classList.remove('on');if(e.dataTransfer&&e.dataTransfer.files.length)addFiles(e.dataTransfer.files);});
+const tip=$('#tip');
+document.addEventListener('pointermove',e=>{const t=e.target.closest('[data-tip]');if(!t){tip.classList.remove('on');return;}
+  tip.innerHTML=t.dataset.tip;tip.classList.add('on');const w=tip.offsetWidth,h=tip.offsetHeight;
+  let x=e.clientX+14,y=e.clientY+14;if(x+w>innerWidth-8)x=e.clientX-w-14;if(y+h>innerHeight-8)y=e.clientY-h-14;tip.style.left=x+'px';tip.style.top=y+'px';});
+render();
+window.__board={addJSON:j=>{teams.push(j);save();render();},get teams(){return teams;}};
+})();
+</script>
+</body>
+</html>
