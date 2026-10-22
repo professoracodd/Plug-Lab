@@ -8,10 +8,9 @@ A choose-your-path assignment for plant propagation. Teams research, cost, price
 - `sw.js`, `manifest.webmanifest`, icons: these let students install the app and use it offline.
 
 ## How a step works
-1. **Go fill it in** takes students to the right tab and opens the sections they need.
-2. Every field they still need to fill in pulses with a white glow.
-3. When the step's fields are done, the app moves them to the next tab if needed, then back to the Lab tab.
-4. Each research step has a **Sources and notes** box. The notes are printed on the fact sheet.
+1. The step's **Go fill it in** button glows. Tapping it opens the right tab, and every field still needed pulses white.
+2. When the fields on a tab are done, a glowing **Next** button takes students to the next tab. When the whole step is done, **Submit** takes them back to the Lab tab. Nothing moves on its own.
+3. Back on the Lab tab, they check their numbers, write their **Sources and notes**, and tap **Submit step**. The notes are printed on the fact sheet.
 
 ## Running the assignment
 1. Turn on GitHub Pages for this repo and share the link to `index.html` with students.

@@ -653,6 +653,13 @@ input,textarea{-webkit-appearance:none;appearance:none}
 input.need-in,textarea.need-in{border-color:#fff!important}
 .need-glow{outline:2px solid rgba(255,255,255,.9);outline-offset:2px}
 @media (prefers-reduced-motion:reduce){.need-wrap::after{animation:none;opacity:1}}
+.lab-submit{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(64px + env(safe-area-inset-bottom,0px) + 16px);z-index:60;display:inline-flex;align-items:center;gap:8px;
+  padding:13px 26px;border-radius:999px;background:rgb(214 186 110);color:#1b1608;font-weight:700;font-size:16px;min-height:48px;white-space:nowrap;box-shadow:0 8px 24px rgba(0,0,0,.45)}
+.lab-submit[hidden]{display:none}
+.lab-submit .ms{font-size:20px}
+.lab-submit.need-glow{animation:needGlow 1.5s ease-in-out infinite!important}
+body:has(#labSubmit:not([hidden])) main{padding-bottom:90px}
+.submit-step{align-self:flex-start;margin-top:4px}
 
 </style>
 </head>
@@ -687,6 +694,7 @@ input.need-in,textarea.need-in{border-color:#fff!important}
 <div class="scrim" id="scrim" data-a="closeSheet"></div>
 <div class="sheet" id="sheet" role="dialog" aria-modal="true" aria-label="Menu" aria-hidden="true"></div>
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
+<button class="lab-submit" id="labSubmit" hidden></button>
 <div class="guide" id="guideBar" hidden><span class="g-dot" aria-hidden="true"></span><span class="g-txt" id="guideTxt"></span><button data-a="guideStop">Skip</button></div>
 <input type="file" id="fileIn" accept=".json,application/json" hidden>
 
@@ -1197,16 +1205,16 @@ function guideSteps(){if(S.lab&&S.lab.go&&!S.guide)return labGoSteps();const g=S
   if(!(g.seen&&g.seen.sup))st.push({tab:'crop',sec:'Supplies used',key:null,label:'Pick the supplies it uses'});
   if(r.price==null)st.push({tab:'price',sec:'Price',key:'c.price',label:'Set a price'});
   st.forEach((x,i)=>x.o=TAB_ORDER.indexOf(x.tab)*100+SEC_ORDER[x.tab].indexOf(x.sec)+i/1000);st.sort((a,b)=>a.o-b.o);return {c,st};}
-function applyBeacons(){applyBeacons0();applyGlow();}
+function applyBeacons(){applyBeacons0();applyGlow();labSubmitBtn();}
 function applyBeacons0(){$$('.beacon').forEach(e=>e.classList.remove('beacon'));const bar=$('#guideBar');
   const gb=bar.querySelector('button');gb.textContent='Skip';gb.dataset.a='guideStop';
   const g=guideSteps();if(!g){if(S.guide){S.guide=null;save();}if(S.lab&&S.lab.go){S.lab.go=null;save();}document.body.classList.remove('guiding');bar.hidden=true;
     if(S.lab&&S.lab.back){if(S.tab==='lab'){S.lab.back=false;save();}else{const t=$('.tab[data-tab=lab]');if(t)t.classList.add('beacon');}}return;}
-  if(g.s){gb.textContent=g.s.go?'Done':'Back to Lab';gb.dataset.a=g.s.go?'labStepDone':'labBack';}
-  if(g.s&&!g.st.length){bar.hidden=false;document.body.classList.add('guiding');$('#guideTxt').innerHTML=`<b>Step ${g.s.n} · ${esc(g.s.t)}</b> · All filled in<small>Taking you back to the Lab tab</small>`;labAdvance();return;}
+  if(g.s){gb.textContent='Back to Lab';gb.dataset.a='labBack';}
+  if(g.s&&!g.st.length){bar.hidden=false;document.body.classList.add('guiding');$('#guideTxt').innerHTML=`<b>Step ${g.s.n} · ${esc(g.s.t)}</b> · All filled in<small>Tap Submit to go back to the Lab tab</small>`;return;}
   if(!g.st.length){S.guide=null;save();document.body.classList.remove('guiding');bar.hidden=true;const nm=g.c.name||'Your plant';setTimeout(()=>toast(`${nm} is set up`),2400);return;}
   const s0=g.st[0];bar.hidden=false;document.body.classList.add('guiding');
-  $('#guideTxt').innerHTML=g.s?`<b>Step ${g.s.n} · ${esc(g.s.t)}</b><small>${s0.key?`${g.st.length} glowing field${g.st.length>1?'s':''} left · then back to Lab`:'Tap Done when your supplies are in'}</small>`:`<b>${esc(g.c.name||'New plant')}</b> · ${esc(s0.label)}<small>${g.st.length} step${g.st.length>1?'s':''} left · follow the light</small>`;
+  $('#guideTxt').innerHTML=g.s?`<b>Step ${g.s.n} · ${esc(g.s.t)}</b><small>${s0.key?`${g.st.length} glowing field${g.st.length>1?'s':''} left`:'Tap Submit when your supplies are in'}</small>`:`<b>${esc(g.c.name||'New plant')}</b> · ${esc(s0.label)}<small>${g.st.length} step${g.st.length>1?'s':''} left · follow the light</small>`;
   let el=null;
   if(S.cur!==g.c.id)el=$('#cropSel')||$('.tab[data-tab=crop]');
   else if(S.tab!==s0.tab)el=$(`.tab[data-tab=${s0.tab}]`);
@@ -1382,7 +1390,7 @@ function stepCard(s,next){const k='lab:'+s.id;const open=OPEN[k]!==undefined?OPE
   const list=s.keys.length&&!s.inline?`<div class="ls-keys"><span class="caps">Your numbers</span>${s.keys.map(([key,l])=>`<div class="kv"><span>${esc(l)}</span><b>${fmtKey(key)}</b></div>`).join('')}</div>`:'';
   const go=!s.inline&&(s.keys.length||s.go)?`<button class="chip primary" data-a="labGo:${s.id}"><span class="ms sm" aria-hidden="true">near_me</span>${s.filled?'Review it in the app':'Go fill it in'}</button>`:'';
   const nx=s.done&&next?`<button class="chip" data-a="labOpen:${next.id}"><span class="ms sm" aria-hidden="true">arrow_downward</span>Next: step ${next.n}</button>`:'';
-  const notes=s.note?`<label class="fld wide note-f"><span class="caps">Sources and notes${s.filled?'':' · last'}</span><textarea data-k="lab.notes.${s.id}" rows="3" placeholder="${esc(s.note)}">${esc(S.lab.notes[s.id]||'')}</textarea>${s.filled?'':'<span class="tiny">Fill in your numbers first, then add where they came from.</span>'}</label>`:'';
+  const notes=s.note?`<label class="fld wide note-f"><span class="caps">Sources and notes${s.filled?'':' · last'}</span><textarea data-k="lab.notes.${s.id}" rows="3" placeholder="${esc(s.note)}">${esc(S.lab.notes[s.id]||'')}</textarea>${s.filled?'':'<span class="tiny">Fill in your numbers first, then add where they came from.</span>'}</label>${s.filled?`<button class="chip primary submit-step" data-a="labNoteSubmit:${s.id}"><span class="ms sm" aria-hidden="true">check</span>Submit step ${s.n}</button>`:''}`:'';
   const status=s.done?'Done':s.left?`${s.left} to fill in`:s.needNote?'Add your sources and notes':s.go?'Tap to start':'To do';
   return `<section class="card lab-step${s.done?' done':''}${s===next?' next':''}" id="ls-${s.id}">
   <button class="ls-h" data-a="labFold:${s.id}" aria-expanded="${open}"><span class="ls-n">${s.done?'<span class="ms" aria-hidden="true">check</span>':s.n}</span>
@@ -1430,8 +1438,15 @@ function applyGlow(){$$('.need-glow,.need-wrap,.need-in').forEach(e=>e.classList
       const card=e.closest('.card'),h=card&&card.querySelector(':scope>.card-h.folded');if(h){mark(card);return;}
       const b=e.closest('.bench.folded');if(b){mark(b.querySelector('.fold-btn'));return;}
       if(e.closest('[hidden]'))return;if(e.tagName==='INPUT'||e.tagName==='TEXTAREA')markIn(e);else mark(e);});});
-  if(S.tab==='lab'&&!S.lab.go)labSteps(crop()).forEach(s=>{if(!s.filled&&!s.inline)mark($(`[data-a="labGo:${s.id}"]`));});
+  if(S.tab==='lab'&&!S.lab.go){const st=labSteps(crop());st.forEach(s=>{if(!s.filled&&!s.inline)mark($(`[data-a="labGo:${s.id}"]`));
+    const sb=$(`[data-a="labNoteSubmit:${s.id}"]`);if(sb){const ta=$(`[data-k="lab.notes.${s.id}"]`);if(ta&&ta.value.trim())mark(sb);}});}
   if(S.lab.go&&!S.guide){const g=labGoSteps();if(g&&g.s.go&&!g.s.filled)g.s.go.forEach(x=>{if(x.tab===S.tab){const h=$(`[data-a="fold:${x.tab}:${x.sec}"]`);if(h)mark(h.closest('.card'));}});}}
+function labSubmitBtn(){const b=$('#labSubmit');if(!b)return;const g=S.lab&&S.lab.go&&!S.guide?labGoSteps():null;
+  let label=null,a=null;
+  if(g){if(g.s.go&&!g.s.filled){label='Submit';a='labStepDone';}else if(!g.st.length){label='Submit';a='labSubmit';}
+    else if(!g.st.some(x=>x.tab===S.tab)){label=`Next: ${TITLES[g.st[0].tab]} tab`;a='labNext';}}
+  if(!label){b.hidden=true;b.classList.remove('need-glow');return;}
+  b.hidden=false;b.dataset.a=a;b.innerHTML=`<span class="ms" aria-hidden="true">${a==='labNext'?'arrow_forward':'check'}</span>${label}`;b.classList.add('need-glow');}
 function scrollToGlow(){const e=$('.need-in,.need-glow');if(e)e.scrollIntoView({block:'center',behavior:'smooth'});}
 function labOpenFor(list,tab){list.forEach(x=>{if(x.tab===tab){OPEN[x.tab+':'+x.sec]=true;if(x.key)openFor(x.tab,x.key);}});}
 function labGoto(list){const t0=list[0].tab;S.tab=t0;labOpenFor(list,t0);save();render();window.scrollTo(0,0);setTimeout(scrollToGlow,140);}
@@ -1590,9 +1605,7 @@ document.addEventListener('change',e=>{const t=e.target;
   if(t.dataset&&t.dataset.sup){const c=crop();c.off=(c.off||[]).filter(x=>x!==t.dataset.sup);if(!t.checked)c.off.push(t.dataset.sup);save();refresh();return;}
   if(t.tagName==='SELECT'&&/^shop\.supplies\.\d+\.unit$/.test(t.dataset.k||'')){set(t.dataset.k,t.value);save();render();return;}
   if(t.tagName==='SELECT'&&t.dataset.k){set(t.dataset.k,t.value);save();refresh();}
-  if(t.dataset&&t.dataset.k)labAdvance();
-  if(t.dataset&&t.dataset.k&&t.dataset.k.startsWith('lab.notes.')&&t.value.trim()&&labNoteDone(t.dataset.k.slice(10)))return;
-  if(S.tab==='lab'&&t.dataset&&t.dataset.k&&(t.tagName==='INPUT'||t.tagName==='TEXTAREA')){const y=window.scrollY;render();window.scrollTo(0,y);return;}
+  if(S.tab==='lab'&&t.dataset&&t.dataset.k&&(t.tagName==='INPUT'||t.tagName==='TEXTAREA')){setTimeout(()=>{const a=document.activeElement;if(S.tab!=='lab'||(a&&a.dataset&&a.dataset.k))return;const y=window.scrollY;render();window.scrollTo(0,y);},60);return;}
   if(t.dataset&&t.dataset.k==='c.price'&&t.type==='text'){const v=num(t.value);if(!isNaN(v)){crop().price=v.toFixed(2);save();}closePriceEdit();}
   if(t.id==='fileIn'&&t.files&&t.files[0])restore(t.files[0]);});
 document.addEventListener('keydown',e=>{if((e.key==='Enter'||e.key===' ')&&e.target.classList&&e.target.classList.contains('fold-h')){e.preventDefault();e.target.click();return;}if(e.key==='Enter'&&e.target.tagName==='INPUT'&&e.target.type!=='file')e.target.blur();});
@@ -1615,6 +1628,9 @@ function act(a,arg,b){const c=crop();
   case 'labGo':{S.lab.go=arg;S.lab.back=false;const g=labGoSteps();if(!g){S.lab.go=null;break;}
     const s=g.s;let list=g.st;if(!list.length){S.lab.go=null;list=s.go||s.keys.map(([key,label])=>{const [tab,sec]=secOf(key);return {tab,sec,key,label};});toast('Already done. Here it is to review.');}
     if(!list.length)break;labGoto(list);break;}
+  case 'labSubmit':{const g=labGoSteps();if(g&&!g.st.length)labFinish(g.s);break;}
+  case 'labNext':{const g=labGoSteps();if(g&&g.st.length)labGoto(g.st);break;}
+  case 'labNoteSubmit':{const st=labSteps(c),me=st.find(x=>x.id===arg);if(!me)break;if(!me.filled){toast('Fill in the numbers for this step first');break;}if(me.needNote){toast('Add your sources and notes first');const e=$(`[data-k="lab.notes.${arg}"]`);if(e)e.focus();break;}labFinish(me);break;}
   case 'labStepDone':{const g=labGoSteps();S.lab.done.sup=true;if(g)labFinish(g.s);else{S.lab.go=null;S.tab='lab';save();render();}break;}
   case 'factPdf':closeSheet();factSheet('pdf');break;
   case 'factJpg':closeSheet();factSheet('jpg');break;

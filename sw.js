@@ -1,6 +1,6 @@
 // Plug Lab – offline support. Tries the internet first so updates show right away,
 // and falls back to the saved copy when there's no signal.
-const CACHE = 'plug-lab-v4';
+const CACHE = 'plug-lab-v5';
 self.addEventListener('install', e => {
   self.skipWaiting();
   e.waitUntil(caches.open(CACHE).then(c => Promise.all(
