@@ -760,7 +760,7 @@ function newCrop(name){return {id:uid(),name:name||'New crop',cells:'50',src:'st
   stock:{plant:'',life:'',upkeep:'',perMonth:'',harvest:'',pot:'3'},buy:{each:'',per:'',freight:''},collect:{rate:'',trip:'',perTrip:''},seed:{price:'',per:'',freight:'',packs:'',perCell:'',rate:''},
   cpc:1,cellVol:String(CELL_VOL[50]),volAuto:1,off:[],patent:false,ppaf:'',stickRate:'',fillMin:'',gradeMin:'',mistWk:'',hardWk:'',strike:'',cull:'',royalty:'',price:''};}
 const EX_BENCH=[['mist','12','4','2'],['open','20','4','3']];const EX_OLD_STOCK=['stock','12','4','2'];
-const EX_FIELDS={wage:'18',occ:'75',mistAdd:'0.03',mixYd:'45',pack:'10',trayPrice:'2.50',trayUses:'5'};
+const EX_FIELDS={wage:'18',occ:'75',mistAdd:'0.03',mixYd:'45',pack:'10',trayPrice:'2.50',trayUses:''};
 const hasBench=b=>num(b.len)>0&&num(b.wid)>0&&num(b.count)>0;
 // Fill example costs and benches. onlyBlank keeps anything the grower already entered.
 function exampleShop(sh,onlyBlank){let n=0;const put=(o,k,v)=>{if(!v)return;if(onlyBlank&&o[k]!==''&&o[k]!=null)return;if(o[k]!==v){o[k]=v;n++;}};
@@ -774,7 +774,7 @@ function clearShop(sh){const clr=(o,k,v)=>{if(v&&String(o[k])===v)o[k]='';};
   sh.supplies.forEach(x=>{const e=EX_SUP[x.n];if(e&&x.qty===e[0]&&x.unit===e[1]&&x.price===e[2]&&x.months===e[3]){x.qty='';x.unit='each';x.price='';x.months='';}});}
 const isBlankCrop=c=>/^(new crop|crop \d+)$/i.test(String(c.name||'').trim())&&!c.price&&!c.stickRate&&!c.strike&&!c.mistWk&&!c.hardWk&&
   ![c.stock,c.buy,c.collect].some(o=>o&&Object.keys(o).some(k=>k!=='pot'&&o[k]!==''&&o[k]!=null));
-function defaults(ex){const sup=defaultSupplies();const c=newCrop();c.name='';const all=[c];const d={v:1,presets:9,example:false,guide:null,tab:'lab',cur:c.id,crops:all,lab:labDefault(),
+function defaults(ex){const sup=defaultSupplies();const c=newCrop();c.name='';const all=[c];const d={v:1,presets:10,example:false,guide:null,tab:'lab',cur:c.id,crops:all,lab:labDefault(),
   shop:{wage:'',margin:40,rateMode:'calc',rateDirect:'',mistAdd:'',costs:COSTS.map(n=>({n,v:''})),occ:'',weeks:'52',flatL:'21.5',flatW:'11',benches:[newBench('mist'),newBench('open')],
     mixYd:'',pack:'',trayPrice:'',trayUses:'',supplies:sup,flatsYr:''},
   plan:{trays:'',ship:''}};return d;}
@@ -800,13 +800,14 @@ function normalize(o){if(!o||typeof o!=='object'||!Array.isArray(o.crops)||!o.cr
   if((o.presets||0)<3)crops.forEach(c=>{if(!/^coleus$/i.test(String(c.name).trim()))return;const p=PRESETS.coleus.crop;
     Object.keys(p).forEach(k=>{if(typeof p[k]==='string'&&k!=='src'&&(c[k]===''||c[k]==null))c[k]=p[k];});Object.keys(p.stock).forEach(k=>{if(!c.stock[k])c.stock[k]=p.stock[k];});});
   crops.forEach(c=>{const b=c.buy||(c.buy={});if(b.each==null){b.each=num(b.box)>0&&num(b.per)>0?String(+(num(b.box)/num(b.per)).toFixed(4)):'';}delete b.box;});
+  if((o.presets||0)<10&&o.example&&String(s.trayUses)==='5')s.trayUses='';   // plug trays are sold with the plants
   if((o.presets||0)<9&&!crops.some(c=>c.preset==='deergrass'))crops.push(fromPreset('deergrass',s.supplies));
   if((o.presets||0)<8)crops.forEach(c=>{const k=c.preset||Object.keys(PRESETS).find(x=>PRESETS[x].name===String(c.name).trim());if(!k||!PRESETS[k])return;const p=PRESETS[k].crop;
     ['each','per','freight'].forEach(x=>{if(!c.buy[x])c.buy[x]=p.buy[x];});if(p.patent&&!c.royalty)c.royalty=p.royalty;if(p.patent&&!c.ppaf)c.ppaf=p.ppaf;});
   if((o.presets||0)<7){crops.forEach(c=>{if(/^coleus$/i.test(String(c.name).trim())){c.name=PRESETS.coleus.name;c.preset='coleus';}});
     Object.keys(PRESETS).forEach(k=>{if(k!=='coleus'&&!crops.some(c=>c.preset===k||String(c.name).trim()===PRESETS[k].name))crops.push(fromPreset(k,s.supplies));});}
   const cur=crops.some(c=>c.id===o.cur)?o.cur:crops[0].id;
-  return {v:1,presets:9,example:false,lab:labNorm(o.lab),guide:(o.guide&&o.guide.id)?o.guide:null,tab:['lab','price','crop','costs','benches','plan'].includes(o.tab)?o.tab:'lab',cur,crops,shop:s,plan:Object.assign({},d.plan,o.plan||{})};}
+  return {v:1,presets:10,example:false,lab:labNorm(o.lab),guide:(o.guide&&o.guide.id)?o.guide:null,tab:['lab','price','crop','costs','benches','plan'].includes(o.tab)?o.tab:'lab',cur,crops,shop:s,plan:Object.assign({},d.plan,o.plan||{})};}
 let S;try{S=normalize(JSON.parse(localStorage.getItem(KEY)||localStorage.getItem(OLD_KEY)));}catch(e){S=defaults(true);}
 S.tab='lab';
 // presets priced 'auto' start at the target-margin price
@@ -1060,7 +1061,7 @@ ${cuttingCosts(crop())}
 
 <section class="card">${cardHead('grid_on','peach','Potting mix & plug trays','')}
   <div class="fgrid">${fld('Potting mix','shop.mixYd',{pre:'$',suf:'/yd³',wide:true,hint:'Per cubic yard, delivered'})}${fld('Packing & waste','shop.pack',{suf:'%',wide:true,hint:'Mix used beyond the cell volume, from packing cells and spills. Blank = none.'})}
-  ${fld('Plug tray','shop.trayPrice',{pre:'$',hint:'Each. A separate carrying flat goes under Supplies.'})}${fld('Times reused','shop.trayUses',{hint:'Blank = 1'})}</div></section>
+  ${fld('Plug tray','shop.trayPrice',{pre:'$',hint:'Each. A separate carrying flat goes under Supplies.'})}${fld('Times used','shop.trayUses',{hint:'Blank = 1, sold with the plants'})}</div></section>
 
 <section class="card">${cardHead('inventory_2','lav','Supplies','Each purchase is spread over the plug trays you make before you buy it again.')}
   ${s.supplies.map((x,i)=>`<div class="bench sup${folded('i:'+x.id)?' folded':''}">
@@ -1361,8 +1362,8 @@ function labSteps(c){const p=c.src,seed=p==='seed',r=calc(c);const mi=benchIdx('
   {id:'labor',t:'Time the work',ws:5,keys:[['shop.wage','Hourly wage'],...(p==='stock'?[['c.stock.harvest','Harvest rate']]:p==='collect'?[['c.collect.rate','Collecting rate']]:[]),seed?['c.seed.rate','Sowing rate']:['c.stickRate','Sticking rate'],['c.fillMin','Minutes to fill a plug tray'],['c.gradeMin','Minutes to grade and ship a plug tray']],
     body:ul(['Wage: look up California\'s minimum wage and a local nursery job posting. Use what you would really pay.','Time trials: do each job in the lab for a few minutes and count. Do it three times and use the average.','Grade and ship: estimate the minutes to check, clean up and pack one plug tray.'])+links(['wage']),
     tool:`<div class="tool"><span class="caps">Time trial calculator</span>${p==='stock'||p==='collect'?rateRow('h',p==='stock'?'Taking cuttings from stock plants':'Collecting cuttings on site','Cuttings per hour',p==='stock'?'c.stock.harvest':'c.collect.rate','harvest rate'):''}${rateRow('s',seed?'Sowing cells':'Sticking cuttings',seed?'Cells per hour':'Cuttings per hour',seed?'c.seed.rate':'c.stickRate',seed?'sowing rate':'sticking rate')}${rateRow('f','Filling plug trays with mix','Minutes per plug tray','c.fillMin','fill time')}</div>`},
-  {id:'mix',t:'Price your potting mix and plug trays',ws:6,keys:[['shop.mixYd','Potting mix per yd³'],['shop.pack','Packing & waste %'],['shop.trayPrice','Plug tray price'],['shop.trayUses','Times reused'],['c.cellVol','Cell volume']],
-    body:ul(['Potting mix: the price per cubic yard of propagation mix from a local supplier. Only have a bag price? A cubic yard is 27 cubic feet.','Packing & waste: the extra mix lost to packing cells and spills. Estimate it.','Plug tray: one 1020 tray with your cell insert, from a supplier like BFG Supply or Greenhouse Megastore. How many times can you reuse it?','Cell volume fills in for common inserts. Check the insert\'s spec sheet.'])+links(['bfg','ghm'])},
+  {id:'mix',t:'Price your potting mix and plug trays',ws:6,keys:[['shop.mixYd','Potting mix per yd³'],['shop.pack','Packing & waste %'],['shop.trayPrice','Plug tray price'],['c.cellVol','Cell volume']],
+    body:ul(['Potting mix: the price per cubic yard of propagation mix from a local supplier. Only have a bag price? A cubic yard is 27 cubic feet.','Packing & waste: the extra mix lost to packing cells and spills. Estimate it.','Plug tray: one 1020 tray with your cell insert, from a supplier like BFG Supply or Greenhouse Megastore. Most plug nurseries, like Takao Nursery and Pacific Plug & Liner, sell the plants in the tray, so leave Times used blank. Enter a number only if your trays come back to be used again.','Cell volume fills in for common inserts. Check the insert\'s spec sheet.'])+links(['bfg','ghm'])},
   {id:'sup',t:'Add your supplies',ws:7,keys:[],done:()=>!!L.done.sup,go:[{tab:'costs',sec:'Supplies',key:null,label:'Price your supplies'}],
     body:ul(['List what a propagation house buys over and over: rooting hormone (if your plant needs it), fungicide, fertilizer, plant tags, sticky cards.','Find a price, the amount you buy, and how often you\'d buy each one.','On the Crop tab, under Supplies used, turn off anything your plant doesn\'t use.']),
     tool:`<button class="chip${L.done.sup?' on':''}" data-a="labDone:sup"><span class="ms sm" aria-hidden="true">${L.done.sup?'check_box':'check_box_outline_blank'}</span>Our supplies are in</button>`},
@@ -1765,7 +1766,7 @@ function exportXLSX(){if(!window.XLSX){toast('Connect to the internet once to lo
   R.forEach(({c,r})=>{r.parts.forEach(p=>bd.push([c.name,p.n,p.v!=null?+p.v.toFixed(2):'needs info',p.v!=null&&r.sell?+(p.v/r.sell).toFixed(4):'']));bd.push([c.name,'Total',r.total!=null?+r.total.toFixed(2):'',r.perPlug!=null?+r.perPlug.toFixed(4):'']);bd.push([]);});
   const ws2=X.utils.aoa_to_sheet(bd);ws2['!cols']=[{wch:24},{wch:26},{wch:12},{wch:16}];X.utils.book_append_sheet(wb,ws2,'Cost breakdown');
   const s=S.shop,sr=calc(crop());
-  const sh=[['Setting','Value'],['Hourly wage',num(s.wage)||''],['Owner does the labor (counted as profit)',s.ownLabor?'Yes':'No'],['Bench rate ($/sq ft/week)',sr.R!=null?+sr.R.toFixed(4):''],['Mist add-on ($/sq ft/week)',opt(s.mistAdd)],['Potting mix per cu yd',num(s.mixYd)||''],['Packing & waste %',opt(s.pack)],['Plug trays per year (supplies)',sr.fy.n||''],['Plug tray each',num(s.trayPrice)||''],['Plug tray reuses',num(s.trayUses)||1],['Target margin',opt(s.margin)/100],['Plug tray size (in)',`${s.flatL} × ${s.flatW}`],...s.benches.map(b=>[`${b.type==='open'?'Open':'Mist'} bench ${b.len}×${b.wid} ft × ${b.count||0}`,fits(b)*Math.max(0,Math.round(opt(b.count)))+' plug trays']),[],['Yearly facility cost','Amount'],...s.costs.map(x=>[x.n,num(x.v)||'']),['Bench sq ft',+benchTotals(usesStock()).area.toFixed(1)],['% in use',num(s.occ)||''],['Production weeks',num(s.weeks)||''],[],['Supply','Amount per purchase','Price per unit','Bought every (months)'],...s.supplies.filter(x=>num(x.price)>0).map(x=>[x.n,(num(x.qty)>0?num(x.qty):1)+' '+x.unit,num(x.price),num(x.months)||''])];
+  const sh=[['Setting','Value'],['Hourly wage',num(s.wage)||''],['Owner does the labor (counted as profit)',s.ownLabor?'Yes':'No'],['Bench rate ($/sq ft/week)',sr.R!=null?+sr.R.toFixed(4):''],['Mist add-on ($/sq ft/week)',opt(s.mistAdd)],['Potting mix per cu yd',num(s.mixYd)||''],['Packing & waste %',opt(s.pack)],['Plug trays per year (supplies)',sr.fy.n||''],['Plug tray each',num(s.trayPrice)||''],['Plug tray times used',num(s.trayUses)||1],['Target margin',opt(s.margin)/100],['Plug tray size (in)',`${s.flatL} × ${s.flatW}`],...s.benches.map(b=>[`${b.type==='open'?'Open':'Mist'} bench ${b.len}×${b.wid} ft × ${b.count||0}`,fits(b)*Math.max(0,Math.round(opt(b.count)))+' plug trays']),[],['Yearly facility cost','Amount'],...s.costs.map(x=>[x.n,num(x.v)||'']),['Bench sq ft',+benchTotals(usesStock()).area.toFixed(1)],['% in use',num(s.occ)||''],['Production weeks',num(s.weeks)||''],[],['Supply','Amount per purchase','Price per unit','Bought every (months)'],...s.supplies.filter(x=>num(x.price)>0).map(x=>[x.n,(num(x.qty)>0?num(x.qty):1)+' '+x.unit,num(x.price),num(x.months)||''])];
   const ws3=X.utils.aoa_to_sheet(sh);ws3['!cols']=[{wch:32},{wch:14},{wch:22}];X.utils.book_append_sheet(wb,ws3,'Costs & benches');
   const out=X.write(wb,{type:'array',bookType:'xlsx'});
   deliver(new Blob([out],{type:'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'}),'plug-pricing-'+today()+'.xlsx');}
